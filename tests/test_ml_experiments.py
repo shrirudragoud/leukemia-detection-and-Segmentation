@@ -32,8 +32,8 @@ def test_apply_overrides_do_not_mutate_base(synth):
 
 
 def test_probe_ablation_structure_ci_and_determinism(synth, tmp_path):
-    r1 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "a", seeds=(0, 1), n_boot=200, scheme="grouped")
-    run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200, scheme="grouped")
+    r1 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "a", seeds=(0, 1), n_boot=200, scheme="grouped", embargo=0)
+    run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200, scheme="grouped", embargo=0)
     assert [r["variant"] for r in r1["rows"]] == [v["name"] for v in VARIANTS]
     assert r1["reference"] == "shape (tabular)"
     for row in r1["rows"]:
@@ -51,7 +51,7 @@ def test_probe_ablation_structure_ci_and_determinism(synth, tmp_path):
 
 
 def test_markdown_mentions_reference_and_ci(synth, tmp_path):
-    rep = run_probe_ablation(base(synth), VARIANTS[:2], tmp_path, seeds=(0,), n_boot=100, scheme="grouped")
+    rep = run_probe_ablation(base(synth), VARIANTS[:2], tmp_path, seeds=(0,), n_boot=100, scheme="grouped", embargo=0)
     md = render_markdown(rep)
     assert "reference: shape (tabular)" in md and "Holm" in md and "texture (tabular)" in md
 
@@ -62,5 +62,13 @@ def test_cli_ablate(synth, tmp_path, capsys):
     p = tmp_path / "spec.json"
     p.write_text(json.dumps(spec))
     assert main(["ablate", "--spec", str(p), "--out", str(tmp_path / "o"), "--seeds", "1",
-                 "--boot", "50", "--scheme", "grouped"]) == 0
+                 "--boot", "50", "--scheme", "grouped", "--embargo", "0"]) == 0
     assert "Balanced acc." in capsys.readouterr().out
+
+
+def test_contiguous_is_the_default_scheme_and_is_recorded(synth, tmp_path):
+    rep = run_probe_ablation(base(synth), VARIANTS[:2], tmp_path, seeds=(0,), n_boot=50, embargo=0)
+    assert rep["scheme"] == "contiguous" and rep["embargo"] == 0
+    assert "contiguous 5-fold CV" in rep["protocol"]
+    assert "contiguous folds, embargo 0" in (tmp_path / "ablation.md").read_text()
+    assert all(r["n_images"] == 48 for r in rep["rows"])
