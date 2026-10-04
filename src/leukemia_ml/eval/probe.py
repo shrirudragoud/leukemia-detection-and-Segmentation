@@ -31,13 +31,9 @@ def image_features(index: CellIndex, emb: np.ndarray, feats: np.ndarray | None =
 
 
 def image_numbers(index: CellIndex, image_idx: np.ndarray) -> np.ndarray:
-    """Trailing integer of each image id (capture-order proxy); -1 if absent."""
-    import re
-    out = []
-    for i in image_idx:
-        m = re.search(r"(\d+)$", str(index.images[i]))
-        out.append(int(m.group(1)) if m else -1)
-    return np.array(out)
+    """Capture-order sequence number of the selected images (see data/splits.py)."""
+    from ..data.splits import sequence_numbers
+    return sequence_numbers(index)[image_idx]
 
 
 def run_probe(index: CellIndex, X: np.ndarray, image_idx: np.ndarray, n_splits: int = 5,

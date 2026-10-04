@@ -26,8 +26,24 @@ class DataConfig:
     max_cells_eval: int = 64                   # eval-time cap per bag (first by cell id)
     feature_groups: tuple[str, ...] = ("cell_shape", "cell_texture", "apc", "log")
     exclude_border_cells: bool = False
+    # How train/val/test are formed. 'contiguous' (default) cuts each class's capture-order
+    # numbering into `n_folds` consecutive segments (test = `test_fold`, val = segment
+    # `test_fold + val_offset`) and purges training images within `embargo` numbers of any val/test
+    # image: sessions/patients are contiguous in the numbering, so this is far less leaky than
+    # randomly assigned blocks. 'manifest' uses the split written by `leukemia-pp run`.
+    split_scheme: str = "contiguous"
+    n_folds: int = 5
+    test_fold: int = 0
+    val_offset: int = 2
+    embargo: int = 37
 
     def __post_init__(self) -> None:
+        if self.split_scheme not in ("contiguous", "manifest"):
+            raise ValueError("split_scheme must be 'contiguous' or 'manifest'")
+        if self.split_scheme == "contiguous" and not (
+                self.n_folds >= 3 and 0 <= self.test_fold < self.n_folds
+                and 1 <= self.val_offset < self.n_folds):
+            raise ValueError("need n_folds >= 3, 0 <= test_fold < n_folds, 1 <= val_offset < n_folds")
         if self.source not in SOURCES:
             raise ValueError(f"source must be one of {SOURCES}")
         if self.task not in TASKS:
@@ -55,6 +71,7 @@ class ModelConfig:
     use_features: bool = False                 # hybrid: add the interpretable feature branch
     feature_hidden: int = 32
     feature_group_dropout: float = 0.1
+    grad_checkpointing: bool = False           # trade compute for memory (ViT-B/L on small GPUs)
 
     def __post_init__(self) -> None:
         if self.freeze not in FREEZE_MODES:
@@ -97,12 +114,15 @@ class TrainConfig:
     num_workers: int = 0
     device: str = "auto"                       # 'auto' | 'cpu' | 'cuda'
     amp: bool = True                           # only used on CUDA
+    amp_dtype: str = "auto"                    # 'auto' (bf16 if supported else fp16) | 'bf16' | 'fp16'
     max_train_images: int | None = None        # smoke tests
     max_eval_images: int | None = None
 
     def __post_init__(self) -> None:
         if self.class_weighting not in ("none", "inv_sqrt", "inv"):
             raise ValueError("class_weighting must be none|inv_sqrt|inv")
+        if self.amp_dtype not in ("auto", "bf16", "fp16"):
+            raise ValueError("amp_dtype must be auto|bf16|fp16")
 
 
 @dataclass(frozen=True)

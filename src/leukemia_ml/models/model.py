@@ -81,4 +81,6 @@ def build_model(cfg: ModelConfig, n_classes: int, n_features: int = 0,
         apply_lora(enc.backbone, cfg.lora_targets, cfg.lora_rank, cfg.lora_alpha, cfg.lora_dropout)
         for n_, p in enc.named_parameters():
             p.requires_grad = n_.endswith((".A", ".B"))
+    if cfg.grad_checkpointing and hasattr(enc.backbone, "set_grad_checkpointing"):
+        enc.backbone.set_grad_checkpointing(True)
     return LeukemiaModel(enc, enc.out_dim, n_classes, cfg, n_features, group_slices)

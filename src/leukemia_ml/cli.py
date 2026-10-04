@@ -1,4 +1,4 @@
-"""leukemia-ml: crops | embed | probe | train | ablate"""
+"""leukemia-ml: crops | embed | probe | train | cv | ablate | preflight | bundle"""
 from __future__ import annotations
 
 import argparse
@@ -79,6 +79,29 @@ def _cmd_ablate(args) -> int:
     return 0 if rep["rows"] else 3
 
 
+def _cmd_cv(args) -> int:
+    from .cv import run_cv
+    cfg = _cfg(args)
+    out = Path(args.out) / f"{cfg.name}_{cfg.hash()}"
+    s = run_cv(cfg, out, folds=args.folds, n_boot=args.boot)
+    print((out / "cv_summary.md").read_text(encoding="utf-8"))
+    return 0 if s["pooled"]["n"] else 3
+
+
+def _cmd_preflight(args) -> int:
+    from .preflight import preflight
+    info = preflight(_cfg(args), steps=args.steps)
+    print(json.dumps(info, indent=2))
+    return 0 if info["ok"] else 2
+
+
+def _cmd_bundle(args) -> int:
+    from .bundle import make_bundle
+    m = make_bundle(_cfg(args), args.out, include_embeddings=args.embeddings)
+    print(json.dumps({"tar_bytes": m["tar_bytes"], "files": len(m["files"])}, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="leukemia-ml", description=__doc__)
     ap.add_argument("-v", "--verbose", action="store_true")
@@ -98,6 +121,24 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--seeds", type=int, default=3)
         if name == "train":
             p.add_argument("--out", type=Path, default=Path("runs"))
+    cv = sub.add_parser("cv", help="session-aware cross-validation (the full-run entry point)")
+    cv.add_argument("--config", type=Path)
+    cv.add_argument("--out", type=Path, default=Path("runs"))
+    cv.add_argument("--folds", type=int, nargs="*", help="subset of folds (default: all)")
+    cv.add_argument("--boot", type=int, default=1000)
+    cv.set_defaults(func=_cmd_cv)
+
+    pf = sub.add_parser("preflight", help="check environment/files and time a training step")
+    pf.add_argument("--config", type=Path)
+    pf.add_argument("--steps", type=int, default=3)
+    pf.set_defaults(func=_cmd_preflight)
+
+    bd = sub.add_parser("bundle", help="pack tables + crop cache for a remote machine")
+    bd.add_argument("--config", type=Path)
+    bd.add_argument("--out", type=Path, required=True)
+    bd.add_argument("--embeddings", action="store_true")
+    bd.set_defaults(func=_cmd_bundle)
+
     ab = sub.add_parser("ablate", help="compare variants with grouped-CV probes + bootstrap stats")
     ab.add_argument("--spec", type=Path, required=True)
     ab.add_argument("--out", type=Path, required=True)

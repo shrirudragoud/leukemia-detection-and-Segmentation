@@ -50,6 +50,7 @@ def synth(tmp_path_factory):
 
 def dcfg(synth, **kw):
     raw, out = synth
+    kw.setdefault("split_scheme", "manifest")
     return DataConfig(run_dir=str(out), input_dir=str(raw), cache_size=48, **kw)
 
 
