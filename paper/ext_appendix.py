@@ -43,7 +43,7 @@ def appendix_extra():
     PB()
     H("Appendix IX. Algorithms in pseudocode")
     P("The three procedures that determine the evaluation are given in pseudocode. They correspond to the functions contiguous_folds, purge_train, cluster_bootstrap and holm of the code.", noindent=True)
-    BODY.append({"t": "small", "text": "Algorithm 1. Contiguous session-aware folds with embargo."})
+    BODY.append({"t": "small", "text": "Algorithm 1. Contiguous session-aware folds with embargo (variant used for the probe analyses; the headline model additionally holds out a validation stretch, see Methods)."})
     BODY.append({"t": "code", "lines": [
         "input: labels y, capture numbers n, number of folds K, embargo e",
         "for each class c:",

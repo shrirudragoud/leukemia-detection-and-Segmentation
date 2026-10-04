@@ -32,7 +32,7 @@ def intro_extra():
       f"efficient architectures {c('tan2019')} reduced the cost of training. Encoder-decoder networks {c('ronneberger2015')} and generalist cell segmentation "
       f"tools {c('stringer2021', 'schmidt2018')} addressed the segmentation step. Vision transformers {c('vaswani2017', 'dosovitskiy2021')} added global "
       "self-attention over image patches. For blood smears, large labelled collections such as the single-cell dataset of "
-      f"{n('matek2019')} made it possible to train and test networks for the recognition of cell types and blasts.")
+      f"{n('matek2019')} made it possible to train and test networks for the recognition of cell types and blasts (in that case myeloid, not lymphoblastic, blasts).")
     P(f"Because labelled medical images are scarce, transfer learning is central: a network trained on a large source dataset is adapted to the target task "
       f"{c('pan2010')}. How well features transfer depends on the architecture and the source data {c('kornblith2019')}. Self-supervised pre-training "
       f"{c('caron2021', 'oquab2024')} produces general features without labels, and domain-specific pre-training on hematology images "
@@ -58,7 +58,7 @@ def intro_extra():
       f"about it {c('adebayo2018')}. Blocked cross-validation is a recognised remedy where observations are dependent {c('roberts2017')}, and estimates of generalisation "
       f"error from cross-validation are themselves uncertain {c('kohavi1995', 'nadeau2003')}.")
     S("Contributions")
-    P("This paper makes five contributions, all of which are supported by result files released with the code. (1) A documented and tested preprocessing pipeline for smear "
+    P("This paper makes five contributions; the first four are supported by result files released with the code, and the fifth is implemented and tested in code but was not run. (1) A documented and tested preprocessing pipeline for smear "
       "images with quantitative checks, including a stabilised diffusion denoiser and a procedure that isolates cells from their background. (2) A shortcut audit that measures "
       "how much class information is present in the background, the scale bar and the colour of cells. (3) A demonstration, with a purge analysis, that proximity in capture order "
       "carries class-relevant information and that random block folds overestimate accuracy. (4) A reproducible baseline with a frozen hematology foundation model, with "

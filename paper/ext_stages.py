@@ -8,17 +8,17 @@ Fg("st_stain", "paper/figures/stage_1_stain.png", f"Stage 1, stain normalisation
 Fg("st_denoise", "paper/figures/stage_2_denoise.png", f"Stage 2, denoising of the luminance of {EX['Early']} (top: full image; bottom: zoom on the central region). From left to right: input, bilateral filter, stabilised HDS diffusion "
    f"({SE['hds_iterations_example']} iterations), and the absolute difference between input and HDS output (amplified four times). Diffusion smooths flat regions and leaves the cell boundaries.", 6.2)
 Fg("st_hds", "paper/figures/stage_3_hds_edge.png", "Stage 3, HDS edge indicator. Top: luminance of one image per class. Bottom: the edge indicator 1 - mean diffusivity of the denoised image (0 in flat regions, close to 1 across strong edges), on a fixed scale.", 6.2)
-Fg("st_layers", "paper/figures/stage_4_layers.png", f"Stage 4, response layers of {EX['Early']}. From left to right: denoised grey image, adaptive principal-curvature (APC) response, Laplacian-of-Gaussian (LoG) response and Canny edges.", 6.2)
-Fg("st_beemd", "paper/figures/stage_5_beemd.png", f"Stage 5, BEEMD and pure-IMF selection for the luminance of {EX['Early']}. The four intrinsic mode functions (IMFs) are ordered from fine to coarse; the title of each gives the "
+Fg("st_layers", "paper/figures/stage_4_layers.png", f"Stages 4 and 5, response layers of {EX['Early']}. From left to right: denoised grey image, adaptive principal-curvature (APC) response, Laplacian-of-Gaussian (LoG) response and Canny edges.", 6.2)
+Fg("st_beemd", "paper/figures/stage_5_beemd.png", f"Stages 6 and 7, BEEMD and pure-IMF selection for the luminance of {EX['Early']}. The four intrinsic mode functions (IMFs) are ordered from fine to coarse; the title of each gives the "
    "characteristic spatial period, the share of the detail energy and whether the selection rule keeps the mode. Also shown: the residue, the sum of the selected (pure) modes, and the difference between the input and the sum of all modes and the residue, which is zero up to rounding.", 6.2)
-Fg("st_seg", "paper/figures/stage_6_segmentation.png", "Stage 6, cell and nucleus segmentation for one image per class. Top: smoothed a* score. Middle: cell instances after watershed splitting (random colours; border-touching cells included). Bottom: cell (green) and nucleus (yellow) outlines on the denoised image.", 6.2)
-Fg("st_clean", "paper/figures/stage_7_neutralise.png", "Stage 7, shortcut neutralisation. Top: stain-normalised images. Bottom: the same images with everything outside the cells replaced by a neutral fill and the cells white-balanced.", 6.2)
-Fg("st_crops", "paper/figures/stage_7b_crops.png", f"Stage 7, outputs for {EX['Early']}: the neutralised image, its grey version, and the isolated 112 x 112 crops of the first four cells that are passed to the encoder.", 6.2)
-Fg("st_cells", "paper/figures/stage_8_cells.png", f"Stage 8, cells of {EX['Early']} numbered as in Table {{T:stage_cells}}.", 3.6)
+Fg("st_seg", "paper/figures/stage_6_segmentation.png", "Stage 8, cell and nucleus segmentation for one image per class. Top: smoothed a* score. Middle: cell instances after watershed splitting (random colours; border-touching cells included). Bottom: cell (green) and nucleus (yellow) outlines on the denoised image.", 6.2)
+Fg("st_clean", "paper/figures/stage_7_neutralise.png", "Stage 9, shortcut neutralisation. Top: stain-normalised images. Bottom: the same images with everything outside the cells replaced by a neutral fill and the cells white-balanced.", 6.2)
+Fg("st_crops", "paper/figures/stage_7b_crops.png", f"Stage 9, outputs for {EX['Early']}: the neutralised image, its grey version, and the isolated 112 x 112 crops of the first four cells that are passed to the encoder.", 6.2)
+Fg("st_cells", "paper/figures/stage_8_cells.png", f"Stage 10, cells of {EX['Early']} numbered as in Table {{T:stage_cells}}.", 3.6)
 
 _ex = SE["example_cells"]
-T("stage_cells", f"Stage 8: per-cell measurements of the cells of {EX['Early']} (numbered as in Fig. {{F:st_cells}}). Columns follow the feature definitions of Appendix III; the last four columns are statistics of the "
-   "response layers inside the cell.",
+T("stage_cells", f"Stage 10: per-cell measurements of the cells of {EX['Early']} (numbered as in Fig. {{F:st_cells}}). Columns follow the feature definitions of Appendix III; the last two columns are statistics of the "
+   "response layers inside the cell (the HDS edge value comes from a separate pass with HDS enabled).",
   [{"w": 0.8, "align": "right"}] + [{"w": 1, "align": "right"}] * 9,
   ["Cell", "Area (px)", "Diameter (px)", "Aspect ratio", "Solidity", "Circularity", "Mean a*", "GLCM contrast", "Mean APC", "Mean HDS edge"],
   [[str(r["cell_id"]), f"{r['cell_area']:.0f}", f"{r['cell_eq_diameter']:.1f}", f2(r["cell_aspect_ratio"]), f2(r["cell_solidity"]), f2(r["cell_circularity"]),
@@ -45,12 +45,11 @@ T("stages", "The processing stages, their implementation and their use in this s
 @section("methods_stages")
 def methods_stages():
     S("Processing stages and their outputs")
-    P("An earlier version of this work was reviewed, and one review observed that the code shared with it performed deep-learning classification only and did not implement the stages named in the "
-      "project description: HDS edge detection, APC (adaptive principal curvature) structure detection, BEEMD decomposition, selection of pure intrinsic mode functions (IMFs), and "
-      "morphological feature extraction. The present version implements every one of these stages, tests each of them with automated tests, runs them on all "
-      f"{N_IMG} images and reports their input and output. Table {{T:stages}} lists the stages and says which role each plays in the experiments; the following paragraphs describe each stage, with an example "
-      "of its input and output on real images of the dataset.")
-    P(f"Two statements about scope are needed for accuracy. First, the pixel input of the headline model is the neutralised cell crop of stage 9, so the response layers and the HDS and BEEMD outputs "
+    P("The processing pipeline consists of the stages named in the project description - HDS edge detection, adaptive principal-curvature (APC) structure detection, BEEMD decomposition, selection of pure intrinsic mode functions (IMFs) "
+      "and morphological feature extraction - together with the stages that prepare the images for them and for the classifier. Each stage is implemented and covered by automated tests. "
+      f"A separate pass of the pipeline with HDS and BEEMD enabled processed all {N_IMG} images, and the example figures below show the input and output of every stage on real images of the dataset. "
+      "Table {T:stages} lists the stages and the role that each plays in the experiments.")
+    P(f"Two clarifications on scope follow. First, the pixel input of the headline model is the neutralised cell crop of stage 9, so the response layers and the HDS and BEEMD outputs "
       "enter the classification only through hand-made features, which are evaluated in a separate tabular analysis (Results, Contribution of the processing stages); they are not channels of the foundation-model input. "
       "Second, the description of the APC stage as blood-vessel segmentation in the project title does not apply literally to peripheral blood smears, which contain no vessels; the APC "
       "response of the Hessian is computed as specified and highlights cell boundaries and thin structures, and I report what it measures and not what its name suggests.")

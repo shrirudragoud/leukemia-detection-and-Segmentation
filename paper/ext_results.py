@@ -50,7 +50,7 @@ Fg("training", "paper/figures/fig_training.png", "Training of the attention head
 Fg("roc", "paper/figures/fig_roc_pr.png", "Discrimination of each class from the other three on the pooled out-of-fold predictions. (a) Receiver operating characteristic curves and "
    "(b) precision-recall curves of the headline model, with the area under each curve in the legend.", 6.0)
 Fg("rel", "paper/figures/fig_reliability.png", "Calibration of the temperature-scaled probabilities on the pooled out-of-fold predictions. (a) Reliability diagram: observed accuracy "
-   "against mean confidence in ten confidence bins; the diagonal is perfect calibration. (b) Histogram of the confidence of correct and incorrect predictions (log scale).", 6.0)
+   "against mean confidence in ten confidence bins (the ECE uses 15 bins); the diagonal is perfect calibration. (b) Histogram of the confidence of correct and incorrect predictions (log scale).", 6.0)
 Fg("cells", "paper/figures/fig_cells.png", "Dependence of the accuracy of the headline model on the number of cells that the pipeline found in the image. (a) Accuracy by number of "
    "cells per image (n above each bar is the number of images). (b) Distribution of the largest attention weight in an image, by true class.", 6.0)
 
@@ -86,7 +86,7 @@ _FN = [("cell_area", "Cell area (px)", 0), ("cell_eq_diameter", "Equivalent diam
 
 
 def _q(d, dec):
-    return f"{d['median']:.{dec}f} ({d['q25']:.{dec}f}-{d['q75']:.{dec}f})"
+    return f"{d['median']:.{dec}f} ({d['q25']:.{dec}f} to {d['q75']:.{dec}f})"
 
 
 T("feat", "Per-cell features by class: median and interquartile range (in parentheses) over cells that do not touch the image border. The statistics are descriptive; "
@@ -102,13 +102,12 @@ def features_section():
     P(f"Table {{T:feat}} summarises the per-cell measurements for the {FS['n_interior_cells']} cells that do not touch the border. Cell size differed between classes: the median area was "
       f"{f['cell_area']['Benign']['median']:.0f} px for Benign, {f['cell_area']['Early']['median']:.0f} for Early, {f['cell_area']['Pre']['median']:.0f} for Pre and {f['cell_area']['Pro']['median']:.0f} for Pro, "
       f"with the Benign cells the smallest. Measures of the outline - aspect ratio, solidity and circularity - were close to identical in the four classes (for example, the median solidity was "
-      f"{f['cell_solidity']['Benign']['median']:.2f} to {f['cell_solidity']['Early']['median']:.2f} in all of them), so that the shape of the outline of a segmented cell carries little class information in this dataset. "
+      f"{f['cell_solidity']['Benign']['median']:.2f} to {f['cell_solidity']['Early']['median']:.2f} in all of them), so the medians of the outline measures were similar across classes, although a random forest on image-level shape features reached {f3(aud('cell shape'))} (Table {{T:audit}}), so similar medians do not mean that shape carries no class information. "
       "Texture measures differed modestly.")
     P(f"The colour of the cells differed much more. The median a* value was {f['cell_a_mean']['Pre']['median']:.1f} in Pre cells and {f['cell_a_mean']['Pro']['median']:.1f} in Pro cells, with "
       f"{f['cell_a_mean']['Benign']['median']:.1f} in Benign and {f['cell_a_mean']['Early']['median']:.1f} in Early cells, and the median b* value ranged from {f['cell_b_mean']['Pre']['median']:.1f} (Pre) to "
-      f"{f['cell_b_mean']['Early']['median']:.1f} (Early). The Pre class stands out from the other three in lightness and in both chromatic channels. Because the classes are not expected to differ so strongly in "
-      "the colour of their cytoplasm and chromatin, and because the colour statistics were computed after stain normalisation, this pattern is consistent with the class-specific acquisition "
-      "conditions that the shortcut audit detected. It cannot be separated from a true biological difference with these data.")
+      f"{f['cell_b_mean']['Early']['median']:.1f} (Early). The Pre class differs from the others in a* and b*, and Early differs in L* (median {f['cell_L_mean']['Early']['median']:.1f} against {f['cell_L_mean']['Pre']['median']:.1f} to {f['cell_L_mean']['Pro']['median']:.1f}). "
+      "The colour statistics were computed after stain normalisation. These differences may reflect the staining conditions of the sessions that the shortcut audit detected, or biology; the data cannot separate the two.")
 
 
 @section("results_extra")
@@ -128,36 +127,33 @@ def results_extra():
     P(f"The one-vs-rest area under the ROC curve of the pooled out-of-fold probabilities was {f3(CURVES['Benign']['auroc'])} for Benign, {f3(CURVES['Early']['auroc'])} for Early, "
       f"{f3(CURVES['Pre']['auroc'])} for Pre and {f3(CURVES['Pro']['auroc'])} for Pro (Fig. {{F:roc}}a). The area under the precision-recall curve was "
       f"{f3(CURVES['Benign']['auprc'])}, {f3(CURVES['Early']['auprc'])}, {f3(CURVES['Pre']['auprc'])} and {f3(CURVES['Pro']['auprc'])} (Fig. {{F:roc}}b). The Pre class had the lowest area under the ROC curve "
-      "although its precision-recall area was similar to that of the other classes, which indicates that it is confused with its neighbours in the ordering of the disease stages without being poorly "
-      "ranked overall. These values are computed from probabilities pooled over the folds, so they combine models that were fitted on different training sets.")
+      "although its precision-recall area was similar to that of the other classes, while its precision-recall area was similar to that of the other classes. These values are computed from probabilities pooled over the folds, so they combine models that were fitted on different training sets.")
     S("Calibration")
-    P(f"Before temperature scaling the probabilities of the model were under-confident: the expected calibration error averaged {f3(CV['per_fold_mean']['ece'])} over folds, and the fitted "
-      f"temperature was below 1 in every fold (range {min(p['temperature'] for p in pf):.2f}-{max(p['temperature'] for p in pf):.2f}). After scaling, the pooled error was "
-      f"{f3(pool['ece'])} (Fig. {{F:rel}}a). The median confidence was {f3(MED_OK)} for correct and {f3(MED_BAD)} for incorrect predictions (Fig. {{F:rel}}b), so the confidence can be used to flag uncertain images for review. "
+    P(f"Before temperature scaling the probabilities of the model were under-confident: the mean per-fold expected calibration error was {f3(CV['per_fold_mean']['ece'])}, and the fitted "
+      f"temperature was below 1 in every fold (range {min(p['temperature'] for p in pf):.2f}-{max(p['temperature'] for p in pf):.2f}). After scaling, the mean per-fold error was {f3(CAL_FOLD_MEAN)} and the pooled error was "
+      f"{f3(pool['ece'])} (Fig. {{F:rel}}a). The median confidence was {f3(MED_OK)} for correct and {f3(MED_BAD)} for incorrect predictions (Fig. {{F:rel}}b); whether this separation is useful for flagging images for review was not evaluated. "
       "A temperature fitted on one stretch of one dataset is not guaranteed to transfer, and the calibration should be re-checked on any new data.")
     S("Where the model fails")
     accs = CELLS["acc"]
     P(f"Accuracy depended on the number of cells in the image (Fig. {{F:cells}}a). Images in which the pipeline found one to three cells were classified correctly in {pct(accs[0])}% of cases "
-      f"(n = {CELLS['n'][0]}), against {pct(accs[2])}% for six to eight cells (n = {CELLS['n'][2]}) and {pct(accs[3])}% for nine to twelve (n = {CELLS['n'][3]}). Images with few cells provide the model with little "
-      "evidence, and some of them may contain cells that the segmentation missed; I did not check this image by image. The largest attention weight of an image had a median of "
+      f"(n = {CELLS['n'][0]}), against {pct(accs[2])}% for six to eight cells (n = {CELLS['n'][2]}) and {pct(accs[3])}% for nine to twelve (n = {CELLS['n'][3]}). I did not investigate the cause; images with few cells give the model fewer cells to pool, and the segmentation may have missed cells in some of them, but I did not check this image by image. The largest attention weight of an image had a median of "
       f"{f2(MED_ATT)}, which is about {MED_ATT / MED_UNI:.1f} times the weight that uniform attention would give (Fig. {{F:cells}}b), so the head weights cells unequally but does not rely on a single cell. "
       f"In total {sum(1 for _ in ERR_ROWS)} of {N_IMG} images were misclassified; Appendix VI lists them with their true class, predicted class and confidence.")
-    P(f"The errors were concentrated between neighbouring stages. Of the {sum(cm[1]) - cm[1][1]} Early images that were misclassified, {cm[1][0]} were called Benign, {cm[1][2]} Pre and {cm[1][3]} Pro. Of the "
+    P(f"Of the {sum(1 for _ in ERR_ROWS)} errors, {cm[0][1] + cm[0][2] + cm[0][3] + cm[1][0] + cm[2][0] + cm[3][0]} involved the Benign class, as true or predicted class. Of the {sum(cm[1]) - cm[1][1]} Early images that were misclassified, {cm[1][0]} were called Benign, {cm[1][2]} Pre and {cm[1][3]} Pro. Of the "
       f"{sum(cm[2]) - cm[2][2]} misclassified Pre images, {cm[2][0]} were called Benign, {cm[2][1]} Early and {cm[2][3]} Pro. Benign images were called Early ({cm[0][1]}), Pre ({cm[0][2]}) or Pro ({cm[0][3]}) "
-      f"in {sum(cm[0]) - cm[0][0]} cases, and {cm[3][0] + cm[3][1] + cm[3][2]} of {sum(cm[3])} Pro images were misclassified. Because the dataset labels the stages of a continuous maturation process, confusion between "
-      "neighbouring stages is expected even for expert observers; I did not have access to a second reading of the images and cannot quantify human agreement.")
+      f"in {sum(cm[0]) - cm[0][0]} cases, and {cm[3][0] + cm[3][1] + cm[3][2]} of {sum(cm[3])} Pro images were misclassified. The Benign class (hematogones) is not a maturation stage of the malignant classes, and I did not have a second reading of the images, so I cannot say how human readers would perform on these images.")
     S("Fine-tuning and encoder comparison")
     P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
       "the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale "
       "(g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and "
-      "adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table {T:ft} lists the results of the runs that have been completed.")
+      "adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table {T:ft} is reserved for the results of these runs." if N_SLOTS else "Table {T:ft} lists the results of the runs.")
     if N_SLOTS:
         P(f"**[[GPU: {N_SLOTS} of {len(GPU_NAMES)} configurations have no result file yet. Write here: (1) the balanced accuracy of g01 compared with the frozen reference, with the paired-bootstrap difference "
           "and Holm-adjusted p value; (2) the effect of colour (g01 vs g02); (3) the effect of the feature branch (g03 vs g01); (4) the ordering of the encoders (g01, g04, g05, g06, g07); (5) the shortcut control "
           "(g08 vs g01). Delete this paragraph if the runs are not performed.]]**")
     PB_ALL = None
-    P(f"Figure {{F:ft_curves}} shows the training curves of the adapted model and Fig. {{F:ft_bars}} compares the configurations with their intervals. The confusion matrix of the best configuration "
-      "is shown in Fig. {F:ft_cm}.")
+    P(("Figures {F:ft_curves}, {F:ft_bars} and {F:ft_cm} are reserved for the training curves of the adapted model, the comparison of the configurations with their intervals and the confusion matrix of the best configuration; "
+       "they are currently sample images and show no results.") if N_SLOTS else ("Figure {F:ft_curves} shows the training curves of the adapted model and Fig. {F:ft_bars} compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. {F:ft_cm}."))
     S("Attention, saliency and embedding structure")
     XP = R / "xai_summary.json"
     EM = _json.loads((R / "embedding_summary.json").read_text())
@@ -176,11 +172,11 @@ def results_extra():
           f"nearly uniform over the cell (the overlay in the raw output file is a uniform wash), and the rank correlation with the maps of the randomised models was zero at every stage of the randomisation, which is the value that the "
           f"code returns for a constant map; it is therefore not evidence about the faithfulness of the method. In the deletion test, removing the pixels ranked most salient lowered the probability of the true class "
           f"to {f2(dl['cam_mean'][-1])} at the largest deleted fraction, whereas removing random pixels lowered it to {f2(dl['random_mean'][-1])}; a faithful map should produce the opposite order. I conclude that these saliency maps do not explain "
-          "the model and I do not use them. Only the attention weights, which are part of the model itself, are reported as an indication of which cells matter.")
+          "the model and I do not use them. Only the attention weights, which are part of the model itself, are reported, descriptively; they are not evidence of which cells are causally relevant.")
     P(f"A two-dimensional projection of the embeddings (Fig. {{F:embed}}a) shows the Benign images as compact groups that lie apart from the others, while Early, Pre and Pro occupy neighbouring regions that overlap in places; "
       f"the silhouette coefficient of the class labels in the 50-component principal-component space was {f2(EM['silhouette_class_pca50'])}, which is low, so the classes are not well-separated clusters in the full space. "
       "The panel coloured by capture-order segment (Fig. {F:embed}b) shows images of all segments in most regions, so the projection does not place the segments in separate regions; "
-      "I did not quantify this beyond the visual impression, and a two-dimensional projection cannot rule out session information in other directions of the embedding space.")
+      "the silhouette coefficient of the segment labels was {f2(EM['silhouette_segment_pca50'])} (class labels: {f2(EM['silhouette_class_pca50'])}), and a two-dimensional projection cannot rule out session information in other directions of the embedding space.")
 
 
 if (R / "xai_summary.json").exists():

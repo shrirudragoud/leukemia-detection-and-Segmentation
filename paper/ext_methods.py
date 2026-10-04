@@ -16,7 +16,7 @@ def methods_extra():
                                         "u_(t+1) = u_t + dt * ( sum_k c(|d_k|) * d_k  -  lambda * (u_t - f) )"]})
     P(f"with w = {HDS['hds_config']['hybrid_weight']}, h = {HDS['hds_config']['h']}, beta = {HDS['hds_config']['beta']}, lambda = {HDS['hds_config']['lam']}, "
       f"dt = {HDS['hds_config']['dt']} and at most {HDS['hds_config']['iterations']} iterations; iteration stops when the mean absolute update falls below "
-      f"{HDS['hds_config']['tol']}. Because c is at most 1 and dt is at most 0.25, each update is a convex combination of the neighbouring values and the observed value, so "
+      f"{HDS['hds_config']['tol']}. Because c is at most 1 and dt is below 1/(4 + lambda) = 0.23, each update is a convex combination of the neighbouring values and the observed value, so "
       "the iterate cannot leave the range of the input. The unmodified scheme of the original repository has a conduction coefficient with a term of size 1/epsilon, which "
       "violates the stability bound and explains the loss of signal-to-noise ratio in the benchmark.")
     P("*Foreground, nucleus and instance segmentation.* Let a_s be the a* channel smoothed with a Gaussian of standard deviation 1 pixel. The cell mask is a_s > max(Otsu(a_s), 8). "
@@ -27,7 +27,7 @@ def methods_extra():
       "has at least 30 pixels and at least 5% of the cell area. When any condition fails, no nucleus is reported for that cell.")
     P("*Neutralisation.* Let K be the cell mask dilated by the configured number of pixels. The background colour b is the median Lab value of the brighter half (by lightness) of the "
       "pixels outside K, if at least a minimum number of such pixels exist. The lightness of every pixel is multiplied by a gain, clipped to a fixed interval, that brings the background lightness to "
-      "the neutral fill lightness, and b* values of a and b are subtracted from the corresponding channels. Pixels outside K are then set to the neutral colour (fill "
+      "the neutral fill lightness, and the median a* and b* of the background are subtracted from the a* and b* channels. Pixels outside K are then set to the neutral colour (fill "
       "lightness, a = b = 0). The grayscale variant keeps only L/100.")
     P("*Cell crops.* For every cell, a square window is cut around the bounding box of the cell, enlarged by a margin of 25% on each side. Where the window leaves the image, it "
       "is padded with the neutral fill colour. When the isolation option is on, all pixels except those of this cell, dilated by 2 pixels, are replaced by the fill colour, so that neighbouring cells do not appear "
@@ -43,7 +43,7 @@ def methods_extra():
     S("Training objective and optimisation")
     P(f"The loss is the cross-entropy with label smoothing of 0.1 and with class weights proportional to the inverse square root of the class frequency of the training images. "
       f"Optimisation uses AdamW {c('loshchilov2019')} (an improved variant of Adam {c('kingma2015')}) with weight decay 0.05, gradient clipping at a norm of 1, a linear warm-up over the first 10% "
-      "of the steps and a cosine decay of the learning rate to zero (Fig. {F:training}c). For the frozen encoder, embeddings of all cells are computed once and cached, so no augmentation is applied; "
+      "of the steps and a cosine decay of the learning rate over the 30-epoch budget (Fig. {F:training}c; training stopped earlier in every fold). For the frozen encoder, embeddings of all cells are computed once and cached, so no augmentation is applied; "
       "the augmentation modules (flips, 90-degree rotations, scale jitter, stain-colour jitter restricted to non-fill pixels, random grayscale and blur) are used only when the encoder is adapted. "
       "Training stops when the validation macro-F1 has not improved for 8 epochs, and the weights of the best epoch are used. The temperature of the final softmax is fitted by "
       "minimising the validation negative log-likelihood (Methods, Evaluation measures).")
@@ -69,4 +69,4 @@ def methods_extra():
     S("Computational environment")
     P(f"All reported analyses were run on a CPU. Preprocessing of the {N_IMG} images took {DS['run_seconds'] / 60:.1f} minutes. Cross-validation of the headline model took {secs / 60:.0f} minutes for the "
       "five folds (the encoder embeddings are computed once and cached). The analyses were run in an isolated container without a graphics processor; the corresponding code paths for graphics processors were "
-      "tested only for correctness of the logic on a CPU, and the associated risks are stated in the Discussion.")
+      "tested only for correctness of the logic on a CPU, and the GPU configurations have not been run.")

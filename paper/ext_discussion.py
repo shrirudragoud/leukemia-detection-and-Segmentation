@@ -5,19 +5,18 @@ def discussion_extra():
       "the test images come from capture ranges that are not adjacent to the training images. It is not an estimate of accuracy for patients in general. The interval is the sampling uncertainty over "
       f"the {CV['n_groups']} groups, and it does not include the uncertainty that comes from the unknown relation between groups and patients, from the confounding of class and session, or from the choice "
       "of the dataset. Where this paper uses the word accuracy without qualification, it refers to this in-dataset quantity.")
-    P(f"Two features of the result are worth stating. First, the frozen encoder reached a high accuracy without any adaptation to the dataset, with a head that has few trainable parameters; the folds that the "
-      f"model fits are therefore unlikely to be overfitted in the usual sense, and the lack of overfitting is consistent with the stability of the per-fold results (standard deviation "
-      f"{f3(CV['per_fold_sd']['balanced_accuracy'])}). Second, the high accuracy extends to the hand-made features only partially ({f3(dsE['balanced_accuracy'])}), which shows that the encoder contains "
+    P(f"Two features of the result are worth stating. First, the frozen encoder reached a high accuracy without any adaptation to the dataset, with a head that has about 166,000 trainable parameters; training loss and validation scores plateaued within a few epochs (Appendix VII), and the per-fold balanced accuracy had a standard deviation of "
+      f"{f3(CV['per_fold_sd']['balanced_accuracy'])} (range {f3(min(p['test']['balanced_accuracy'] for p in pf))}-{f3(max(p['test']['balanced_accuracy'] for p in pf))}). Second, the high accuracy extends to the hand-made features only partially ({f3(dsE['balanced_accuracy'])}), which is consistent with the encoder containing "
       "information beyond shape, texture and curvature as I measured them. What this information is cannot be determined from the present experiments. It may include fine nuclear and cytoplasmic texture "
       "that is relevant to the disease, and it may include colour and focus characteristics of the sessions.")
     S("Relation to other work")
-    P(f"Studies that report evaluation on public leukemia datasets typically use random splits of images and report accuracy; the protocol of the present study is stricter, so its numbers are not "
+    P(f"Several studies on public leukemia datasets report evaluation on random image-level splits (I did not audit the literature systematically). The protocol of the present study differs, so its numbers are not "
       f"comparable with theirs and should not be ranked against them. The concern that random splits inflate results is shared by the recent benchmark of {n('albzour2026')}, and the broader literature on leakage "
       f"{c('kapoor2023', 'varoquaux2022')} describes the same failure in other fields. The contribution of the present analysis is a measurement for this dataset: the size of the overestimate from random block folds, and the "
       "proximity mechanism behind it, are quantified instead of assumed.")
     S("Consequences for users of the dataset")
     P("The finding that the background alone predicts the class has practical consequences. A classifier trained on the original images and evaluated on a random split can reach a high accuracy by "
-      "recognising the session; such a classifier is likely to fail on images from a laboratory with different staining or imaging, and, worse, it would give no warning. I therefore recommend that studies "
+      "recognising the session; such a classifier may fail on images from a laboratory with different staining or imaging; this was not tested here. I therefore recommend that studies "
       "using this dataset (1) report accuracy under a session-aware protocol, (2) report the accuracy that a classifier reaches from the background alone, (3) mask or neutralise the background if the goal "
       "is to measure cell morphology, and (4) test on an external dataset. The code released with this paper implements the first three, and the fourth requires data that were not part of this study.")
     S("Threats to validity")
@@ -54,5 +53,5 @@ def discussion_extra():
     S("Conclusion")
     P("A reproducible, tested pipeline and a leakage-aware evaluation show that a frozen hematology foundation model separates the four classes of the studied dataset with a balanced accuracy of "
       f"{f3(ba)}, that a large part of the class information is accessible without any cell, and that random block evaluation overestimates accuracy through proximity in capture order. The numbers "
-      "reported here are an upper bound for new patients and laboratories. The practical message for the field is that the evaluation protocol and a shortcut audit must be part of every report of accuracy "
+      "reported here are an optimistic, unvalidated estimate for new patients and laboratories. The practical message for the field is that the evaluation protocol and a shortcut audit must be part of every report of accuracy "
       "on datasets that lack patient identifiers.")
