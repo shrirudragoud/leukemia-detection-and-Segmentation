@@ -60,7 +60,7 @@ function tableBlock(b) {
   const body = b.rows.map((r, ri) => new TableRow({
     children: r.map((v, i) => cell(v, i, ri === b.rows.length - 1 ? { bottom: RULE } : {}, false)) }));
   const out = [
-    new Paragraph({ pageBreakBefore: true, spacing: { ...SINGLE, after: 120 }, alignment: AlignmentType.LEFT,
+    new Paragraph({ pageBreakBefore: !String(b.num).startsWith("A"), keepNext: true, spacing: { ...SINGLE, before: String(b.num).startsWith("A") ? 240 : 0, after: 120 }, alignment: AlignmentType.LEFT,
       children: [new TextRun({ text: `Table ${b.num}. `, font: FONT, size: 22 }), ...runs(b.caption, { size: 22 })] }),
     new Table({ width: { size: TEXT_W, type: WidthType.DXA }, columnWidths: widths, rows: [header, ...body] }),
   ];

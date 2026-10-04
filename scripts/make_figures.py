@@ -51,7 +51,17 @@ def fig_pipeline():
 def fig_examples():
     im = Image.open(F / "seg_examples_src.png")
     im.thumbnail((1000, 1500)); im.save(F / "fig_examples.png")
-    c = Image.open(F / "classes_src.png"); c.thumbnail((1400, 1100)); c.save(F / "fig_classes.png")
+    import pandas as pd
+    man = pd.read_csv("data/full_run_v2/manifest.csv")
+    fig, ax = plt.subplots(3, 4, figsize=(7.0, 5.4))
+    for j, cname in enumerate(CL):
+        ids = man[man.class_name == cname].sort_values("image_id")
+        pick = ids.iloc[[len(ids) // 5, len(ids) // 2, 4 * len(ids) // 5]]
+        for i, (_, r) in enumerate(pick.iterrows()):
+            a = ax[i, j]; a.imshow(Image.open(Path("data/dataset/Original") / r.rel_path)); a.set_xticks([]); a.set_yticks([])
+            if i == 0:
+                a.set_title(cname, fontsize=10)
+    fig.tight_layout(); fig.savefig(F / "fig_classes.png", bbox_inches="tight"); plt.close(fig)
 
 
 def fig_ablation():
@@ -114,7 +124,7 @@ def fig_hds():
     s = [r["sigma"] for r in h]
     for k, m, ls in [("noisy", "x", ":"), ("gaussian", "s", "--"), ("bilateral", "^", "-"), ("stabilised_hds", "o", "-"), ("legacy_hds", "v", "-.")]:
         ax.plot(s, [r[k] for r in h], "k" + m, ls=ls, mfc="white" if k != "stabilised_hds" else "black", label=k.replace("_", " "))
-    ax.set_xlabel("Noise SD"); ax.set_ylabel("PSNR (dB)"); ax.legend(fontsize=7); ax.grid(ls=":")
+    ax.set_xlabel("Noise SD"); ax.set_ylabel("PSNR (dB)"); ax.set_ylim(0, 42); ax.legend(fontsize=7, loc="center right", bbox_to_anchor=(1.0, 0.45)); ax.grid(ls=":")
     fig.savefig(F / "fig_hds.png", bbox_inches="tight"); plt.close(fig)
 
 

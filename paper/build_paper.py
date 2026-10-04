@@ -183,7 +183,7 @@ if ENC:
 Fg("pipeline", "paper/figures/fig_pipeline.png", "Processing pipeline. Solid arrows show the path used for the headline model; the dotted branch produces the "
    "hand-made (tabular) features used in the ablations and the hybrid variant.", 6.0)
 Fg("classes", "paper/figures/fig_classes.png", "Example images of the four classes (Benign, Early, Pre, Pro) of the dataset, 224 x 224 pixels as supplied. "
-   "Differences in background colour and illumination between classes are visible.", 6.0)
+   "Differences in background colour and illumination between classes are visible, as are scale bars of different styles in the image corners (red, black or white).", 6.0)
 Fg("seg", "paper/figures/fig_examples.png", "Cell segmentation. Left column: stain-normalised input; right column: detected cell boundaries (green). "
    "Touching cells are split by the watershed step (middle row). Border-touching cells are retained but flagged.", 4.4)
 Fg("session", "paper/figures/fig_session.png", "Capture-order structure of the dataset. Median distance between the feature vectors of images with adjacent capture numbers "
