@@ -463,7 +463,19 @@
   },
   {
    "t": "p",
-   "text": "**[[PENDING: the tabular analysis of the processing stages has not finished (Table 11); run scripts/analysis_stage_ablation.py and rebuild.]]**"
+   "text": "To measure what each stage adds, I trained the same logistic head on image-level means of hand-made features, one feature family at a time and in combination, from a pass of the pipeline in which HDS and BEEMD were enabled (Table 11). Each variant sees only the named features and no pixels. Shape features alone gave a balanced accuracy of 0.528, texture features 0.662, and both together 0.719. The layer statistics alone gave 0.571 (APC), 0.507 (LoG), 0.551 (HDS edge indicator), 0.515 (pure-IMF layer) and 0.446 (IMF energies)."
+  },
+  {
+   "t": "p",
+   "text": "Adding the response layers to shape and texture changed the balanced accuracy from 0.719 to 0.825 (difference +0.104, 95% CI +0.081 to +0.127, Holm p = 0.003); adding the HDS edge indicator then gave 0.850 (+0.133 relative to shape and texture, Holm p = 0.003), and adding the BEEMD features gave 0.875 (+0.156, Holm p = 0.003). For comparison, the frozen encoder alone reached 0.959 (Table 7)."
+  },
+  {
+   "t": "p",
+   "text": "Two cautions apply to these numbers. First, the variants differ in the number of features, so part of the increase can come from the larger number of dimensions and not from the stage itself; I did not equalise the dimensionality. Second, statistics of an edge, curvature or mode layer depend on the focus, sharpness and noise level of an image, which are properties of the acquisition. The session-aware folds reduce the chance that the gain comes from memorised sessions, but they cannot exclude that these statistics carry class-specific acquisition characteristics, as the colour of the cells does. The gains are therefore evidence that the stages produce class-related information, not evidence that this information is morphological."
+  },
+  {
+   "t": "p",
+   "text": "The pure-IMF rule kept the first to fourth mode in 100.0%, 100.0%, 100.0%, 100.0% of the 3256 images, respectively; in 100.0% of the images all modes were kept and in 0.0% none. A selection rule that keeps nearly every mode adds little to the decomposition itself; the information gained from the BEEMD stage should be judged from Table 11, not from the selection."
   },
   {
    "t": "sh",
@@ -1517,25 +1529,129 @@
   },
   {
    "t": "table",
-   "caption": "Contribution of the processing stages to classification (tabular probe). **[[PENDING: run scripts/analysis_stage_ablation.py]]**",
+   "caption": "Contribution of the processing stages to classification. Logistic regression on image-level means of the named hand-made features only (no pixels), contiguous session-aware folds with embargo 37, three rotations of the fold boundaries; intervals are 95% cluster-bootstrap intervals (first rotation). Differences are paired against shape + texture, with Holm-adjusted p values over the three comparisons.",
    "cols": [
     {
-     "w": 4,
+     "w": 4.2,
      "align": "left"
     },
     {
-     "w": 1.5,
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1.1,
+     "align": "right"
+    },
+    {
+     "w": 1.7,
+     "align": "right"
+    },
+    {
+     "w": 1.1,
+     "align": "right"
+    },
+    {
+     "w": 2.2,
      "align": "right"
     }
    ],
    "header": [
     "Features",
-    "Balanced accuracy"
+    "Number",
+    "Balanced accuracy",
+    "95% CI",
+    "Macro-F1",
+    "Difference vs shape + texture (95% CI)"
    ],
    "rows": [
     [
-     "[[PENDING]]",
-     "[[PENDING]]"
+     "shape (morphological)",
+     "10",
+     "0.528",
+     "0.498-0.554",
+     "0.512",
+     "-"
+    ],
+    [
+     "texture (GLCM, entropy)",
+     "5",
+     "0.662",
+     "0.626-0.693",
+     "0.653",
+     "-"
+    ],
+    [
+     "APC response layer",
+     "3",
+     "0.571",
+     "0.537-0.608",
+     "0.568",
+     "-"
+    ],
+    [
+     "LoG response layer",
+     "3",
+     "0.507",
+     "0.473-0.543",
+     "0.498",
+     "-"
+    ],
+    [
+     "HDS edge indicator",
+     "3",
+     "0.551",
+     "0.510-0.588",
+     "0.532",
+     "-"
+    ],
+    [
+     "pure-IMF layer (BEEMD)",
+     "3",
+     "0.515",
+     "0.480-0.550",
+     "0.506",
+     "-"
+    ],
+    [
+     "IMF energies (BEEMD)",
+     "4",
+     "0.446",
+     "0.395-0.483",
+     "0.436",
+     "-"
+    ],
+    [
+     "shape + texture",
+     "15",
+     "0.719",
+     "0.690-0.752",
+     "0.711",
+     "-"
+    ],
+    [
+     "shape + texture + APC + LoG",
+     "21",
+     "0.825",
+     "0.797-0.852",
+     "0.818",
+     "+0.104 (+0.081, +0.127); p = 0.003"
+    ],
+    [
+     "shape + texture + APC + LoG + HDS edge",
+     "24",
+     "0.850",
+     "0.827-0.877",
+     "0.844",
+     "+0.133 (+0.108, +0.159); p = 0.003"
+    ],
+    [
+     "... + pure-IMF layer and IMF energies",
+     "31",
+     "0.875",
+     "0.854-0.899",
+     "0.872",
+     "+0.156 (+0.129, +0.183); p = 0.003"
     ]
    ],
    "foot": null,
@@ -1925,7 +2041,7 @@
   {
    "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_classes.png",
-   "caption": "Example images of the four classes (Benign, Early, Pre, Pro) of the dataset, 224 x 224 pixels as supplied. Differences in background colour and illumination between classes are visible.",
+   "caption": "Example images of the four classes (Benign, Early, Pre, Pro) of the dataset, 224 x 224 pixels as supplied. Differences in background colour and illumination between classes are visible, as are scale bars of different styles in the image corners (red, black or white).",
    "width_in": 6.0,
    "num": "14"
   },
@@ -2142,6 +2258,14 @@
   },
   {
    "t": "sh",
+   "text": "Response to the review of the earlier version"
+  },
+  {
+   "t": "p",
+   "text": "The review of the earlier version observed that the shared code classified images with deep learning only. In this version every named stage runs on all 3256 images and is shown on real images (Figs. 4 to 12). Their measured value is modest and uneven: the hand-made features of the stages together reached 0.875, well below the frozen encoder (0.959), and the pure-IMF selection rule kept almost every mode, so it does little. I report this as it is: the stages are implemented, verified and informative, but the foundation-model features carry most of the classification performance. The stages are most useful as interpretable descriptors and as a way to inspect what the images contain."
+  },
+  {
+   "t": "sh",
    "text": "Ethical and clinical considerations"
   },
   {
@@ -2295,7 +2419,7 @@
   },
   {
    "t": "ref",
-   "text": "Labati RD, Piuri V, Scotti F. 2011. All-IDB: the acute lymphoblastic leukemia image database for image processing. In: Proc 18th IEEE Int Conf Image Process. p 2045-2048."
+   "text": "Labati RD, Piuri V, Scotti F. 2011. ALL-IDB: the acute lymphoblastic leukemia image database for image processing. In: Proc 18th IEEE Int Conf Image Process. p 2045-2048."
   },
   {
    "t": "ref",

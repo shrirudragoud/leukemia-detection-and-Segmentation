@@ -31,6 +31,11 @@ def discussion_extra():
       "direction. I did not test the models on any external data.")
     P("*Statistical validity.* Group-level bootstrap intervals assume that groups are independent and exchangeable, and with 90 groups the intervals are themselves uncertain. The Holm correction was applied within each table, "
       "not across all analyses of the paper. Single-seed deterministic comparisons (the head with a fixed seed) do not reflect the variation of training with different initialisations.")
+    S("Response to the review of the earlier version")
+    P(f"The review of the earlier version observed that the shared code classified images with deep learning only. In this version every named stage runs on all {N_IMG} images and is shown on real images (Figs. {{F:st_stain}} to {{F:st_cells}}). "
+      f"Their measured value is modest and uneven: the hand-made features of the stages together reached {f3(SA_FULL['balanced_accuracy'])}, well below the frozen encoder ({f3(dsA['balanced_accuracy'])}), and the "
+      "pure-IMF selection rule kept almost every mode, so it does little. I report this as it is: the stages are implemented, verified and informative, but the foundation-model features carry most of the classification performance. "
+      "The stages are most useful as interpretable descriptors and as a way to inspect what the images contain.")
     S("Ethical and clinical considerations")
     P("The images are from a public dataset released for research. I did not link them to any identifying information and I did not attempt to. The software is a research prototype, not a medical device, and "
       "nothing in this paper supports its use for diagnosis. A tool intended for clinical use would need prospective validation on the intended population, evaluation of subgroup performance and "

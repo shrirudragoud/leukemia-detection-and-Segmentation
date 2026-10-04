@@ -104,6 +104,10 @@ def results_stages():
       f"(difference {mid['vs_shape_texture']['diff']:+.3f}, 95% CI {mid['vs_shape_texture']['lo']:+.3f} to {mid['vs_shape_texture']['hi']:+.3f}, Holm p = {f3(mid['vs_shape_texture']['p_holm'])}); adding the HDS edge indicator then gave "
       f"{f3(hds_row['balanced_accuracy'])} ({hds_row['vs_shape_texture']['diff']:+.3f} relative to shape and texture, Holm p = {f3(hds_row['vs_shape_texture']['p_holm'])}), and adding the BEEMD features gave {f3(full['balanced_accuracy'])} "
       f"({full['vs_shape_texture']['diff']:+.3f}, Holm p = {f3(full['vs_shape_texture']['p_holm'])}). For comparison, the frozen encoder alone reached {f3(dsA['balanced_accuracy'])} (Table {{T:abl}}).")
+    P("Two cautions apply to these numbers. First, the variants differ in the number of features, so part of the increase can come from the larger number of dimensions and not from the stage itself; I did not equalise the dimensionality. "
+      "Second, statistics of an edge, curvature or mode layer depend on the focus, sharpness and noise level of an image, which are properties of the acquisition. The session-aware folds reduce the chance that the gain comes from "
+      "memorised sessions, but they cannot exclude that these statistics carry class-specific acquisition characteristics, as the colour of the cells does. The gains are therefore evidence that the stages produce class-related "
+      "information, not evidence that this information is morphological.")
     im = SA["imf_selection"]
     P(f"The pure-IMF rule kept the first to fourth mode in {', '.join(pct(x) + '%' for x in im['selected_fraction_per_mode'])} of the {im['n_images']} images, respectively; in {pct(im['all_selected_fraction'])}% of the images all modes were kept "
       f"and in {pct(im['none_selected_fraction'])}% none. A selection rule that keeps nearly every mode adds little to the decomposition itself; the information gained from the BEEMD stage should be judged from Table {{T:stage_abl}}, not from the selection.")
@@ -120,3 +124,5 @@ if SA is not None:
 if SA is None:
     T("stage_abl", "Contribution of the processing stages to classification (tabular probe). **[[PENDING: run scripts/analysis_stage_ablation.py]]**",
       [{"w": 4, "align": "left"}, {"w": 1.5, "align": "right"}], ["Features", "Balanced accuracy"], [["[[PENDING]]", "[[PENDING]]"]])
+
+SA_FULL = [r for r in SA["rows"] if r["variant"].startswith("... + pure-IMF")][0] if SA else {"balanced_accuracy": float("nan")}
