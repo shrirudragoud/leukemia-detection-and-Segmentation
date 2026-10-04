@@ -21,10 +21,16 @@ def build():
     subprocess.run([sys.executable, "scripts/make_ft_figures.py", "--sample"], cwd=ROOT, check=True)          # SAMPLE placeholders (synthetic)
     if any((ROOT / "results_for_paper").glob("g0*/cv_summary.json")):
         subprocess.run([sys.executable, "scripts/make_ft_figures.py"], cwd=ROOT, check=True)                 # REAL figures replace the samples
-    subprocess.run([sys.executable, "paper/build_paper.py"], cwd=ROOT, check=True)
-    subprocess.run(["node", "paper/render_docx.js", "paper/content.json", "paper/paper.docx"], cwd=ROOT, check=True)
-    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", "paper", "paper/paper.docx"], cwd=ROOT, check=False,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    (ROOT / "paper" / "toc_pages.json").unlink(missing_ok=True)
+    for _ in range(3):            # build, measure pages, rebuild until the contents pages are stable
+        subprocess.run([sys.executable, "paper/build_paper.py"], cwd=ROOT, check=True)
+        subprocess.run(["node", "paper/render_docx.js", "paper/content.json", "paper/paper.docx"], cwd=ROOT, check=True)
+        subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", "paper", "paper/paper.docx"], cwd=ROOT, check=False,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        before = (ROOT / "paper" / "toc_pages.json").read_text() if (ROOT / "paper" / "toc_pages.json").exists() else ""
+        subprocess.run([sys.executable, "paper/paginate.py"], cwd=ROOT, check=True)
+        if before == (ROOT / "paper" / "toc_pages.json").read_text():
+            break
 
 
 def check():

@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell, WidthType,
-  AlignmentType, BorderStyle, Footer, PageNumber, LineRuleType, ShadingType, PageBreak,
+  AlignmentType, BorderStyle, Footer, PageNumber, LineRuleType, ShadingType, PageBreak, TabStopType, LeaderType,
 } = require("docx");
 
 const [, , inFile, outFile] = process.argv;
@@ -120,6 +120,15 @@ for (const b of content.blocks) {
       break;
     case "small":
       children.push(new Paragraph({ spacing: { ...SINGLE, after: 120 }, children: runs(b.text, { size: 22 }) }));
+      break;
+    case "toch":
+      children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { ...SINGLE, before: b.first ? 0 : 360, after: 160 }, keepNext: true,
+        children: runs(b.text.toUpperCase(), { bold: true }) }));
+      break;
+    case "toc":
+      children.push(new Paragraph({ spacing: { ...SINGLE, after: 60 }, indent: { left: b.level === 2 ? 360 : 0, hanging: 0, right: 500 },
+        tabStops: [{ type: TabStopType.RIGHT, position: TEXT_W, leader: LeaderType.DOT }],
+        children: [...runs(b.text, { bold: b.level === 1, size: b.level === 3 ? 21 : 22 }), new TextRun({ text: "\t" + b.page, font: FONT, size: b.level === 3 ? 21 : 22 })] }));
       break;
     case "pb":
       children.push(new Paragraph({ children: [new PageBreak()] }));

@@ -564,6 +564,14 @@ def appendices():
 
 
 # ================================================================== assemble
+def short_cap(c):
+    c = re.sub(r"\*", "", c)
+    c = re.split(r"\. | \(|; ", c)[0].strip().rstrip(".")
+    if len(c) > 100:
+        c = c[:100].rsplit(" ", 1)[0]
+    return c + "."
+
+
 def assemble():
     global ntests
     for f in sorted((ROOT / "paper").glob("ext_*.py")):
@@ -605,6 +613,26 @@ def assemble():
             out.append({"t": "pb"})
         out.append(b)
     blocks = pre + out
+    # ---- contents, list of tables, list of figures (page numbers measured from the rendered PDF by paper/paginate.py)
+    pages = json.loads((ROOT / "paper" / "toc_pages.json").read_text()) if (ROOT / "paper" / "toc_pages.json").exists() else {}
+    toc = [{"t": "pb"}, {"t": "toch", "text": "Contents", "first": True}]
+    lists_t, lists_f = [], []
+    for b in blocks:
+        if b["t"] == "h" and b["text"].lower() != "abstract":
+            toc.append({"t": "toc", "level": 1, "text": b["text"], "key": "h:" + b["text"][:60], "page": "0"})
+        elif b["t"] == "sh":
+            toc.append({"t": "toc", "level": 2, "text": b["text"], "key": "sh:" + b["text"][:60], "page": "0"})
+        elif b["t"] == "table":
+            lists_t.append({"t": "toc", "level": 3, "text": f"Table {b['num']}. " + short_cap(b["caption"]), "key": f"table:{b['num']}", "page": "0"})
+        elif b["t"] == "fig":
+            cap = re.sub(r"\*\*\[[^\]]*\]\*\*\s*", "", b["caption"])
+            lists_f.append({"t": "toc", "level": 3, "text": f"Figure {b['num']}. " + short_cap(cap), "key": f"fig:{b['num']}", "page": "0"})
+    toc += [{"t": "toch", "text": "List of Tables"}] + lists_t + [{"t": "toch", "text": "List of Figures"}] + lists_f + [{"t": "pb"}]
+    for e in toc:
+        if e["t"] == "toc":
+            e["page"] = str(pages.get(e["key"], "0"))
+    ia = next(i for i, b in enumerate(blocks) if b["t"] == "h" and b["text"].lower() == "introduction")
+    blocks = blocks[:ia] + toc + blocks[ia:]
     for b in blocks:
         for key in ("text", "caption", "foot"):
             if isinstance(b.get(key), str):
