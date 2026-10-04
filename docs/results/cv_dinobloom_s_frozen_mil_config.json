@@ -1,0 +1,34 @@
+{
+  "name": "cv_dinobloom_s_frozen_mil",
+  "data": {
+    "source": "clean_rgb",
+    "isolate": true,
+    "task": "4way",
+    "feature_groups": [
+      "cell_shape",
+      "cell_texture",
+      "apc",
+      "log"
+    ],
+    "split_scheme": "contiguous",
+    "n_folds": 5,
+    "val_offset": 2,
+    "embargo": 37
+  },
+  "model": {
+    "encoder": "dinobloom_s",
+    "weights_path": "data/weights/DinoBloom-S.pth",
+    "input_size": 112,
+    "freeze": "frozen",
+    "head": "mil",
+    "use_features": false
+  },
+  "train": {
+    "epochs": 30,
+    "batch_size": 16,
+    "lr_head": 0.001,
+    "patience": 8,
+    "seed": 0,
+    "device": "cpu"
+  }
+}
