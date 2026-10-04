@@ -157,3 +157,88 @@ def test_experiment_config_roundtrip_and_validation():
         AugConfig(colour="x")
     with pytest.raises(ValueError):
         TrainConfig(class_weighting="x")
+
+
+def test_purge_train_removes_same_class_neighbours_only():
+    from leukemia_ml.eval.folds import purge_train
+    y = np.array([0] * 10 + [1] * 10)
+    order = np.concatenate([np.arange(10), np.arange(10)])
+    test = np.array([4, 14])                                  # image 4 of class 0, image 4 of class 1
+    train = np.setdiff1d(np.arange(20), test)
+    kept = purge_train(train, test, y, order, embargo=2)
+    removed = set(train) - set(kept)
+    assert removed == {2, 3, 5, 6, 12, 13, 15, 16}            # +-2 within each class
+    assert np.array_equal(purge_train(train, test, y, order, 0), train)
+    assert np.array_equal(purge_train(train, np.array([], int), y, order, 5), train)
+    # a class absent from the test fold is not purged
+    only0 = purge_train(train, np.array([4]), y, order, 3)
+    assert {i for i in train if y[i] == 1} <= set(only0)
+
+
+def test_embargo_never_leaves_train_test_overlap_and_shrinks_train():
+    from leukemia_ml.eval.folds import grouped_folds, purge_train
+    rng = np.random.default_rng(0)
+    n = 300
+    y = np.repeat([0, 1, 2], n // 3)
+    order = np.concatenate([np.arange(n // 3)] * 3)
+    groups = (np.arange(n) % (n // 3)) // 10 + 100 * y
+    sizes = {0: [], 40: []}
+    for _seed, _f, tr, te in grouped_folds(groups.astype(str), y, 5, seeds=(0,)):
+        for e in sizes:
+            kept = purge_train(tr, te, y, order, e)
+            assert not set(kept) & set(te)
+            sizes[e].append(len(kept))
+    assert np.mean(sizes[40]) < np.mean(sizes[0])
+    assert rng is not None
+
+
+def test_contiguous_folds_partition_each_class_into_consecutive_segments():
+    from leukemia_ml.eval.folds import contiguous_folds
+    y = np.repeat([0, 1], 50)
+    order = np.concatenate([np.arange(50), np.arange(50)])
+    seen = []
+    for _r, k, tr, te in contiguous_folds(order, y, n_splits=5, embargo=0):
+        seen.append(te)
+        assert not set(tr) & set(te)
+        for c in (0, 1):                                      # each class's test fold is one run
+            nums = np.sort(order[te[y[te] == c]])
+            assert len(nums) == 10 and (np.diff(nums) == 1).all()
+    assert sorted(np.concatenate(seen)) == list(range(100))
+
+
+def test_contiguous_embargo_removes_only_edge_neighbours():
+    from leukemia_ml.eval.folds import contiguous_folds
+    y = np.zeros(100, int)
+    order = np.arange(100)
+    sizes = []
+    for _r, k, tr, te in contiguous_folds(order, y, n_splits=5, embargo=3):
+        gap = {order[i] for i in range(100)} - set(order[tr]) - set(order[te])
+        sizes.append(len(gap))
+        lo, hi = order[te].min(), order[te].max()
+        assert all(lo - 3 <= g <= hi + 3 for g in gap)
+    assert sizes == [3, 6, 6, 6, 3]                           # two edges, except at the ends
+
+
+def test_contiguous_rotation_changes_boundaries():
+    from leukemia_ml.eval.folds import contiguous_folds
+    y = np.zeros(60, int)
+    order = np.arange(60)
+    a = [tuple(te[:2]) for *_x, te in contiguous_folds(order, y, 5, rotate=0)]
+    b = [tuple(te[:2]) for *_x, te in contiguous_folds(order, y, 5, rotate=1)]
+    assert a != b
+
+
+def test_probe_rejects_unknown_scheme():
+    from leukemia_ml.data.index import CellIndex
+    from leukemia_ml.eval.probe import run_probe
+    n = 4
+    idx = CellIndex(
+        image_id=np.array([f"i{k}" for k in range(n)]), cell_id=np.arange(n), label=np.arange(n) % 2,
+        class_name=np.array(["a", "b"] * 2), split=np.array(["train"] * n),
+        group=np.arange(n).astype(str), area=np.ones(n), touches_border=np.zeros(n, bool),
+        features=np.zeros((n, 0), np.float32), feature_names=[], class_labels=("a", "b"),
+        images=np.array([f"i{k}" for k in range(n)]), image_of_cell=np.arange(n),
+        image_label=np.arange(n) % 2, image_split=np.array(["train"] * n),
+        image_group=np.arange(n).astype(str), image_class=np.array(["a", "b"] * 2))
+    with pytest.raises(ValueError, match="scheme"):
+        run_probe(idx, np.zeros((n, 1)), np.arange(n), scheme="nope")
