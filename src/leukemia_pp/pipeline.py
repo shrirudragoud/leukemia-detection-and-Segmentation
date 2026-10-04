@@ -27,7 +27,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from . import __version__, denoise, features, qc, representations, responses, stain
+from . import __version__, denoise, features, neutralise, qc, representations, responses, stain
 from .config import PipelineConfig
 from .io import ImageReadError, Sample, discover, read_image
 from .segmentation import Segmentation, segment
@@ -42,6 +42,8 @@ ARRAY_KEYS = BASE_ARRAY_KEYS      # backwards-compatible alias; see array_keys(c
 
 def array_keys(cfg: PipelineConfig) -> tuple[str, ...]:
     extra: list[str] = []
+    if cfg.neutralise.enabled:
+        extra += ["rgb_clean", "gray_clean"]
     if cfg.hds.enabled:
         extra += ["hds", "hds_edge"]
     if cfg.beemd.enabled:
@@ -112,6 +114,9 @@ def process_array(raw_bgr: np.ndarray, cfg: PipelineConfig,
         "cell_mask": seg.cell_mask,
         "nucleus_mask": seg.nucleus_mask,
     }
+    if cfg.neutralise.enabled:
+        arrays["rgb_clean"], arrays["gray_clean"] = neutralise.neutralise(
+            norm_bgr, seg, cfg.neutralise)
     arrays.update(representations.compute(norm_bgr, cfg))
     cell_rows = features.extract_cell_features(rgb_norm, seg, cfg.features)
     chan = representations.channel_features(arrays, seg, cfg)

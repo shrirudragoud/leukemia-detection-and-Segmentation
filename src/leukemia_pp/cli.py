@@ -42,6 +42,13 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_audit(args: argparse.Namespace) -> int:
+    from .audit import run_audit
+    report = run_audit(args.run, args.input, seeds=tuple(range(args.seeds)))
+    print((args.run / "audit.md").read_text(encoding="utf-8"))
+    return 0 if report["results"] else 3
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="leukemia-pp", description=__doc__)
     ap.add_argument("-v", "--verbose", action="store_true")
@@ -63,6 +70,12 @@ def main(argv: list[str] | None = None) -> int:
     i.add_argument("--config", type=Path)
     i.add_argument("--reference", type=Path, help="stain_reference.json from a previous run")
     i.set_defaults(func=_cmd_inspect)
+
+    a = sub.add_parser("audit", help="measure how well NON-biological cues predict the class")
+    a.add_argument("--run", type=Path, required=True, help="output directory of `run`")
+    a.add_argument("--input", type=Path, help="raw dataset root (enables raw-image probes)")
+    a.add_argument("--seeds", type=int, default=3)
+    a.set_defaults(func=_cmd_audit)
 
     args = ap.parse_args(argv)
     logging.getLogger("matplotlib").setLevel(logging.WARNING)

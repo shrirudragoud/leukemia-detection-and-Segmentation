@@ -41,19 +41,25 @@ def otsu(values: np.ndarray) -> float:
 
 
 MIN_L_SPREAD = 1.0   # L* std below this = blank/flat frame, nothing to normalise
+ANNOTATION_L = 8.0   # near-black pixels (scale bars, label text) are overlays, not tissue
 
 
 def foreground_stats(lab: np.ndarray, min_frac: float) -> tuple[np.ndarray, np.ndarray] | None:
-    """Per-channel (mean, std) over pixels darker than the Otsu split of L*.
+    """Per-channel (mean, std) over tissue pixels darker than the Otsu split of L*.
+
+    Near-black pixels (L* < ANNOTATION_L) are annotation overlays such as the black "200 pix"
+    scale bar, and are excluded: otherwise the bar's size changes the statistics and thereby
+    the colour of every cell in the image, and the bar style is class-specific in this dataset.
 
     Returns None when the frame is blank or the foreground covers less than `min_frac` of it.
     There is deliberately no whole-frame fallback: the reference is a *foreground* statistic,
     so matching a sparse field's mostly-background statistics to it would map pale background
     onto cell colour."""
     L = lab[..., 0]
-    if float(L.std()) < MIN_L_SPREAD:
+    valid = L >= ANNOTATION_L
+    if int(valid.sum()) < 0.5 * L.size or float(L[valid].std()) < MIN_L_SPREAD:
         return None
-    fg = L < otsu(L)
+    fg = valid & (L < otsu(L[valid]))
     if fg.mean() < min_frac:
         return None
     px = lab[fg]

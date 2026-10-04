@@ -28,6 +28,8 @@ from . import features, representations  # noqa: F401  (representations: documen
 CHANNELS: dict[str, tuple[str, int]] = {
     "rgb_norm": ("rgb_norm", 3),   # stain-normalised, NOT denoised (keeps chromatin texture)
     "rgb": ("rgb", 3),             # stain-normalised + denoised
+    "rgb_clean": ("rgb_clean", 3),     # WBCs only, neutral fill, white-balanced (shortcut-free)
+    "gray_clean": ("gray_clean", 1),   # luminance of rgb_clean: no stain colour at all
     "apc": ("apc", 1), "log": ("log", 1), "canny": ("canny", 1),
     "a_score": ("a_score", 1),
     "hds": ("hds", 1), "hds_edge": ("hds_edge", 1),
@@ -37,6 +39,9 @@ CHANNELS: dict[str, tuple[str, int]] = {
 PRESETS: dict[str, tuple[str, ...]] = {
     "rgb": ("rgb_norm",),
     "rgb_denoised": ("rgb",),
+    "clean_rgb": ("rgb_clean",),
+    "clean_gray": ("gray_clean",),
+    "clean_rgb+edges": ("rgb_clean", "apc", "log"),
     "rgb+apc": ("rgb_norm", "apc"),
     "rgb+edges": ("rgb_norm", "apc", "log", "canny"),
     "rgb+hds": ("rgb_norm", "hds_edge"),

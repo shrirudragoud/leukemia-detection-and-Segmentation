@@ -72,15 +72,11 @@ class _UnionFind:
             self.parent[max(ra, rb)] = min(ra, rb)        # deterministic root
 
 
-def assign_splits(samples: list[Sample], cfg: SplitConfig) -> dict[str, str]:
-    """Return {image_id: split}. Splits are made per class over *groups*. Two images share a
-    group if they are byte-identical, fall in the same `cfg.sequence_block` of consecutive
-    image numbers, or match the same `cfg.group_regex` group; groups are the transitive
-    closure of those relations, so e.g. a duplicate pair straddling a block boundary stays
-    together. The result depends only on ids, hashes, classes and the seed."""
+def assign_groups(samples: list[Sample], cfg: SplitConfig) -> dict[str, str]:
+    """Return {image_id: group_id}: the transitive closure of byte-identical content, shared
+    `cfg.sequence_block`, and shared `cfg.group_regex` group, scoped per class. Used both for
+    splitting and as the grouping of grouped cross-validation in the audit."""
     regex = re.compile(cfg.group_regex) if cfg.group_regex else None
-    ratios = (cfg.train, cfg.val, cfg.test)
-
     cross_class: dict[str, set[str]] = defaultdict(set)
     uf = _UnionFind()
     for s in samples:
@@ -93,11 +89,20 @@ def assign_splits(samples: list[Sample], cfg: SplitConfig) -> dict[str, str]:
         if len(classes) > 1:
             log.warning("identical image content under several classes %s (%s): label noise",
                         sorted(classes), key)
+    return {s.image_id: uf.find(f"{s.class_name}|{group_keys(s, regex, cfg.sequence_block)[0]}")
+            for s in samples}
 
+
+def assign_splits(samples: list[Sample], cfg: SplitConfig) -> dict[str, str]:
+    """Return {image_id: split}. Splits are made per class over the groups of `assign_groups`
+    (byte-identical files, consecutive-number blocks, regex groups: transitive closure), so a
+    duplicate pair straddling a block boundary stays together. The result depends only on ids,
+    hashes, classes and the seed."""
+    ratios = (cfg.train, cfg.val, cfg.test)
+    group_of = assign_groups(samples, cfg)
     groups: dict[str, list[Sample]] = defaultdict(list)
     for s in samples:
-        root = uf.find(f"{s.class_name}|{group_keys(s, regex, cfg.sequence_block)[0]}")
-        groups[root].append(s)
+        groups[group_of[s.image_id]].append(s)
 
     by_class: dict[str, list[str]] = defaultdict(list)
     for root, members in groups.items():

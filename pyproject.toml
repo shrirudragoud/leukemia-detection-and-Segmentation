@@ -17,7 +17,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "ruff>=0.4"]
+audit = ["scikit-learn>=1.3"]
+dev = ["pytest>=7", "ruff>=0.4", "scikit-learn>=1.3"]
 
 [project.scripts]
 leukemia-pp = "leukemia_pp.cli:main"

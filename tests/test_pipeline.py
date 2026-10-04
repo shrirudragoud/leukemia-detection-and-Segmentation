@@ -8,7 +8,7 @@ import pytest
 from leukemia_pp import pipeline
 from leukemia_pp.cli import main
 from leukemia_pp.config import PipelineConfig
-from leukemia_pp.pipeline import ARRAY_KEYS, process_array, run
+from leukemia_pp.pipeline import array_keys, process_array, run
 from leukemia_pp.stain import fit_reference
 
 
@@ -53,12 +53,13 @@ def test_end_to_end_outputs(dataset, tmp_path):
     npz_files = sorted((out / "cache").rglob("*.npz"))
     assert len(npz_files) == 8
     z = np.load(npz_files[0])
-    assert set(z.files) == set(ARRAY_KEYS)
+    keys = array_keys(PipelineConfig())
+    assert set(z.files) == set(keys) and {"rgb_clean", "gray_clean"} <= set(keys)
     h, w = z["rgb"].shape[:2]
     assert z["rgb"].dtype == z["rgb_norm"].dtype == np.uint8
     assert z["apc"].dtype == z["log"].dtype == np.float32
     assert z["cell_labels"].dtype == np.int32 and z["cell_mask"].dtype == bool
-    assert all(z[k].shape[:2] == (h, w) for k in ARRAY_KEYS)
+    assert all(z[k].shape[:2] == (h, w) for k in keys)
     assert z["apc"].max() <= 1.0 and z["log"].max() <= 1.0
     assert len(list((out / "previews").rglob("*.png"))) == 8
     assert list(out.rglob("*.tmp")) == []                    # atomic writes leave no debris
@@ -82,7 +83,7 @@ def test_deterministic_across_runs_and_worker_counts(dataset, tmp_path):
         assert (a / name).read_bytes() == (b / name).read_bytes(), name
     za, zb = np.load(a / "cache/train" / next(p.name for p in (a / "cache/train").iterdir())), None
     zb = np.load(b / "cache/train" / next(p.name for p in (a / "cache/train").iterdir()))
-    for k in ARRAY_KEYS:
+    for k in array_keys(PipelineConfig(save_previews=False)):
         assert np.array_equal(za[k], zb[k]), k
 
 

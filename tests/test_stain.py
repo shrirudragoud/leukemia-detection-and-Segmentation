@@ -78,3 +78,29 @@ def test_no_discontinuity_around_threshold(field):
         bg.append(out[200, 200].astype(float))
     assert np.abs(bg[0] - bg[1]).max() < 40               # background stays background-like
     assert min(bg[0].min(), bg[1].min()) > 150
+
+
+def test_scale_bar_does_not_change_normalisation(field):
+    """Regression: black scale bars used to count as foreground, so the bar's size changed the
+    colour of every cell (and bar style is class-specific in the real dataset)."""
+    cfg = StainConfig()
+    base = field(wbcs=[(60, 70, 20), (150, 140, 21)], rbcs=[(110, 100, 13)], seed=3)
+    ref = fit_reference([base], cfg)
+    outs = []
+    for width in (0, 20, 40, 60):
+        img = base.copy()
+        if width:
+            img[205:218, 150:150 + width] = (0, 0, 0)
+        out, applied = normalize(img, ref, cfg)
+        assert applied
+        outs.append(out[60, 70].astype(int))                    # a pixel inside a cell
+    assert max(np.abs(o - outs[0]).max() for o in outs) <= 3
+
+
+def test_annotation_pixels_excluded_from_reference_fit(field):
+    cfg = StainConfig()
+    base = field(wbcs=[(60, 70, 20), (150, 140, 21)], seed=2)
+    barred = base.copy()
+    barred[190:218, 120:215] = (0, 0, 0)
+    a, b = fit_reference([base], cfg), fit_reference([barred], cfg)
+    assert np.allclose(a.mean, b.mean, atol=1.5) and np.allclose(a.std, b.std, atol=1.5)

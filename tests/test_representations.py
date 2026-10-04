@@ -143,7 +143,7 @@ def test_crop_of_border_cell_is_padded_not_shifted(tmp_path, field):
 
 def test_presets_and_feature_groups_are_consistent():
     for names in PRESETS.values():
-        assert all(n in CHANNELS for n in names) and stack_depth(names) >= 3
+        assert all(n in CHANNELS for n in names) and stack_depth(names) >= 1
     seen: list[str] = []
     for cols in FEATURE_GROUPS.values():
         assert set(cols) <= set(CELL_COLUMNS)

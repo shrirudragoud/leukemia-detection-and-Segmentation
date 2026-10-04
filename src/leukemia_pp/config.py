@@ -132,6 +132,22 @@ class BEEMDConfig:
 
 
 @dataclass(frozen=True)
+class NeutraliseConfig:
+    """Shortcut removal: keep only (dilated) WBC pixels, replace everything else by a constant
+    neutral colour, and optionally white-balance the cells against the slide background.
+
+    Motivation (see `leukemia-pp audit`): in this dataset background colour alone predicts the
+    class (balanced accuracy ~0.82 vs chance 0.25) and so does the scale-bar corner, because
+    each class was imaged in different sessions. The model must not be able to see either."""
+    enabled: bool = True
+    dilate_px: int = 2                 # keep this many px around each cell (rim / halo)
+    fill_L: float = 92.0               # neutral fill colour: Lab (fill_L, 0, 0)
+    white_balance: bool = True         # shift a*/b* and scale L* so the background is neutral
+    gain_clip: tuple[float, float] = (0.7, 1.3)   # bounds on the L* exposure gain
+    min_background_px: int = 200       # below this, white balance is skipped (frame is all cell)
+
+
+@dataclass(frozen=True)
 class SegmentationConfig:
     # --- whole-cell (WBC) instance segmentation, on the Lab a* channel -------------------
     smooth_sigma: float = 1.0
@@ -179,6 +195,7 @@ _SECTIONS: dict[str, type] = {
     "response": ResponseConfig,
     "hds": HDSConfig,
     "beemd": BEEMDConfig,
+    "neutralise": NeutraliseConfig,
     "segmentation": SegmentationConfig,
     "features": FeatureConfig,
     "qc": QCConfig,
@@ -194,6 +211,7 @@ class PipelineConfig:
     response: ResponseConfig = field(default_factory=ResponseConfig)
     hds: HDSConfig = field(default_factory=HDSConfig)
     beemd: BEEMDConfig = field(default_factory=BEEMDConfig)
+    neutralise: NeutraliseConfig = field(default_factory=NeutraliseConfig)
     segmentation: SegmentationConfig = field(default_factory=SegmentationConfig)
     features: FeatureConfig = field(default_factory=FeatureConfig)
     qc: QCConfig = field(default_factory=QCConfig)
@@ -223,6 +241,10 @@ class PipelineConfig:
             else:
                 kwargs[name] = value
         return cls(**kwargs)
+
+    @classmethod
+    def from_json_dict(cls, data: dict[str, Any]) -> PipelineConfig:
+        return cls.from_dict(data)
 
     @classmethod
     def from_json(cls, path) -> PipelineConfig:
