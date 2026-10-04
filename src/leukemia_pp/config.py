@@ -37,8 +37,14 @@ class SplitConfig:
     # All images sharing a group are kept in the same split (prevents patient leakage).
     # Without it, exact duplicate files (same sha256) are still kept together.
     group_regex: str | None = None
+    # Patient-proxy for datasets whose numbering follows capture order but that carry no
+    # patient id: images whose trailing integer falls in the same block of this many
+    # consecutive numbers (per class) are kept in the same split. ~total images / patients.
+    sequence_block: int | None = None
 
     def __post_init__(self) -> None:
+        if self.sequence_block is not None and self.sequence_block < 2:
+            raise ValueError("sequence_block must be >= 2 (or None)")
         ratios = (self.train, self.val, self.test)
         if min(ratios) < 0 or abs(sum(ratios) - 1.0) > 1e-6:
             raise ValueError(f"split ratios must be >= 0 and sum to 1, got {ratios}")

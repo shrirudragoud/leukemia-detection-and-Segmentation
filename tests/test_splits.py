@@ -60,3 +60,38 @@ def test_every_class_has_train():
     out = assign_splits([mk(0, "A"), mk(0, "B"), mk(1, "B")], SplitConfig())
     assert out["A-000"] == "train"
     assert "train" in {out["B-000"], out["B-001"]}
+
+
+def seq(i, cls="A", sha=None):
+    return Sample(f"WBC-{cls}-{i:03d}", Path("x"), "x", cls, sha or f"s{cls}{i}")
+
+
+def test_sequence_blocks_keep_consecutive_numbers_together():
+    samples = [seq(i) for i in range(1, 401)]
+    out = assign_splits(samples, SplitConfig(sequence_block=40, seed=5))
+    for b in range(10):
+        block = {out[f"WBC-A-{i:03d}"] for i in range(b * 40, b * 40 + 40) if 1 <= i <= 400}
+        assert len(block) == 1
+    assert {"train", "val", "test"} <= set(out.values())
+
+
+def test_duplicate_pair_straddling_a_block_boundary_stays_together():
+    samples = [seq(i) for i in range(1, 401)]
+    samples[39] = seq(40, sha="dup")          # image 40 starts block 1 ...
+    samples[38] = seq(39, sha="dup")          # ... its duplicate 39 is the last of block 0
+    for seed in range(20):
+        out = assign_splits(samples, SplitConfig(sequence_block=40, seed=seed))
+        assert out["WBC-A-039"] == out["WBC-A-040"]
+        # transitivity: the merged group also drags both whole blocks together
+        assert len({out[f"WBC-A-{i:03d}"] for i in range(1, 80)}) == 1
+
+
+def test_blocks_are_per_class():
+    samples = [seq(i, "A") for i in range(1, 100)] + [seq(i, "B") for i in range(1, 100)]
+    out = assign_splits(samples, SplitConfig(sequence_block=40))
+    assert {s.class_name for s in samples if out[s.image_id] == "train"} == {"A", "B"}
+
+
+def test_invalid_block_rejected():
+    with pytest.raises(ValueError):
+        SplitConfig(sequence_block=1)

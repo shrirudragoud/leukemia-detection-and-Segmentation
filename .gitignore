@@ -26,3 +26,7 @@ Thumbs.db
 *.egg-info/
 build/
 dist/
+
+# Downloaded dataset and full-run outputs (large, third-party content: cite, do not redistribute)
+data/dataset/
+data/full_run/
