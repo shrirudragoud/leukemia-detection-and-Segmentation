@@ -1,0 +1,154 @@
+{
+  "A_schemes": [
+    {
+      "scheme": "random 37-image blocks",
+      "features": "DinoBloom-S",
+      "train_size": 2604.8,
+      "balanced_accuracy": 0.9694490542645502,
+      "sd": 0.003716673465132505,
+      "macro_f1": 0.9687007836567525,
+      "auroc": 0.9978610057094802
+    },
+    {
+      "scheme": "random 37-image blocks",
+      "features": "hand-made features",
+      "train_size": 2604.8,
+      "balanced_accuracy": 0.854451062912148,
+      "sd": 0.002774437182906142,
+      "macro_f1": 0.8482791405911785,
+      "auroc": 0.9588250667596808
+    },
+    {
+      "scheme": "contiguous folds, embargo 0",
+      "features": "DinoBloom-S",
+      "train_size": 2604.8,
+      "balanced_accuracy": 0.9631544860905907,
+      "sd": 0.0006372683006830207,
+      "macro_f1": 0.9615701673578947,
+      "auroc": 0.9966530772695092
+    },
+    {
+      "scheme": "contiguous folds, embargo 0",
+      "features": "hand-made features",
+      "train_size": 2604.8,
+      "balanced_accuracy": 0.8373992282436918,
+      "sd": 0.0037963238612590076,
+      "macro_f1": 0.830767651800988,
+      "auroc": 0.9506792430935622
+    },
+    {
+      "scheme": "contiguous folds, embargo 37",
+      "features": "DinoBloom-S",
+      "train_size": 2329.0666666666666,
+      "balanced_accuracy": 0.9591423926687396,
+      "sd": 0.000472934584187185,
+      "macro_f1": 0.9577260606893683,
+      "auroc": 0.9952178675506277
+    },
+    {
+      "scheme": "contiguous folds, embargo 37",
+      "features": "hand-made features",
+      "train_size": 2329.0666666666666,
+      "balanced_accuracy": 0.824551432460335,
+      "sd": 0.0016493967675722816,
+      "macro_f1": 0.8182517272270055,
+      "auroc": 0.9435923704109398
+    },
+    {
+      "scheme": "contiguous folds, embargo 75",
+      "features": "DinoBloom-S",
+      "train_size": 2057.133333333333,
+      "balanced_accuracy": 0.9530309733793004,
+      "sd": 0.0002803170937454074,
+      "macro_f1": 0.951557699693936,
+      "auroc": 0.9931015082154316
+    },
+    {
+      "scheme": "contiguous folds, embargo 75",
+      "features": "hand-made features",
+      "train_size": 2057.133333333333,
+      "balanced_accuracy": 0.8122238067406138,
+      "sd": 0.0009878798397899343,
+      "macro_f1": 0.806356559346887,
+      "auroc": 0.9344338794115566
+    }
+  ],
+  "B_random_block_purge": [
+    {
+      "embargo": 0,
+      "train_size": 2604.8,
+      "purged": 0.9725081309303254,
+      "random_same_size": 0.9720278036642839
+    },
+    {
+      "embargo": 37,
+      "train_size": 1619.5,
+      "purged": 0.9598137055614208,
+      "random_same_size": 0.9694695861090707
+    },
+    {
+      "embargo": 75,
+      "train_size": 953.8,
+      "purged": 0.9296214636422955,
+      "random_same_size": 0.9653009695561027
+    },
+    {
+      "embargo": 150,
+      "train_size": 360.6,
+      "purged": 0.7435819342069342,
+      "random_same_size": 0.953897078897079
+    }
+  ],
+  "C_contiguous_gap": [
+    {
+      "embargo": 0,
+      "n": 2604.8,
+      "dino": 0.9640625652619388,
+      "dino_rand": 0.9643216326194519,
+      "hand": 0.832897132011204,
+      "hand_rand": 0.8313426668884928
+    },
+    {
+      "embargo": 37,
+      "n": 2368.0,
+      "dino": 0.9593943413540229,
+      "dino_rand": 0.9644238710685862,
+      "hand": 0.8244087411126102,
+      "hand_rand": 0.8322126021541754
+    },
+    {
+      "embargo": 75,
+      "n": 2124.8,
+      "dino": 0.9527363851455034,
+      "dino_rand": 0.9604655158541352,
+      "hand": 0.8128600699980948,
+      "hand_rand": 0.8290159053885852
+    },
+    {
+      "embargo": 150,
+      "n": 1664.6,
+      "dino": 0.9442088284277762,
+      "dino_rand": 0.9608061547718909,
+      "hand": 0.7863138132049594,
+      "hand_rand": 0.8300367671715427
+    },
+    {
+      "embargo": 225,
+      "n": 1274.0,
+      "dino": 0.9319070528715332,
+      "dino_rand": 0.9595580485513311,
+      "hand": 0.7611701615076506,
+      "hand_rand": 0.8287969778246
+    },
+    {
+      "embargo": 300,
+      "n": 944.0,
+      "dino": 0.8425564056180872,
+      "dino_rand": 0.9014192596163813,
+      "hand": 0.6994102413723278,
+      "hand_rand": 0.7648031878956042
+    }
+  ],
+  "n_images": 3256,
+  "n_groups": 90
+}
