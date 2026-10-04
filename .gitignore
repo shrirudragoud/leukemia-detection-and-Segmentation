@@ -37,3 +37,4 @@ data/weights/
 
 # Training outputs (checkpoints, logs); summaries are copied to docs/results/
 runs/
+data/full_run_all/
