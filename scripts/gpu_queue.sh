@@ -21,6 +21,7 @@ for name in "${SEL[@]}"; do
     mkdir -p "results_for_paper/$name"
     cp "$d/cv_summary.json" "$d/cv_summary.md" "results_for_paper/$name/"
     cp "configs/ml/gpu/$name.json" "results_for_paper/$name/config.json"
+    for f in "$d"/fold*/train_log.jsonl; do cp "$f" "results_for_paper/$name/$(basename $(dirname $f))_train_log.jsonl"; done
     for f in "$d"/fold*/predictions.csv; do cp "$f" "results_for_paper/$name/$(basename $(dirname $f))_predictions.csv"; done
     echo "DONE $name"
   else

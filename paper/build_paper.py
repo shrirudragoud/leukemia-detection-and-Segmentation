@@ -57,6 +57,21 @@ def P(t, **k): BODY.append({"t": "p", "text": t, **k})
 def PB(): BODY.append({"t": "pb"})
 
 
+EXT = {}
+
+
+def section(name):
+    def deco(fn):
+        EXT[name] = fn
+        return fn
+    return deco
+
+
+def ext(name):
+    if name in EXT:
+        EXT[name]()
+
+
 # ------------------------------------------------------------------ measured quantities
 pf = CV["per_fold"]
 pool = CV["pooled"]
@@ -202,7 +217,7 @@ secs = sum(p["seconds"] for p in pf)
 # ------------------------------------------------------------------ abstract
 ABSTRACT = (
     f"Acute lymphoblastic leukemia (ALL) is diagnosed in part from the appearance of lymphoblasts on peripheral blood smears, and many "
-    f"studies report near-perfect classification accuracy on public smear datasets. These datasets rarely contain patient identifiers, so it is "
+    f"studies routinely report very high classification accuracy on public smear datasets. These datasets rarely contain patient identifiers, so it is "
     f"unclear how much of the reported accuracy reflects morphology and how much reflects the way the images were acquired. I analysed a public "
     f"dataset of {N_IMG} smear images in four classes (Benign, Early, Pre and Pro; {N_CELL} segmented cells) with a leakage-aware protocol. "
     f"Images were stain-normalised, denoised and segmented, and each cell was isolated with the background replaced by a neutral fill. Capture "
@@ -225,8 +240,7 @@ def build():
       "individual blasts is imperfect. Automated analysis of PBS images has therefore been studied for more than a decade, "
       f"including classical image-processing pipelines {c('labati2011')} and, more recently, deep convolutional networks and vision transformers "
       f"{c('ghaderzadeh2022', 'matek2019')}.")
-    P(f"Public datasets have made this research possible, and the reported accuracies are very high; accuracies above 0.99 on the four-class "
-      f"problem studied here are common. High accuracy on a small public dataset is, however, only informative if the evaluation separates the "
+    P(f"Public datasets have made this research possible, and the reported accuracies are very high. High accuracy on a small public dataset is, however, only informative if the evaluation separates the "
       f"images used to train a model from those used to test it in the same way that deployment would. Two properties of the data make this difficult. "
       f"First, public smear datasets rarely publish patient or slide identifiers, so a random split of images puts different images of the same "
       f"slide into both the training and the test set. Second, if the classes were imaged on different days or with different equipment, "
@@ -243,6 +257,8 @@ def build():
       f"{c('oquab2024')} is a self-supervised vision transformer {c('dosovitskiy2021')}; DinoBloom {c('koch2024')} continues its training on a large "
       "collection of single-cell images from hematology, and its weights are openly available. A linear classifier on frozen features of such a model "
       "is a strong, cheap and well-defined baseline, and is the model used for the headline result in this paper.")
+    ext("intro_extra")
+    S("Objectives")
     P("The aim of this work was to establish how accurately the four classes can be separated when the evaluation is designed to prevent "
       "leakage between neighbouring images, and how much of the accuracy can be attributed to cell morphology rather than image acquisition. I "
       "addressed four questions. (1) Can a reproducible preprocessing pipeline - colour normalisation, denoising, segmentation and "
@@ -317,7 +333,7 @@ def build():
       f"applied to each cell crop at {CVC['model']['input_size']} x {CVC['model']['input_size']} pixels, followed by gated attention pooling over the cells of an image "
       f"{c('ilse2018')} and a linear classification layer. Only the pooling and classification layers were trained (AdamW {c('loshchilov2019')}, learning rate "
       f"{CVC['train']['lr_head']}, batch size {CVC['train']['batch_size']}, at most {CVC['train']['epochs']} epochs, early stopping with patience "
-      f"{CVC['train']['patience']} on validation balanced accuracy, seed {CVC['train']['seed']}). Class imbalance was handled with inverse-square-root class weights in the loss. "
+      f"{CVC['train']['patience']} on validation macro-F1, seed {CVC['train']['seed']}). Class imbalance was handled with inverse-square-root class weights in the loss. "
       f"Probabilities were calibrated by temperature scaling {c('guo2017')} fitted on the validation stretch of each fold.")
     P("For the ablations and the leakage analysis I used a faster setting in which the frozen embeddings of the cells of an image are averaged and a "
       "multinomial logistic regression with balanced class weights is fitted on standardised features. This probe is deterministic given the folds; "
@@ -330,6 +346,8 @@ def build():
       f"OpenCV {c('bradski2000')} and scikit-image. The code is covered by {ntests} automated tests. The pipeline configuration hash of the run reported here is "
       f"{DS['config_hash']}; the model configuration hash is {CV['config_hash']}. Every number in this paper is read from a result file in the "
       "repository by the script that builds the manuscript.")
+
+    ext("methods_extra")
 
     H("Results")
     S("Dataset and preprocessing")
@@ -396,6 +414,7 @@ def build():
     if GPU:
         S("Fine-tuning")
         P("Fine-tuned runs completed by the author are listed in Table {T:ft}.")
+    ext("results_extra")
     PB_FIGS_MARK.append(len(BODY))
 
     H("Discussion")
@@ -437,6 +456,8 @@ def build():
       f"{f3(ba)} under a session-aware protocol, but the dataset contains acquisition shortcuts that by themselves predicted the class with a balanced accuracy of {f3(bg_raw)}. "
       "The accuracy is best interpreted as an upper bound for deployment, and the evaluation design, not the model, is the main determinant of how far such a number can be trusted.")
 
+    ext("discussion_extra")
+
     H("Acknowledgments")
     P(META["acknowledgments"], noindent=True)
     H("Literature Cited")
@@ -465,17 +486,19 @@ def appendices():
     BODY.append({"t": "table", "num": "A3", "caption": "Pooled out-of-fold confusion matrix of the headline model (rows: true class; columns: predicted class).",
                  "cols": [{"w": 1.5, "align": "left"}] + [{"w": 1, "align": "right"}] * 4,
                  "header": ["True \\ predicted"] + CL, "rows": [[CL[i]] + [str(v) for v in cm[i]] for i in range(4)], "foot": None})
+    rows4 = []
     for p in pf:
-        c4 = p["test"]["confusion"]
-        BODY.append({"t": "table", "num": f"A{4 + p['fold']}", "caption": f"Confusion matrix of fold {p['fold'] + 1} (rows: true class).",
-                     "cols": [{"w": 1.5, "align": "left"}] + [{"w": 1, "align": "right"}] * 4,
-                     "header": ["True \\ predicted"] + CL, "rows": [[CL[i]] + [str(v) for v in c4[i]] for i in range(4)], "foot": None})
+        for i in range(4):
+            rows4.append([str(p["fold"] + 1) if i == 0 else "", CL[i]] + [str(v) for v in p["test"]["confusion"][i]])
+    BODY.append({"t": "table", "num": "A4", "caption": "Confusion matrices of the five folds (rows: true class; columns: predicted class).",
+                 "cols": [{"w": 0.8, "align": "left"}, {"w": 1.4, "align": "left"}] + [{"w": 1, "align": "right"}] * 4,
+                 "header": ["Fold", "True class"] + CL, "rows": rows4, "foot": None})
 
     PB()
     H("Appendix II. Superseded random-block ablation")
-    P("The ablation of Table 3 was first computed with random-block folds. These results are kept because they show the size of the inflation; they are not "
+    P("The ablation of Table {T:abl} was first computed with random-block folds. These results are kept because they show the size of the inflation; they are not "
       "used as evidence of performance.", noindent=True)
-    BODY.append({"t": "table", "num": "A9", "caption": "Representation ablation with random 37-image blocks (superseded by the contiguous protocol).",
+    BODY.append({"t": "table", "num": "A5", "caption": "Representation ablation with random 37-image blocks (superseded by the contiguous protocol).",
                  "cols": [{"w": 5, "align": "left"}, {"w": 1.4, "align": "right"}, {"w": 1.4, "align": "right"}, {"w": 1.4, "align": "right"}],
                  "header": ["Variant", "Balanced accuracy", "Macro-F1", "AUROC"],
                  "rows": [[r["variant"], f3(r["balanced_accuracy"]), f3(r["macro_f1"]), f3(r["auroc_ovr"])] for r in ABL_OLD["rows"]], "foot": None})
@@ -502,7 +525,7 @@ def appendices():
     USED.add("haralick1973")
     for f in feats:
         f[2] = f[2].replace("{c('haralick1973')}", c("haralick1973"))
-    BODY.append({"t": "table", "num": "A10", "caption": "Per-cell features computed by the preprocessing package.",
+    BODY.append({"t": "table", "num": "A6", "caption": "Per-cell features computed by the preprocessing package.",
                  "cols": [{"w": 1.2, "align": "left"}, {"w": 4, "align": "left"}, {"w": 5, "align": "left"}],
                  "header": ["Group", "Columns", "Definition"], "rows": feats, "foot": None})
 
@@ -536,11 +559,14 @@ def appendices():
         "python paper/build_paper.py && node paper/render_docx.js paper/content.json paper/paper.docx",
     ]})
     P("The weights of DinoBloom-S are available from Zenodo (record 10908163) under a Creative Commons Attribution licence.", noindent=True)
+    ext("appendix_extra")
 
 
 # ================================================================== assemble
 def assemble():
     global ntests
+    for f in sorted((ROOT / "paper").glob("ext_*.py")):
+        exec(compile(f.read_text(), str(f), "exec"), globals())
     tp = ROOT / "docs" / "results" / "test_summary.json"
     ntests = str(json.loads(tp.read_text())["passed"]) if tp.exists() else "189"
     build()

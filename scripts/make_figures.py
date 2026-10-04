@@ -130,3 +130,99 @@ def fig_session():
 if __name__ == "__main__":
     for f in (fig_pipeline, fig_examples, fig_ablation, fig_leakage, fig_confusion, fig_hds, fig_session):
         f(); print("ok", f.__name__)
+
+
+# ---------------------------------------------------------------- figures from the headline cross-validation run
+import csv  # noqa: E402
+
+RUN = R / "cv_run"
+
+
+def _preds():
+    ids, y, P, nc, att = [], [], [], [], []
+    for k in range(5):
+        for r in csv.DictReader(open(RUN / f"fold{k}" / "predictions.csv")):
+            ids.append(r["image_id"]); y.append(int(r["label"]))
+            P.append([float(r[f"p_{j}"]) for j in range(4)]); nc.append(int(r["n_cells"])); att.append(float(r["top_attention"]))
+    return np.array(ids), np.array(y), np.array(P), np.array(nc), np.array(att)
+
+
+def fig_training():
+    fig, ax = plt.subplots(1, 3, figsize=(7.4, 2.8))
+    for k in range(5):
+        h = [json.loads(line) for line in open(RUN / f"fold{k}" / "train_log.jsonl")]
+        ep = [r["epoch"] + 1 for r in h]
+        st = dict(color=str(0.1 + 0.16 * k), ls=["-", "--", "-.", ":", (0, (5, 1))][k], lw=1.1)
+        ax[0].plot(ep, [r["train_loss"] for r in h], label=f"fold {k + 1}", **st)
+        ax[1].plot(ep, [r["val_bal_acc"] for r in h], **st)
+        ax[2].plot(ep, [r["lr"][0] for r in h], **st)
+    for a, t, yl in zip(ax, ["(a) Training loss", "(b) Validation balanced accuracy", "(c) Learning rate"], ["loss", "balanced accuracy", "rate"]):
+        a.set_title(t, fontsize=8); a.set_xlabel("Epoch"); a.set_ylabel(yl, fontsize=8); a.grid(ls=":")
+    ax[0].legend(fontsize=6)
+    fig.tight_layout(); fig.savefig(F / "fig_training.png", bbox_inches="tight"); plt.close(fig)
+
+
+def fig_roc_pr():
+    from sklearn.metrics import auc, precision_recall_curve, roc_curve
+    _, y, P, _, _ = _preds()
+    fig, ax = plt.subplots(1, 2, figsize=(7.0, 3.2))
+    sty = ["-", "--", "-.", ":"]
+    out = {}
+    for j in range(4):
+        fpr, tpr, _ = roc_curve(y == j, P[:, j]); pr, rc, _ = precision_recall_curve(y == j, P[:, j])
+        out[CL[j]] = {"auroc": float(auc(fpr, tpr)), "auprc": float(auc(rc, pr))}
+        ax[0].plot(fpr, tpr, "k" + sty[j], lw=1.2, label=f"{CL[j]} (AUC {out[CL[j]]['auroc']:.3f})")
+        ax[1].plot(rc, pr, "k" + sty[j], lw=1.2, label=f"{CL[j]} (AP {out[CL[j]]['auprc']:.3f})")
+    ax[0].plot([0, 1], [0, 1], color="0.6", lw=0.8); ax[0].set_xlabel("False-positive rate"); ax[0].set_ylabel("True-positive rate")
+    ax[1].set_xlabel("Recall"); ax[1].set_ylabel("Precision"); ax[1].set_ylim(0.5, 1.01)
+    for a, t in zip(ax, ["(a) ROC, one-vs-rest", "(b) Precision-recall, one-vs-rest"]):
+        a.set_title(t, fontsize=9); a.legend(fontsize=7, loc="lower right"); a.grid(ls=":")
+    fig.tight_layout(); fig.savefig(F / "fig_roc_pr.png", bbox_inches="tight"); plt.close(fig)
+    (R / "curve_summary.json").write_text(json.dumps(out, indent=1))
+
+
+def fig_reliability():
+    _, y, P, _, _ = _preds()
+    conf, pred = P.max(1), P.argmax(1)
+    bins = np.linspace(0.25, 1.0, 11)
+    idx = np.digitize(conf, bins) - 1
+    acc, cf, cnt = [], [], []
+    for b in range(10):
+        m = idx == b
+        if m.sum():
+            acc.append((pred[m] == y[m]).mean()); cf.append(conf[m].mean()); cnt.append(int(m.sum()))
+    fig, ax = plt.subplots(1, 2, figsize=(7.0, 3.0))
+    ax[0].plot([0.25, 1], [0.25, 1], color="0.6"); ax[0].plot(cf, acc, "ko-")
+    ax[0].set_xlabel("Mean confidence"); ax[0].set_ylabel("Accuracy"); ax[0].set_title("(a) Reliability diagram (calibrated)", fontsize=9); ax[0].grid(ls=":")
+    ax[1].hist(conf[pred == y], bins=20, color="0.55", edgecolor="black", label="correct")
+    ax[1].hist(conf[pred != y], bins=20, color="white", edgecolor="black", hatch="//", label="incorrect")
+    ax[1].set_yscale("log"); ax[1].set_xlabel("Confidence"); ax[1].set_ylabel("Images (log scale)"); ax[1].legend(fontsize=7)
+    ax[1].set_title("(b) Confidence of correct and incorrect predictions", fontsize=9)
+    fig.tight_layout(); fig.savefig(F / "fig_reliability.png", bbox_inches="tight"); plt.close(fig)
+
+
+def fig_cells():
+    _, y, P, nc, att = _preds()
+    pred = P.argmax(1)
+    edges = [0, 3, 5, 8, 12, 20, 100]
+    labs, accs, ns = [], [], []
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        m = (nc > lo) & (nc <= hi) if lo else (nc <= hi)
+        if m.sum():
+            labs.append(f"{lo + 1}-{hi}" if hi < 100 else f">{lo}"); accs.append((pred[m] == y[m]).mean()); ns.append(int(m.sum()))
+    fig, ax = plt.subplots(1, 2, figsize=(7.0, 3.0))
+    ax[0].bar(range(len(labs)), accs, color="0.55", edgecolor="black"); ax[0].set_xticks(range(len(labs))); ax[0].set_xticklabels(labs, fontsize=8)
+    for i, (a, k) in enumerate(zip(accs, ns)):
+        ax[0].text(i, a + 0.004, f"n={k}", ha="center", fontsize=6)
+    ax[0].set_ylim(0.8, 1.02); ax[0].set_xlabel("Cells per image"); ax[0].set_ylabel("Accuracy"); ax[0].set_title("(a) Accuracy by cell count", fontsize=9)
+    for j in range(4):
+        ax[1].hist(att[y == j], bins=15, histtype="step", color="k", ls=["-", "--", "-.", ":"][j], label=CL[j])
+    ax[1].set_xlabel("Largest attention weight in the image"); ax[1].set_ylabel("Images"); ax[1].legend(fontsize=7)
+    ax[1].set_title("(b) Concentration of attention", fontsize=9)
+    fig.tight_layout(); fig.savefig(F / "fig_cells.png", bbox_inches="tight"); plt.close(fig)
+    json.dump({"bins": labs, "acc": [float(a) for a in accs], "n": ns}, open(R / "cells_summary.json", "w"), indent=1)
+
+
+if __name__ == "__main__":
+    for f in (fig_training, fig_roc_pr, fig_reliability, fig_cells):
+        f(); print("ok", f.__name__)

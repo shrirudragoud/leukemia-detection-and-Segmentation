@@ -19,3 +19,10 @@ confident about (classic papers with stable details) are not listed.
 
 The guide asks for ALL authors in the Literature Cited. Where I was not certain of a long list I kept
 the confirmed names; complete it from the DOI record.
+
+## Added for the extended background (verify each against the publisher record)
+
+arber2016, hunger2015, krizhevsky2012, ronneberger2015, vaswani2017, kingma2015, efron1993, sokolova2009,
+kohavi1995, macenko2009, vahadane2016, meyer1990, stringer2021, schmidt2018, pan2010, kornblith2019,
+varoquaux2022, roberts2021, caron2021 - written from memory of the standard citations; confirm volume, pages and
+the full author lists (the guide asks for all authors; where I wrote "and others" the list must be completed).
