@@ -223,6 +223,58 @@
   },
   {
    "t": "sh",
+   "text": "Processing stages and their outputs"
+  },
+  {
+   "t": "p",
+   "text": "An earlier version of this work was reviewed, and one review observed that the code shared with it performed deep-learning classification only and did not implement the stages named in the project description: HDS edge detection, APC (adaptive principal curvature) structure detection, BEEMD decomposition, selection of pure intrinsic mode functions (IMFs), and morphological feature extraction. The present version implements every one of these stages, tests each of them with automated tests, runs them on all 3256 images and reports their input and output. Table 3 lists the stages and says which role each plays in the experiments; the following paragraphs describe each stage, with an example of its input and output on real images of the dataset."
+  },
+  {
+   "t": "p",
+   "text": "Two statements about scope are needed for accuracy. First, the pixel input of the headline model is the neutralised cell crop of stage 9, so the response layers and the HDS and BEEMD outputs enter the classification only through hand-made features, which are evaluated in a separate tabular analysis (Results, Contribution of the processing stages); they are not channels of the foundation-model input. Second, the description of the APC stage as blood-vessel segmentation in the project title does not apply literally to peripheral blood smears, which contain no vessels; the APC response of the Hessian is computed as specified and highlights cell boundaries and thin structures, and I report what it measures and not what its name suggests."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 1, stain normalisation* (Fig. 4). The stage maps the colour statistics of the foreground of each image to the reference (Methods, Formal description). The example shows that images of different classes have different background tints before normalisation and that normalisation reduces but does not remove them. It takes 6.0 ms per image."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 2, denoising* (Fig. 5). The default denoiser is the bilateral filter (diameter 9, colour and space sigma 75), which preserves boundaries by weighting neighbours by both distance and similarity of intensity (Tomasi and Manduchi 1998). The stabilised diffusion (HDS) is shown next to it. Both remove fine noise and keep the cell outlines; the difference image shows that the diffusion changes mostly the interior of cells and the boundaries, in places where the unfiltered image has fine texture. The bilateral filter takes 6.3 ms and the diffusion 58 ms per image; the diffusion stopped after 30 iterations in the example."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 3, HDS edge detection* (Fig. 6). The edge indicator is derived from the diffusivity of the denoised image: where the intensity gradient is small the diffusivity is close to 1 and the indicator close to 0, and across strong edges the diffusivity is small and the indicator is close to 1. It is computed on a fixed scale, so that its values are comparable between images, unlike a per-image rescaled edge map. In the examples it marks the outlines of cells and of red blood cells alike; it does not distinguish the cells of interest from the other cells, which is the task of the segmentation."
+  },
+  {
+   "t": "p",
+   "text": "*Stages 4 and 5, response layers* (Fig. 7). The APC layer is the weighted sum of the absolute values of the two Hessian eigenvalues, normalised by the square of the scale; it is large for curved structures such as cell outlines and thin folds. The LoG layer responds to blobs of the chosen scale, and the Canny layer is a binary edge map with an Otsu-derived threshold. In the example, the APC and LoG layers both highlight the boundary of the cells and also the boundaries of the red blood cells, so, like the edge indicator, they are not specific to leukocytes."
+  },
+  {
+   "t": "p",
+   "text": "*Stages 6 and 7, BEEMD and pure-IMF selection* (Fig. 8). The decomposition separates the luminance into 4 modes with characteristic periods of 3.8, 7.5, 11.7, 19.9 px, from fine to coarse, and a smooth residue; the reconstruction error was 1.2e-07 (rounding). The decomposition takes 0.74 s per image on a CPU, which makes it the most expensive stage by an order of magnitude. The selection rule keeps a mode if its characteristic period lies between 3 and 48 px, which rejects pixel noise and illumination drift, and if it carries at least 1% of the detail energy. This rule is my own interpretable choice, because the project description did not define the criterion precisely. In the example, all 4 of 4 modes were kept, so the pure-IMF image equals the sum of the modes; the share of images in which a mode is rejected is reported in the Results."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 8, segmentation* (Fig. 9). The a* score separates leukocytes from the red cells and the background, and the instance labels separate most touching cells; the outlines on the denoised image follow the cells closely. Failure modes are visible in the figure: touching cells that are not split (the Benign example of the attention figure), cells at the border that are cut by the frame, and nuclei that are found only for part of the cells."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 9, neutralisation and crops* (Figs. 10 and 11). The neutralisation removes the background, the red blood cells and the scale bar, so that the colour tint of the slide and the overlay no longer reach the encoder; the crop of each cell is then isolated from its neighbours. This is the input of the headline model."
+  },
+  {
+   "t": "p",
+   "text": "*Stage 10, morphological feature extraction* (Fig. 12, Table 4). For every cell, the pipeline measures shape (area, diameter, aspect ratio, solidity, circularity), colour, texture (grey-level co-occurrence statistics (Haralick et al. 1973) and entropy) and the statistics of the response layers. The values in the table are those of the cells of the example image. The per-cell vectors are averaged over the cells of an image for the tabular analyses. The complete segmentation, feature and layer computation for one image (stages 2 to 10 without HDS and BEEMD) takes 0.08 s."
+  },
+  {
+   "t": "sh",
+   "text": "Stage 11, classification"
+  },
+  {
+   "t": "p",
+   "text": "The final stage is the classification of the image from the isolated cells, described in the previous subsections. The preceding stages determine which cells the model sees and what it sees of them."
+  },
+  {
+   "t": "sh",
    "text": "Formal description of the preprocessing"
   },
   {
@@ -295,7 +347,7 @@
   },
   {
    "t": "p",
-   "text": "The loss is the cross-entropy with label smoothing of 0.1 and with class weights proportional to the inverse square root of the class frequency of the training images. Optimisation uses AdamW (Loshchilov and Hutter 2019) (an improved variant of Adam (Kingma and Ba 2015)) with weight decay 0.05, gradient clipping at a norm of 1, a linear warm-up over the first 10% of the steps and a cosine decay of the learning rate to zero (Fig. 4c). For the frozen encoder, embeddings of all cells are computed once and cached, so no augmentation is applied; the augmentation modules (flips, 90-degree rotations, scale jitter, stain-colour jitter restricted to non-fill pixels, random grayscale and blur) are used only when the encoder is adapted. Training stops when the validation macro-F1 has not improved for 8 epochs, and the weights of the best epoch are used. The temperature of the final softmax is fitted by minimising the validation negative log-likelihood (Methods, Evaluation measures)."
+   "text": "The loss is the cross-entropy with label smoothing of 0.1 and with class weights proportional to the inverse square root of the class frequency of the training images. Optimisation uses AdamW (Loshchilov and Hutter 2019) (an improved variant of Adam (Kingma and Ba 2015)) with weight decay 0.05, gradient clipping at a norm of 1, a linear warm-up over the first 10% of the steps and a cosine decay of the learning rate to zero (Fig. 13c). For the frozen encoder, embeddings of all cells are computed once and cached, so no augmentation is applied; the augmentation modules (flips, 90-degree rotations, scale jitter, stain-colour jitter restricted to non-fill pixels, random grayscale and blur) are used only when the encoder is adapted. Training stops when the validation macro-F1 has not improved for 8 epochs, and the weights of the best epoch are used. The temperature of the final softmax is fitted by minimising the validation negative log-likelihood (Methods, Evaluation measures)."
   },
   {
    "t": "sh",
@@ -347,11 +399,11 @@
   },
   {
    "t": "p",
-   "text": "The pipeline processed all 3256 images without failure in 10.5 min on a CPU. It produced 36167 cells, a mean of 11.1 cells per image; the Pre class contained many more cells per image (20.5) than the other classes (7.9, 7.5 and 6.2 for Benign, Early and Pro; Table 1). Between 22.6% and 30.0% of the cells in a class touched the image border. Example images of the four classes are shown in Fig. 5."
+   "text": "The pipeline processed all 3256 images without failure in 10.5 min on a CPU. It produced 36167 cells, a mean of 11.1 cells per image; the Pre class contained many more cells per image (20.5) than the other classes (7.9, 7.5 and 6.2 for Benign, Early and Pro; Table 1). Between 22.6% and 30.0% of the cells in a class touched the image border. Example images of the four classes are shown in Fig. 14."
   },
   {
    "t": "p",
-   "text": "For synthetic noise with a standard deviation of 0.05-0.12, the stabilised diffusion improved the peak signal-to-noise ratio by 12.3 dB on average, comparable with bilateral filtering (11.2 dB) and above Gaussian smoothing (4.1 dB), whereas the original scheme made the image worse (-17.2 dB; Table 2, Fig. 6). Stabilised diffusion removed more texture than bilateral filtering did (correlation with the noisy image's texture 0.37 versus 0.29, from 0.50 for the noisy input)."
+   "text": "For synthetic noise with a standard deviation of 0.05-0.12, the stabilised diffusion improved the peak signal-to-noise ratio by 12.3 dB on average, comparable with bilateral filtering (11.2 dB) and above Gaussian smoothing (4.1 dB), whereas the original scheme made the image worse (-17.2 dB; Table 2, Fig. 15). Stabilised diffusion removed more texture than bilateral filtering did (correlation with the noisy image's texture 0.37 versus 0.29, from 0.50 for the noisy input)."
   },
   {
    "t": "sh",
@@ -359,11 +411,11 @@
   },
   {
    "t": "p",
-   "text": "The audit showed strong acquisition cues in the raw images (Table 3). The mean background colour alone, three numbers, gave a balanced accuracy of 0.823 (chance 0.25), and the scale-bar corner patch gave 0.716. After neutralisation, the background probe fell to chance (0.250), confirming that the neutralised images no longer carry the background. The corner patch of the neutralised image still gave 0.435, above chance, which I attribute to the small residual pattern left by the dilated mask at the image edge."
+   "text": "The audit showed strong acquisition cues in the raw images (Table 5). The mean background colour alone, three numbers, gave a balanced accuracy of 0.823 (chance 0.25), and the scale-bar corner patch gave 0.716. After neutralisation, the background probe fell to chance (0.250), confirming that the neutralised images no longer carry the background. The corner patch of the neutralised image still gave 0.435, above chance, which I attribute to the small residual pattern left by the dilated mask at the image edge."
   },
   {
    "t": "p",
-   "text": "The colour of the cells themselves is not free of session information: the mean colour of the white-balanced cells gave 0.798. A random forest on all aggregated hand-made features reached 0.909, whereas shape and texture features without colour or density reached 0.776 (Table 3). Cell colour is therefore the most informative single group, and it cannot be separated from stain and session effects in this dataset."
+   "text": "The colour of the cells themselves is not free of session information: the mean colour of the white-balanced cells gave 0.798. A random forest on all aggregated hand-made features reached 0.909, whereas shape and texture features without colour or density reached 0.776 (Table 5). Cell colour is therefore the most informative single group, and it cannot be separated from stain and session effects in this dataset."
   },
   {
    "t": "sh",
@@ -371,7 +423,7 @@
   },
   {
    "t": "p",
-   "text": "With the headline model (Table 4, Fig. 7), the pooled out-of-fold balanced accuracy was 0.968 (95% CI 0.955-0.978) and the macro-F1 was 0.967 (95% CI 0.950-0.978). The AUROC (one-vs-rest) was 0.995. The recall of the four classes was Benign 0.960, Early 0.973, Pre 0.957, Pro 0.980. Treating the three malignant classes as one, sensitivity was 0.990 and specificity 0.960. The per-fold balanced accuracy ranged from 0.943 to 0.989. The most frequent confusions were Pre predicted as Early (16 images), Pre predicted as Pro (15) and Early predicted as Benign (14). Training stopped after 12 to 23 epochs per fold and took 33 min for all folds on a CPU."
+   "text": "With the headline model (Table 6, Fig. 16), the pooled out-of-fold balanced accuracy was 0.968 (95% CI 0.955-0.978) and the macro-F1 was 0.967 (95% CI 0.950-0.978). The AUROC (one-vs-rest) was 0.995. The recall of the four classes was Benign 0.960, Early 0.973, Pre 0.957, Pro 0.980. Treating the three malignant classes as one, sensitivity was 0.990 and specificity 0.960. The per-fold balanced accuracy ranged from 0.943 to 0.989. The most frequent confusions were Pre predicted as Early (16 images), Pre predicted as Pro (15) and Early predicted as Benign (14). Training stopped after 12 to 23 epochs per fold and took 33 min for all folds on a CPU."
   },
   {
    "t": "p",
@@ -383,7 +435,7 @@
   },
   {
    "t": "p",
-   "text": "Table 5 and Fig. 8 compare five inputs under the same protocol. Isolated cells with a neutral background (A) gave a balanced accuracy of 0.959 (95% CI 0.944-0.973). Removing stain colour (B, grayscale) lowered it by 0.018 (95% CI 0.010-0.027, Holm p = 0.004), so colour contributes a measurable but small part of the accuracy. Giving the model the background as well, after stain normalisation (C) or raw (D), raised the accuracy to 0.975 and 0.978; both differences from A were significant (Holm p = 0.004 for each). The hand-made shape, texture and curvature features alone (E, no pixels) gave 0.825, well below the encoder."
+   "text": "Table 7 and Fig. 17 compare five inputs under the same protocol. Isolated cells with a neutral background (A) gave a balanced accuracy of 0.959 (95% CI 0.944-0.973). Removing stain colour (B, grayscale) lowered it by 0.018 (95% CI 0.010-0.027, Holm p = 0.004), so colour contributes a measurable but small part of the accuracy. Giving the model the background as well, after stain normalisation (C) or raw (D), raised the accuracy to 0.975 and 0.978; both differences from A were significant (Holm p = 0.004 for each). The hand-made shape, texture and curvature features alone (E, no pixels) gave 0.825, well below the encoder."
   },
   {
    "t": "p",
@@ -395,11 +447,11 @@
   },
   {
    "t": "p",
-   "text": "With DinoBloom-S features, random 37-image blocks gave a balanced accuracy of 0.969 and contiguous folds gave 0.963 with no embargo and 0.959 with an embargo of 37 (Table 6). For hand-made features the gap was larger: 0.854 for random blocks versus 0.825 for contiguous folds with the embargo. The difference between the schemes is therefore about 1.0 percentage points for the foundation-model features and 3.0 for the hand-made features. A larger embargo reduced accuracy slightly further (0.953 at 75)."
+   "text": "With DinoBloom-S features, random 37-image blocks gave a balanced accuracy of 0.969 and contiguous folds gave 0.963 with no embargo and 0.959 with an embargo of 37 (Table 8). For hand-made features the gap was larger: 0.854 for random blocks versus 0.825 for contiguous folds with the embargo. The difference between the schemes is therefore about 1.0 percentage points for the foundation-model features and 3.0 for the hand-made features. A larger embargo reduced accuracy slightly further (0.953 at 75)."
   },
   {
    "t": "p",
-   "text": "If proximity in capture order carries information, removing near neighbours of the test images from the training set should hurt more than removing the same number of images at random. This was the case (Table 7, Fig. 9a). With random-block folds, purging training images within 75 capture numbers of the test images (leaving 954 training images) gave 0.930, whereas removing 954-sized random subsets gave 0.965. At a purge distance of 150 the purged model fell to 0.744 against 0.954 for random removal. The same pattern appeared with contiguous folds (Table 8, Fig. 9b): at a gap of 225 the accuracy was 0.932 (random removal 0.960) for DinoBloom-S and 0.761 (random 0.829) for the hand-made features, which depend on proximity more strongly. At a gap of 300 the training sets were small and class coverage was reduced, and accuracy fell also with random removal (0.901), so this setting does not isolate the effect of proximity."
+   "text": "If proximity in capture order carries information, removing near neighbours of the test images from the training set should hurt more than removing the same number of images at random. This was the case (Table 9, Fig. 18a). With random-block folds, purging training images within 75 capture numbers of the test images (leaving 954 training images) gave 0.930, whereas removing 954-sized random subsets gave 0.965. At a purge distance of 150 the purged model fell to 0.744 against 0.954 for random removal. The same pattern appeared with contiguous folds (Table 10, Fig. 18b): at a gap of 225 the accuracy was 0.932 (random removal 0.960) for DinoBloom-S and 0.761 (random 0.829) for the hand-made features, which depend on proximity more strongly. At a gap of 300 the training sets were small and class coverage was reduced, and accuracy fell also with random removal (0.901), so this setting does not isolate the effect of proximity."
   },
   {
    "t": "p",
@@ -407,11 +459,19 @@
   },
   {
    "t": "sh",
+   "text": "Contribution of the processing stages"
+  },
+  {
+   "t": "p",
+   "text": "**[[PENDING: the tabular analysis of the processing stages has not finished (Table 11); run scripts/analysis_stage_ablation.py and rebuild.]]**"
+  },
+  {
+   "t": "sh",
    "text": "Cell features by class"
   },
   {
    "t": "p",
-   "text": "Table 9 summarises the per-cell measurements for the 26202 cells that do not touch the border. Cell size differed between classes: the median area was 360 px for Benign, 486 for Early, 447 for Pre and 401 for Pro, with the Benign cells the smallest. Measures of the outline - aspect ratio, solidity and circularity - were close to identical in the four classes (for example, the median solidity was 0.95 to 0.96 in all of them), so that the shape of the outline of a segmented cell carries little class information in this dataset. Texture measures differed modestly."
+   "text": "Table 12 summarises the per-cell measurements for the 26202 cells that do not touch the border. Cell size differed between classes: the median area was 360 px for Benign, 486 for Early, 447 for Pre and 401 for Pro, with the Benign cells the smallest. Measures of the outline - aspect ratio, solidity and circularity - were close to identical in the four classes (for example, the median solidity was 0.95 to 0.96 in all of them), so that the shape of the outline of a segmented cell carries little class information in this dataset. Texture measures differed modestly."
   },
   {
    "t": "p",
@@ -423,7 +483,7 @@
   },
   {
    "t": "p",
-   "text": "Training the attention head converged quickly (Fig. 4). The mean training loss over the five folds fell from 0.99 in the first epoch to 0.38 in the last, and most of the decrease occurred within the first three epochs. The validation balanced accuracy of the best epoch was between 0.960 and 0.993 across folds, and the best epoch was reached after 4 to 15 epochs. The runs stopped after 12 to 23 epochs by the early-stopping rule, much earlier than the maximum of 30. The validation score of the folds differed by several points at the same epoch (Fig. 4b), which reflects that validation stretches contain different sessions and is the same variation that the per-fold results show."
+   "text": "Training the attention head converged quickly (Fig. 13). The mean training loss over the five folds fell from 0.99 in the first epoch to 0.38 in the last, and most of the decrease occurred within the first three epochs. The validation balanced accuracy of the best epoch was between 0.960 and 0.993 across folds, and the best epoch was reached after 4 to 15 epochs. The runs stopped after 12 to 23 epochs by the early-stopping rule, much earlier than the maximum of 30. The validation score of the folds differed by several points at the same epoch (Fig. 13b), which reflects that validation stretches contain different sessions and is the same variation that the per-fold results show."
   },
   {
    "t": "sh",
@@ -431,7 +491,7 @@
   },
   {
    "t": "p",
-   "text": "The one-vs-rest area under the ROC curve of the pooled out-of-fold probabilities was 0.996 for Benign, 0.995 for Early, 0.988 for Pre and 0.999 for Pro (Fig. 10a). The area under the precision-recall curve was 0.986, 0.984, 0.986 and 0.993 (Fig. 10b). The Pre class had the lowest area under the ROC curve although its precision-recall area was similar to that of the other classes, which indicates that it is confused with its neighbours in the ordering of the disease stages without being poorly ranked overall. These values are computed from probabilities pooled over the folds, so they combine models that were fitted on different training sets."
+   "text": "The one-vs-rest area under the ROC curve of the pooled out-of-fold probabilities was 0.996 for Benign, 0.995 for Early, 0.988 for Pre and 0.999 for Pro (Fig. 19a). The area under the precision-recall curve was 0.986, 0.984, 0.986 and 0.993 (Fig. 19b). The Pre class had the lowest area under the ROC curve although its precision-recall area was similar to that of the other classes, which indicates that it is confused with its neighbours in the ordering of the disease stages without being poorly ranked overall. These values are computed from probabilities pooled over the folds, so they combine models that were fitted on different training sets."
   },
   {
    "t": "sh",
@@ -439,7 +499,7 @@
   },
   {
    "t": "p",
-   "text": "Before temperature scaling the probabilities of the model were under-confident: the expected calibration error averaged 0.121 over folds, and the fitted temperature was below 1 in every fold (range 0.24-0.55). After scaling, the pooled error was 0.010 (Fig. 11a). The median confidence was 0.998 for correct and 0.811 for incorrect predictions (Fig. 11b), so the confidence can be used to flag uncertain images for review. A temperature fitted on one stretch of one dataset is not guaranteed to transfer, and the calibration should be re-checked on any new data."
+   "text": "Before temperature scaling the probabilities of the model were under-confident: the expected calibration error averaged 0.121 over folds, and the fitted temperature was below 1 in every fold (range 0.24-0.55). After scaling, the pooled error was 0.010 (Fig. 20a). The median confidence was 0.998 for correct and 0.811 for incorrect predictions (Fig. 20b), so the confidence can be used to flag uncertain images for review. A temperature fitted on one stretch of one dataset is not guaranteed to transfer, and the calibration should be re-checked on any new data."
   },
   {
    "t": "sh",
@@ -447,7 +507,7 @@
   },
   {
    "t": "p",
-   "text": "Accuracy depended on the number of cells in the image (Fig. 12a). Images in which the pipeline found one to three cells were classified correctly in 87.4% of cases (n = 294), against 98.4% for six to eight cells (n = 929) and 98.6% for nine to twelve (n = 565). Images with few cells provide the model with little evidence, and some of them may contain cells that the segmentation missed; I did not check this image by image. The largest attention weight of an image had a median of 0.24, which is about 1.9 times the weight that uniform attention would give (Fig. 12b), so the head weights cells unequally but does not rely on a single cell. In total 104 of 3256 images were misclassified; Appendix VI lists them with their true class, predicted class and confidence."
+   "text": "Accuracy depended on the number of cells in the image (Fig. 21a). Images in which the pipeline found one to three cells were classified correctly in 87.4% of cases (n = 294), against 98.4% for six to eight cells (n = 929) and 98.6% for nine to twelve (n = 565). Images with few cells provide the model with little evidence, and some of them may contain cells that the segmentation missed; I did not check this image by image. The largest attention weight of an image had a median of 0.24, which is about 1.9 times the weight that uniform attention would give (Fig. 21b), so the head weights cells unequally but does not rely on a single cell. In total 104 of 3256 images were misclassified; Appendix VI lists them with their true class, predicted class and confidence."
   },
   {
    "t": "p",
@@ -459,7 +519,7 @@
   },
   {
    "t": "p",
-   "text": "The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale (g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table 10 lists the results of the runs that have been completed."
+   "text": "The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale (g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table 13 lists the results of the runs that have been completed."
   },
   {
    "t": "p",
@@ -467,7 +527,7 @@
   },
   {
    "t": "p",
-   "text": "Figure 13 shows the training curves of the adapted model and Fig. 14 compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. 15."
+   "text": "Figure 22 shows the training curves of the adapted model and Fig. 23 compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. 24."
   },
   {
    "t": "sh",
@@ -479,7 +539,7 @@
   },
   {
    "t": "p",
-   "text": "Fig. 16 shows, for one correctly classified image of each class, the most-attended cell and the attention weights of all cells of the image. The most-attended cell of the Benign example is two touching cells that the segmentation did not separate, which illustrates a limit of the segmentation step."
+   "text": "Fig. 25 shows, for one correctly classified image of each class, the most-attended cell and the attention weights of all cells of the image. The most-attended cell of the Benign example is two touching cells that the segmentation did not separate, which illustrates a limit of the segmentation step."
   },
   {
    "t": "p",
@@ -487,7 +547,7 @@
   },
   {
    "t": "p",
-   "text": "A two-dimensional projection of the embeddings (Fig. 17a) shows the Benign images as compact groups that lie apart from the others, while Early, Pre and Pro occupy neighbouring regions that overlap in places; the silhouette coefficient of the class labels in the 50-component principal-component space was 0.08, which is low, so the classes are not well-separated clusters in the full space. The panel coloured by capture-order segment (Fig. 17b) shows images of all segments in most regions, so the projection does not place the segments in separate regions; I did not quantify this beyond the visual impression, and a two-dimensional projection cannot rule out session information in other directions of the embedding space."
+   "text": "A two-dimensional projection of the embeddings (Fig. 26a) shows the Benign images as compact groups that lie apart from the others, while Early, Pre and Pro occupy neighbouring regions that overlap in places; the silhouette coefficient of the class labels in the 50-component principal-component space was 0.08, which is low, so the classes are not well-separated clusters in the full space. The panel coloured by capture-order segment (Fig. 26b) shows images of all segments in most regions, so the projection does not place the segments in separate regions; I did not quantify this beyond the visual impression, and a two-dimensional projection cannot rule out session information in other directions of the embedding space."
   },
   {
    "t": "pb"
@@ -666,6 +726,256 @@
   },
   {
    "t": "table",
+   "caption": "The processing stages, their implementation and their use in this study. \"Encoder input\" means that the stage determines the pixels given to the foundation model; \"tabular\" means that the stage provides hand-made features evaluated in Table 11.",
+   "cols": [
+    {
+     "w": 2.2,
+     "align": "left"
+    },
+    {
+     "w": 2.6,
+     "align": "left"
+    },
+    {
+     "w": 2.6,
+     "align": "left"
+    },
+    {
+     "w": 3,
+     "align": "left"
+    }
+   ],
+   "header": [
+    "Stage",
+    "Implementation",
+    "Input and output",
+    "Role in the reported experiments"
+   ],
+   "rows": [
+    [
+     "1 Stain normalisation",
+     "stain.py: Reinhard method in Lab, foreground statistics",
+     "raw RGB to normalised RGB",
+     "Encoder input (all variants except raw)"
+    ],
+    [
+     "2 Denoising",
+     "denoise.py: bilateral filter (default) or non-local means",
+     "normalised RGB to denoised RGB",
+     "Used for segmentation and for the response layers"
+    ],
+    [
+     "3 HDS edge detection",
+     "hds.py: stabilised hybrid diffusion; edge indicator",
+     "luminance to denoised luminance and edge map in [0, 1]",
+     "Run on all images in a separate pass; tabular"
+    ],
+    [
+     "4 APC",
+     "responses.py: adaptive principal curvature of the Hessian",
+     "grey image to response layer",
+     "Per-cell statistics; tabular"
+    ],
+    [
+     "5 LoG and Canny",
+     "responses.py",
+     "grey image to blob and edge layers",
+     "LoG per-cell statistics; tabular"
+    ],
+    [
+     "6 BEEMD",
+     "emd.py: ensemble bidimensional EMD, order-statistic envelopes",
+     "luminance to four IMFs and a residue",
+     "Run on all images in a separate pass; tabular"
+    ],
+    [
+     "7 Pure-IMF selection",
+     "emd.py: scale and energy rule",
+     "IMFs to selection mask and pure-mode image",
+     "Same pass; tabular"
+    ],
+    [
+     "8 Segmentation",
+     "segmentation.py: a* Otsu, opening, watershed; nucleus",
+     "image to cell and nucleus instance labels",
+     "Defines the cells for every variant"
+    ],
+    [
+     "9 Neutralisation and crops",
+     "neutralise.py, data/crops.py",
+     "labels and image to isolated cell crops",
+     "Encoder input of the headline model"
+    ],
+    [
+     "10 Morphological features",
+     "features.py: shape, colour, GLCM texture",
+     "labels and image to per-cell vector",
+     "Tabular"
+    ],
+    [
+     "11 Classification",
+     "leukemia_ml: frozen encoder, attention head",
+     "cell crops to class probabilities",
+     "Headline model"
+    ]
+   ],
+   "foot": null,
+   "num": "3"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "table",
+   "caption": "Stage 8: per-cell measurements of the cells of WBC-Malignant-Early-025 (numbered as in Fig. 12). Columns follow the feature definitions of Appendix III; the last four columns are statistics of the response layers inside the cell.",
+   "cols": [
+    {
+     "w": 0.8,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    },
+    {
+     "w": 1,
+     "align": "right"
+    }
+   ],
+   "header": [
+    "Cell",
+    "Area (px)",
+    "Diameter (px)",
+    "Aspect ratio",
+    "Solidity",
+    "Circularity",
+    "Mean a*",
+    "GLCM contrast",
+    "Mean APC",
+    "Mean HDS edge"
+   ],
+   "rows": [
+    [
+     "1",
+     "492",
+     "25.0",
+     "1.11",
+     "0.97",
+     "0.97",
+     "32.8",
+     "4.20",
+     "0.24",
+     "0.08"
+    ],
+    [
+     "2",
+     "537",
+     "26.1",
+     "1.25",
+     "0.97",
+     "0.96",
+     "32.1",
+     "2.45",
+     "0.23",
+     "0.08"
+    ],
+    [
+     "3",
+     "406",
+     "22.7",
+     "1.61",
+     "0.96",
+     "0.87",
+     "30.6",
+     "2.98",
+     "0.26",
+     "0.08"
+    ],
+    [
+     "4",
+     "1043",
+     "36.4",
+     "1.39",
+     "0.92",
+     "0.82",
+     "34.0",
+     "2.52",
+     "0.23",
+     "0.07"
+    ],
+    [
+     "5",
+     "439",
+     "23.6",
+     "1.12",
+     "0.95",
+     "0.94",
+     "33.5",
+     "5.15",
+     "0.28",
+     "0.10"
+    ],
+    [
+     "6",
+     "568",
+     "26.9",
+     "1.37",
+     "0.97",
+     "0.96",
+     "34.7",
+     "3.82",
+     "0.24",
+     "0.09"
+    ],
+    [
+     "7",
+     "327",
+     "20.4",
+     "3.26",
+     "0.96",
+     "0.60",
+     "37.4",
+     "2.32",
+     "0.26",
+     "0.09"
+    ]
+   ],
+   "foot": "Cells that touch the image border are included; nuclei were not resolved for most cells (Table 1), so nuclear measurements are not shown.",
+   "num": "4"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "table",
    "caption": "Shortcut audit: balanced accuracy of a random-forest classifier that sees only the named quantity, under 5-fold session-aware cross-validation (three seeds; chance = 0.25). Verdicts are the audit tool's own thresholds.",
    "cols": [
     {
@@ -790,7 +1100,7 @@
     ]
    ],
    "foot": null,
-   "num": "3"
+   "num": "5"
   },
   {
    "t": "pb"
@@ -867,7 +1177,7 @@
     ]
    ],
    "foot": "Sensitivity and specificity treat the three malignant classes (Early, Pre, Pro) as positive and Benign as negative. ECE: expected calibration error.",
-   "num": "4"
+   "num": "6"
   },
   {
    "t": "pb"
@@ -952,7 +1262,7 @@
     ]
    ],
    "foot": null,
-   "num": "5"
+   "num": "7"
   },
   {
    "t": "pb"
@@ -1048,7 +1358,7 @@
     ]
    ],
    "foot": null,
-   "num": "6"
+   "num": "8"
   },
   {
    "t": "pb"
@@ -1107,7 +1417,7 @@
     ]
    ],
    "foot": null,
-   "num": "7"
+   "num": "9"
   },
   {
    "t": "pb"
@@ -1200,7 +1510,36 @@
     ]
    ],
    "foot": null,
-   "num": "8"
+   "num": "10"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "table",
+   "caption": "Contribution of the processing stages to classification (tabular probe). **[[PENDING: run scripts/analysis_stage_ablation.py]]**",
+   "cols": [
+    {
+     "w": 4,
+     "align": "left"
+    },
+    {
+     "w": 1.5,
+     "align": "right"
+    }
+   ],
+   "header": [
+    "Features",
+    "Balanced accuracy"
+   ],
+   "rows": [
+    [
+     "[[PENDING]]",
+     "[[PENDING]]"
+    ]
+   ],
+   "foot": null,
+   "num": "11"
   },
   {
    "t": "pb"
@@ -1331,7 +1670,7 @@
     ]
    ],
    "foot": null,
-   "num": "9"
+   "num": "12"
   },
   {
    "t": "pb"
@@ -1448,7 +1787,7 @@
     ]
    ],
    "foot": null,
-   "num": "10"
+   "num": "13"
   },
   {
    "t": "pb"
@@ -1485,10 +1824,100 @@
   },
   {
    "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_1_stain.png",
+   "caption": "Stage 1, stain normalisation. Top: input images (one per class: WBC-Benign-022, WBC-Malignant-Early-025, WBC-Malignant-Pre-170, WBC-Malignant-Pro-031). Bottom: the same images after Reinhard normalisation in Lab space with foreground statistics.",
+   "width_in": 6.2,
+   "num": "4"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_2_denoise.png",
+   "caption": "Stage 2, denoising of the luminance of WBC-Malignant-Early-025 (top: full image; bottom: zoom on the central region). From left to right: input, bilateral filter, stabilised HDS diffusion (30 iterations), and the absolute difference between input and HDS output (amplified four times). Diffusion smooths flat regions and leaves the cell boundaries.",
+   "width_in": 6.2,
+   "num": "5"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_3_hds_edge.png",
+   "caption": "Stage 3, HDS edge indicator. Top: luminance of one image per class. Bottom: the edge indicator 1 - mean diffusivity of the denoised image (0 in flat regions, close to 1 across strong edges), on a fixed scale.",
+   "width_in": 6.2,
+   "num": "6"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_4_layers.png",
+   "caption": "Stage 4, response layers of WBC-Malignant-Early-025. From left to right: denoised grey image, adaptive principal-curvature (APC) response, Laplacian-of-Gaussian (LoG) response and Canny edges.",
+   "width_in": 6.2,
+   "num": "7"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_5_beemd.png",
+   "caption": "Stage 5, BEEMD and pure-IMF selection for the luminance of WBC-Malignant-Early-025. The four intrinsic mode functions (IMFs) are ordered from fine to coarse; the title of each gives the characteristic spatial period, the share of the detail energy and whether the selection rule keeps the mode. Also shown: the residue, the sum of the selected (pure) modes, and the difference between the input and the sum of all modes and the residue, which is zero up to rounding.",
+   "width_in": 6.2,
+   "num": "8"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_6_segmentation.png",
+   "caption": "Stage 6, cell and nucleus segmentation for one image per class. Top: smoothed a* score. Middle: cell instances after watershed splitting (random colours; border-touching cells included). Bottom: cell (green) and nucleus (yellow) outlines on the denoised image.",
+   "width_in": 6.2,
+   "num": "9"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_7_neutralise.png",
+   "caption": "Stage 7, shortcut neutralisation. Top: stain-normalised images. Bottom: the same images with everything outside the cells replaced by a neutral fill and the cells white-balanced.",
+   "width_in": 6.2,
+   "num": "10"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_7b_crops.png",
+   "caption": "Stage 7, outputs for WBC-Malignant-Early-025: the neutralised image, its grey version, and the isolated 112 x 112 crops of the first four cells that are passed to the encoder.",
+   "width_in": 6.2,
+   "num": "11"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/stage_8_cells.png",
+   "caption": "Stage 8, cells of WBC-Malignant-Early-025 numbered as in Table 4.",
+   "width_in": 3.6,
+   "num": "12"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_training.png",
    "caption": "Training of the attention head (frozen DinoBloom-S) in each of the five folds. (a) Training loss (label-smoothed, class-weighted cross-entropy), (b) validation balanced accuracy and (c) learning rate (linear warm-up followed by cosine decay) by epoch. Training of each fold stopped early when the validation macro-F1 had not improved for eight epochs.",
    "width_in": 6.4,
-   "num": "4"
+   "num": "13"
   },
   {
    "t": "pb"
@@ -1498,7 +1927,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_classes.png",
    "caption": "Example images of the four classes (Benign, Early, Pre, Pro) of the dataset, 224 x 224 pixels as supplied. Differences in background colour and illumination between classes are visible.",
    "width_in": 6.0,
-   "num": "5"
+   "num": "14"
   },
   {
    "t": "pb"
@@ -1508,7 +1937,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_hds.png",
    "caption": "Denoising benchmark (peak signal-to-noise ratio, dB) on synthetic Gaussian noise; stabilised diffusion (solid circles) compared with the unmodified diffusion scheme (inverted triangles), bilateral and Gaussian filtering.",
    "width_in": 4.6,
-   "num": "6"
+   "num": "15"
   },
   {
    "t": "pb"
@@ -1518,7 +1947,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_confusion.png",
    "caption": "(a) Pooled out-of-fold confusion matrix (counts; shading shows row-normalised proportion) and (b) balanced accuracy of each of the five folds for the headline model.",
    "width_in": 6.2,
-   "num": "7"
+   "num": "16"
   },
   {
    "t": "pb"
@@ -1526,9 +1955,9 @@
   {
    "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_ablation.png",
-   "caption": "Balanced accuracy of the five input representations (A-E, defined in Table 5), with 95% cluster-bootstrap intervals over session groups. Contiguous folds, embargo 37.",
+   "caption": "Balanced accuracy of the five input representations (A-E, defined in Table 7), with 95% cluster-bootstrap intervals over session groups. Contiguous folds, embargo 37.",
    "width_in": 5.6,
-   "num": "8"
+   "num": "17"
   },
   {
    "t": "pb"
@@ -1538,7 +1967,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_leakage.png",
    "caption": "Dependence of accuracy on proximity in capture number. (a) Random-block folds: purging training images near the test images (solid) versus removing the same number of training images at random (dashed). (b) Contiguous folds: increasing the gap to the test segment (solid) versus random removal (dashed), for DinoBloom-S features and for hand-made features.",
    "width_in": 6.2,
-   "num": "9"
+   "num": "18"
   },
   {
    "t": "pb"
@@ -1548,7 +1977,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_roc_pr.png",
    "caption": "Discrimination of each class from the other three on the pooled out-of-fold predictions. (a) Receiver operating characteristic curves and (b) precision-recall curves of the headline model, with the area under each curve in the legend.",
    "width_in": 6.0,
-   "num": "10"
+   "num": "19"
   },
   {
    "t": "pb"
@@ -1558,7 +1987,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_reliability.png",
    "caption": "Calibration of the temperature-scaled probabilities on the pooled out-of-fold predictions. (a) Reliability diagram: observed accuracy against mean confidence in ten confidence bins; the diagonal is perfect calibration. (b) Histogram of the confidence of correct and incorrect predictions (log scale).",
    "width_in": 6.0,
-   "num": "11"
+   "num": "20"
   },
   {
    "t": "pb"
@@ -1568,7 +1997,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_cells.png",
    "caption": "Dependence of the accuracy of the headline model on the number of cells that the pipeline found in the image. (a) Accuracy by number of cells per image (n above each bar is the number of images). (b) Distribution of the largest attention weight in an image, by true class.",
    "width_in": 6.0,
-   "num": "12"
+   "num": "21"
   },
   {
    "t": "pb"
@@ -1578,7 +2007,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-CURVES.png",
    "caption": "**[SAMPLE IMAGE - tag FT-CURVES - replace with the real plot: python scripts/make_ft_figures.py]** Training curves of the low-rank adaptation of DinoBloom-S (run g01). For each fold: training loss, validation macro-F1 (star: best epoch) and learning rate against epoch.",
    "width_in": 6.2,
-   "num": "13"
+   "num": "22"
   },
   {
    "t": "pb"
@@ -1586,9 +2015,9 @@
   {
    "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-BARS.png",
-   "caption": "**[SAMPLE IMAGE - tag FT-BARS - replace with the real plot: python scripts/make_ft_figures.py]** Balanced accuracy of the fine-tuned configurations. One marker per configuration of Table 10 with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.",
+   "caption": "**[SAMPLE IMAGE - tag FT-BARS - replace with the real plot: python scripts/make_ft_figures.py]** Balanced accuracy of the fine-tuned configurations. One marker per configuration of Table 13 with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.",
    "width_in": 5.8,
-   "num": "14"
+   "num": "23"
   },
   {
    "t": "pb"
@@ -1596,9 +2025,9 @@
   {
    "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-CM.png",
-   "caption": "**[SAMPLE IMAGE - tag FT-CM - replace with the real plot: python scripts/make_ft_figures.py]** Confusion matrix of the best fine-tuned configuration. Pooled out-of-fold confusion matrix, as in Fig. 7a.",
+   "caption": "**[SAMPLE IMAGE - tag FT-CM - replace with the real plot: python scripts/make_ft_figures.py]** Confusion matrix of the best fine-tuned configuration. Pooled out-of-fold confusion matrix, as in Fig. 16a.",
    "width_in": 4.6,
-   "num": "15"
+   "num": "24"
   },
   {
    "t": "pb"
@@ -1608,7 +2037,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_attention.png",
    "caption": "Attention of the headline model for one correctly classified test image of each class (fold 1). Left: the most-attended cell of the image. Right: attention weight of each cell of the image, sorted in descending order, with the uniform weight as a dashed line.",
    "width_in": 4.4,
-   "num": "16"
+   "num": "25"
   },
   {
    "t": "pb"
@@ -1618,7 +2047,7 @@
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_embedding.png",
    "caption": "Two-dimensional t-SNE projection of the image embeddings of the frozen headline encoder (mean over the cells of an image, after reduction to 50 principal components), (a) coloured by class and (b) coloured by the capture-order segment (the fold in which the image is tested).",
    "width_in": 6.2,
-   "num": "17"
+   "num": "26"
   },
   {
    "t": "pb"
@@ -1633,7 +2062,7 @@
   },
   {
    "t": "p",
-   "text": "First, the dataset contains strong acquisition shortcuts. The mean background colour of an image predicted the class with a balanced accuracy of 0.823, and a model that was allowed to see the background performed better than one that saw only the cells (Table 5). This agrees with the reports of shortcut learning in other medical imaging tasks (DeGrave et al. 2021; Geirhos et al. 2020). The most likely explanation is that the classes were imaged in separate sessions with different illumination and staining; I could not verify this because the dataset documentation does not give per-image acquisition metadata. The class-batch confound means that no analysis of this dataset alone can separate the morphology of the cells from the conditions of the session. Neutralising the background removed the strongest cue, but the colour of the cells remained informative about the class (Table 3), as it would be if the stain differed between sessions and also if the diseases differ in cytoplasmic staining. The accuracy reported here should therefore be read as an upper bound for new patients and new laboratories."
+   "text": "First, the dataset contains strong acquisition shortcuts. The mean background colour of an image predicted the class with a balanced accuracy of 0.823, and a model that was allowed to see the background performed better than one that saw only the cells (Table 7). This agrees with the reports of shortcut learning in other medical imaging tasks (DeGrave et al. 2021; Geirhos et al. 2020). The most likely explanation is that the classes were imaged in separate sessions with different illumination and staining; I could not verify this because the dataset documentation does not give per-image acquisition metadata. The class-batch confound means that no analysis of this dataset alone can separate the morphology of the cells from the conditions of the session. Neutralising the background removed the strongest cue, but the colour of the cells remained informative about the class (Table 5), as it would be if the stain differed between sessions and also if the diseases differ in cytoplasmic staining. The accuracy reported here should therefore be read as an upper bound for new patients and new laboratories."
   },
   {
    "t": "p",
@@ -1729,7 +2158,7 @@
   },
   {
    "t": "p",
-   "text": "**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table 10 and Fig. 14. Delete this paragraph if no run is performed.]]**"
+   "text": "**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table 13 and Fig. 23. Delete this paragraph if no run is performed.]]**"
   },
   {
    "t": "sh",
@@ -2462,7 +2891,7 @@
   },
   {
    "t": "p",
-   "text": "The ablation of Table 5 was first computed with random-block folds. These results are kept because they show the size of the inflation; they are not used as evidence of performance.",
+   "text": "The ablation of Table 7 was first computed with random-block folds. These results are kept because they show the size of the inflation; they are not used as evidence of performance.",
    "noindent": true
   },
   {
@@ -2841,10 +3270,12 @@
    "t": "code",
    "lines": [
     "pip install -e .",
-    "leukemia-pp run  --input data/dataset --output data/full_run_v2 --config configs/full_dataset.json",
+    "leukemia-pp run  --input data/dataset/Original --output data/full_run_v2 --config configs/full_dataset.json",
     "leukemia-pp audit --run data/full_run_v2",
     "leukemia-ml cv    --config configs/ml/cv_dinobloom_s_frozen_mil.json --out runs/cv_dinobloom_s",
     "leukemia-ml ablate --spec configs/ml/ablation_sources.json",
+    "leukemia-pp run --input data/dataset/Original --output data/full_run_all --config configs/full_all_representations.json   # HDS + BEEMD on",
+    "python scripts/analysis_stage_ablation.py; python scripts/make_stage_figures.py",
     "python scripts/analysis_dataset.py; python scripts/analysis_session.py",
     "python scripts/analysis_leakage.py; python scripts/benchmark_hds.py",
     "python scripts/make_figures.py",
@@ -5951,7 +6382,7 @@
    "rows": [
     [
      "docs/results/cv_dinobloom_s_frozen_mil.json",
-     "Headline cross-validation: pooled and per-fold metrics, intervals, temperatures (Table 4)."
+     "Headline cross-validation: pooled and per-fold metrics, intervals, temperatures (Table 6)."
     ],
     [
      "docs/results/cv_run/",
@@ -5959,7 +6390,7 @@
     ],
     [
      "docs/results/ablation_sources_contiguous.json",
-     "Representation ablation (Table 5)."
+     "Representation ablation (Table 7)."
     ],
     [
      "docs/results/ablation_sources_RANDOM_BLOCK_FOLDS_superseded.json",
@@ -5967,11 +6398,11 @@
     ],
     [
      "docs/results/audit_full_dataset.json",
-     "Shortcut audit (Table 3)."
+     "Shortcut audit (Table 5)."
     ],
     [
      "docs/results/leakage_analysis.json",
-     "Scheme comparison, purge and gap analyses (Tables 6, 7, 8)."
+     "Scheme comparison, purge and gap analyses (Tables 8, 9, 10)."
     ],
     [
      "docs/results/dataset_stats.json",

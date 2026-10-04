@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAT = re.compile(r"\[\[GPU|PLACEHOLDER|SAMPLE IMAGE|FILL IN")
+PAT = re.compile(r"\[\[GPU|PLACEHOLDER|SAMPLE IMAGE|PENDING|FILL IN")
 
 
 def build():

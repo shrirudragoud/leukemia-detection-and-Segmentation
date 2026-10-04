@@ -1,0 +1,159 @@
+{
+ "images": {
+  "Benign": "WBC-Benign-022",
+  "Early": "WBC-Malignant-Early-025",
+  "Pre": "WBC-Malignant-Pre-170",
+  "Pro": "WBC-Malignant-Pro-031"
+ },
+ "hds_iterations_example": 30,
+ "beemd_example": {
+  "n_imfs": 4,
+  "selected": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "period_px": [
+   3.8288843803050807,
+   7.548364849467544,
+   11.677782865348046,
+   19.86073675434506
+  ],
+  "energy_frac": [
+   0.12785274247660472,
+   0.1499073032660456,
+   0.19453703371904843,
+   0.5277029205383013
+  ],
+  "max_reconstruction_error": 1.1920928955078125e-07
+ },
+ "example_cells": [
+  {
+   "cell_id": 1,
+   "cell_area": 492.0,
+   "cell_eq_diameter": 25.028660691489268,
+   "cell_aspect_ratio": 1.1065462456673538,
+   "cell_solidity": 0.9666011787819253,
+   "cell_circularity": 0.9706152764937235,
+   "cell_a_mean": 32.7690544128418,
+   "cell_glcm_contrast": 4.201014165563833,
+   "cell_entropy": 2.978707727788081,
+   "cell_apc_mean": 0.24370311200618744,
+   "cell_log_mean": 0.3013420104980469,
+   "cell_hds_edge_mean": 0.08355026692152023,
+   "cell_imf_pure_mean": -0.057497140020132065,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 2,
+   "cell_area": 537.0,
+   "cell_eq_diameter": 26.148224328293928,
+   "cell_aspect_ratio": 1.2536024971832085,
+   "cell_solidity": 0.9675675675675676,
+   "cell_circularity": 0.9601720311153991,
+   "cell_a_mean": 32.054351806640625,
+   "cell_glcm_contrast": 2.4537913502441664,
+   "cell_entropy": 2.5728436166969937,
+   "cell_apc_mean": 0.23426949977874756,
+   "cell_log_mean": 0.3319403827190399,
+   "cell_hds_edge_mean": 0.07609885931015015,
+   "cell_imf_pure_mean": -0.05546975135803223,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 3,
+   "cell_area": 406.0,
+   "cell_eq_diameter": 22.736210219877808,
+   "cell_aspect_ratio": 1.609421341040664,
+   "cell_solidity": 0.9620853080568721,
+   "cell_circularity": 0.8701004651195442,
+   "cell_a_mean": 30.562847137451172,
+   "cell_glcm_contrast": 2.978941813086616,
+   "cell_entropy": 2.8363985882770666,
+   "cell_apc_mean": 0.25868597626686096,
+   "cell_log_mean": 0.2516191303730011,
+   "cell_hds_edge_mean": 0.07597967982292175,
+   "cell_imf_pure_mean": -0.05592494085431099,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 4,
+   "cell_area": 1043.0,
+   "cell_eq_diameter": 36.44158126589425,
+   "cell_aspect_ratio": 1.3891759497565739,
+   "cell_solidity": 0.9213780918727915,
+   "cell_circularity": 0.8177227987502025,
+   "cell_a_mean": 34.01475524902344,
+   "cell_glcm_contrast": 2.5152287606610177,
+   "cell_entropy": 2.5867922895337854,
+   "cell_apc_mean": 0.2255292683839798,
+   "cell_log_mean": 0.30068913102149963,
+   "cell_hds_edge_mean": 0.06606628745794296,
+   "cell_imf_pure_mean": -0.04617776349186897,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 5,
+   "cell_area": 439.0,
+   "cell_eq_diameter": 23.642169108157916,
+   "cell_aspect_ratio": 1.1232957174051128,
+   "cell_solidity": 0.9522776572668112,
+   "cell_circularity": 0.9431687079234796,
+   "cell_a_mean": 33.53957748413086,
+   "cell_glcm_contrast": 5.152664434910703,
+   "cell_entropy": 2.9223684542923336,
+   "cell_apc_mean": 0.2775247097015381,
+   "cell_log_mean": 0.2994388937950134,
+   "cell_hds_edge_mean": 0.10241422802209854,
+   "cell_imf_pure_mean": -0.06282492727041245,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 6,
+   "cell_area": 568.0,
+   "cell_eq_diameter": 26.89237924411993,
+   "cell_aspect_ratio": 1.3732949015543205,
+   "cell_solidity": 0.9726027397260274,
+   "cell_circularity": 0.9587114108229056,
+   "cell_a_mean": 34.695011138916016,
+   "cell_glcm_contrast": 3.8242995141608813,
+   "cell_entropy": 3.217439501220691,
+   "cell_apc_mean": 0.24115720391273499,
+   "cell_log_mean": 0.33583518862724304,
+   "cell_hds_edge_mean": 0.09332061558961868,
+   "cell_imf_pure_mean": -0.05717168748378754,
+   "touches_border": 0.0,
+   "nucleus_found": 0.0
+  },
+  {
+   "cell_id": 7,
+   "cell_area": 327.0,
+   "cell_eq_diameter": 20.404639941160397,
+   "cell_aspect_ratio": 3.2647361208189554,
+   "cell_solidity": 0.961764705882353,
+   "cell_circularity": 0.6010657709913805,
+   "cell_a_mean": 37.407779693603516,
+   "cell_glcm_contrast": 2.317404110057557,
+   "cell_entropy": 2.3564554114429086,
+   "cell_apc_mean": 0.2557688057422638,
+   "cell_log_mean": 0.3796464502811432,
+   "cell_hds_edge_mean": 0.09006836265325546,
+   "cell_imf_pure_mean": -0.06197120249271393,
+   "touches_border": 1.0,
+   "nucleus_found": 0.0
+  }
+ ],
+ "seconds_per_image": {
+  "stain": 0.005976855754852295,
+  "bilateral": 0.006308233737945557,
+  "hds": 0.05842829942703247,
+  "beemd": 0.7419088125228882,
+  "segment+features+layers": 0.08044930696487426
+ }
+}

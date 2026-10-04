@@ -347,6 +347,7 @@ def build():
       f"{DS['config_hash']}; the model configuration hash is {CV['config_hash']}. Every number in this paper is read from a result file in the "
       "repository by the script that builds the manuscript.")
 
+    ext("methods_stages")
     ext("methods_extra")
 
     H("Results")
@@ -414,6 +415,7 @@ def build():
     if GPU:
         S("Fine-tuning")
         P("Fine-tuned runs completed by the author are listed in Table {T:ft}.")
+    ext("results_stages")
     ext("results_extra")
     PB_FIGS_MARK.append(len(BODY))
 
@@ -549,10 +551,12 @@ def appendices():
       "needed to download them).", noindent=True)
     BODY.append({"t": "code", "lines": [
         "pip install -e .",
-        "leukemia-pp run  --input data/dataset --output data/full_run_v2 --config configs/full_dataset.json",
+        "leukemia-pp run  --input data/dataset/Original --output data/full_run_v2 --config configs/full_dataset.json",
         "leukemia-pp audit --run data/full_run_v2",
         "leukemia-ml cv    --config configs/ml/cv_dinobloom_s_frozen_mil.json --out runs/cv_dinobloom_s",
         "leukemia-ml ablate --spec configs/ml/ablation_sources.json",
+        "leukemia-pp run --input data/dataset/Original --output data/full_run_all --config configs/full_all_representations.json   # HDS + BEEMD on",
+        "python scripts/analysis_stage_ablation.py; python scripts/make_stage_figures.py",
         "python scripts/analysis_dataset.py; python scripts/analysis_session.py",
         "python scripts/analysis_leakage.py; python scripts/benchmark_hds.py",
         "python scripts/make_figures.py",
