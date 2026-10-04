@@ -1,0 +1,23 @@
+# Local Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local editor/agent settings
+.claude/settings.local.json
+.codex/
+.agents/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Temporary/runtime output
+*.log
+*.tmp

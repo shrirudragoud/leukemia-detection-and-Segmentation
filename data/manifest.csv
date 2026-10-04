@@ -1,0 +1,4 @@
+image_id,orig_path,class_name,class_id_binary,class_id_4way,split
+WBC-Malignant-Early-012,data/raw/Early/WBC-Malignant-Early-012.jpg,Early,1,1,train
+WBC-Malignant-Pro-002,data/raw/Pro/WBC-Malignant-Pro-002.jpg,Pro,1,3,test
+WBC-Malignant-Pro-003,data/raw/Pro/WBC-Malignant-Pro-003.jpg,Pro,1,3,train
