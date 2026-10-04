@@ -1,8 +1,11 @@
 {
   "title": "Session-Aware Evaluation of Foundation-Model Features for Four-Class Acute Lymphoblastic Leukemia Cell Classification: Shortcut Auditing and Leakage Analysis on a Public Peripheral Blood Smear Dataset",
-  "authors": ["AUTHOR NAME(S) - FILL IN"],
+  "authors": [
+    "AUTHOR NAME(S) - FILL IN"
+  ],
   "affiliation": "DEPARTMENT, INSTITUTION, CITY, COUNTRY - FILL IN",
   "correspondence": "EMAIL - FILL IN",
   "acknowledgments": "ACKNOWLEDGMENTS - FILL IN (advisor, institution, compute providers, dataset authors)",
-  "keywords": "acute lymphoblastic leukemia; peripheral blood smear; foundation model; DinoBloom; data leakage; shortcut learning"
+  "keywords": "acute lymphoblastic leukemia; peripheral blood smear; foundation model; DinoBloom; data leakage; shortcut learning",
+  "gpu_placeholders": "keep"
 }

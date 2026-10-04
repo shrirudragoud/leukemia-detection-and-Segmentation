@@ -27,6 +27,7 @@ def _gpu(name):
 
 GPU_RES = {nm: _gpu(nm) for nm, _, _ in GPU_NAMES}
 SLOT = "[[GPU]]"
+CUT = META.get("gpu_placeholders", "keep") == "cut"
 N_SLOTS = sum(v is None for v in GPU_RES.values())
 
 
@@ -143,17 +144,21 @@ def results_extra():
       f"{sum(cm[2]) - cm[2][2]} misclassified Pre images, {cm[2][0]} were called Benign, {cm[2][1]} Early and {cm[2][3]} Pro. Benign images were called Early ({cm[0][1]}), Pre ({cm[0][2]}) or Pro ({cm[0][3]}) "
       f"in {sum(cm[0]) - cm[0][0]} cases, and {cm[3][0] + cm[3][1] + cm[3][2]} of {sum(cm[3])} Pro images were misclassified. The Benign class (hematogones) is not a maturation stage of the malignant classes, and I did not have a second reading of the images, so I cannot say how human readers would perform on these images.")
     S("Fine-tuning and encoder comparison")
-    P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
-      "the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale "
-      "(g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and "
-      "adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table {T:ft} is reserved for the results of these runs." if N_SLOTS else "Table {T:ft} lists the results of the runs.")
-    if N_SLOTS:
-        P(f"**[[GPU: {N_SLOTS} of {len(GPU_NAMES)} configurations have no result file yet. Write here: (1) the balanced accuracy of g01 compared with the frozen reference, with the paired-bootstrap difference "
-          "and Holm-adjusted p value; (2) the effect of colour (g01 vs g02); (3) the effect of the feature branch (g03 vs g01); (4) the ordering of the encoders (g01, g04, g05, g06, g07); (5) the shortcut control "
-          "(g08 vs g01). Delete this paragraph if the runs are not performed.]]**")
-    PB_ALL = None
-    P(("Figures {F:ft_curves}, {F:ft_bars} and {F:ft_cm} are reserved for the training curves of the adapted model, the comparison of the configurations with their intervals and the confusion matrix of the best configuration; "
-       "they are currently sample images and show no results.") if N_SLOTS else ("Figure {F:ft_curves} shows the training curves of the adapted model and Fig. {F:ft_bars} compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. {F:ft_cm}."))
+    if CUT:
+        P("All results above use a frozen encoder. Adapting the encoder to the task (fine-tuning) was not performed in this study: eight configurations were defined and tested for correctness in code (Appendix VIII), "
+          "but they were not run, so no fine-tuning results are reported. Whether adaptation improves accuracy under the session-aware protocol, or mainly increases the use of acquisition cues, is therefore an open question.")
+    else:
+        P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
+          "the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale "
+          "(g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and "
+          "adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table {T:ft} is reserved for the results of these runs." if N_SLOTS else "Table {T:ft} lists the results of the runs.")
+        if N_SLOTS:
+            P(f"**[[GPU: {N_SLOTS} of {len(GPU_NAMES)} configurations have no result file yet. Write here: (1) the balanced accuracy of g01 compared with the frozen reference, with the paired-bootstrap difference "
+              "and Holm-adjusted p value; (2) the effect of colour (g01 vs g02); (3) the effect of the feature branch (g03 vs g01); (4) the ordering of the encoders (g01, g04, g05, g06, g07); (5) the shortcut control "
+              "(g08 vs g01). Delete this paragraph if the runs are not performed.]]**")
+        PB_ALL = None
+        P(("Figures {F:ft_curves}, {F:ft_bars} and {F:ft_cm} are reserved for the training curves of the adapted model, the comparison of the configurations with their intervals and the confusion matrix of the best configuration; "
+           "they are currently sample images and show no results.") if N_SLOTS else ("Figure {F:ft_curves} shows the training curves of the adapted model and Fig. {F:ft_bars} compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. {F:ft_cm}."))
     S("Attention, saliency and embedding structure")
     XP = R / "xai_summary.json"
     EM = _json.loads((R / "embedding_summary.json").read_text())

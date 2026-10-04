@@ -39,12 +39,16 @@ def discussion_extra():
     P("The images are from a public dataset released for research. I did not link them to any identifying information and I did not attempt to. The software is a research prototype, not a medical device, and "
       "nothing in this paper supports its use for diagnosis. A tool intended for clinical use would need prospective validation on the intended population, evaluation of subgroup performance and "
       "regulatory approval, none of which is addressed here.")
-    S("Expected effect of fine-tuning")
-    P("Fine-tuning changes the question of the study because it lets the model adapt to the dataset. Two outcomes are possible and they would be informative in different ways. If adaptation of the encoder "
-      "improves the accuracy under the session-aware protocol, the frozen features were limiting and the dataset contains additional morphological information. If it improves the accuracy mainly when the background is "
-      "visible (g08) and not when it is neutralised (g01), the gain would be attributable to the shortcut. The experiments were designed so that these two readings can be told apart.")
-    if N_SLOTS:
-        P("**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table {T:ft} and Fig. {F:ft_bars}. Delete this paragraph if no run is performed.]]**")
+    S("Fine-tuning")
+    if CUT:
+        P("Fine-tuning was not performed, so this study cannot say whether adapting the encoder would help. Two outcomes would be informative in different ways: an improvement under the session-aware protocol would show that the "
+          "frozen features were limiting, whereas an improvement only when the background is visible would point to the shortcut. Configurations that allow these two readings to be told apart were prepared (Appendix VIII) but not run.")
+    else:
+        P("Fine-tuning changes the question of the study because it lets the model adapt to the dataset. Two outcomes are possible and they would be informative in different ways. If adaptation of the encoder "
+          "improves the accuracy under the session-aware protocol, the frozen features were limiting and the dataset contains additional morphological information. If it improves the accuracy mainly when the background is "
+          "visible (g08) and not when it is neutralised (g01), the gain would be attributable to the shortcut. The experiments were designed so that these two readings can be told apart.")
+        if N_SLOTS:
+            P("**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table {T:ft} and Fig. {F:ft_bars}. Delete this paragraph if no run is performed.]]**")
     S("Future work")
     P("The most valuable next step is evaluation on an external dataset acquired in a different laboratory, with the same preprocessing and without any adaptation to it. Public datasets with "
       "labelled leukemic and normal cells exist, and some of them provide patient identifiers that would also allow a validation of the capture-order proxy. A second step is the segmentation of nuclei, "

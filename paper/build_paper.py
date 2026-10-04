@@ -564,6 +564,43 @@ def appendices():
 
 
 # ================================================================== assemble
+
+# ------------------------------------------------------------------ abbreviation clean-up (the guide allows abbreviations for units only)
+_PAREN = re.compile(r" \((HDS|APC|LoG|BEEMD|EMD|IMFs?|ECE|AUROC|ROC|MIL|GLCM|LoRA|PBS|ALL|SD|CI)\)")
+_PHRASES = [
+    (r"\bStabilised HDS\b", "Stabilised hybrid diffusion"), (r"\bstabilised HDS\b", "stabilised hybrid diffusion"), (r"\bLegacy HDS\b", "Original hybrid diffusion"),
+    (r"\blegacy HDS\b", "original hybrid diffusion"), (r"\bHDS edge\b", "hybrid-diffusion edge"), (r"\bHDS\b", "hybrid diffusion"),
+    (r"\bAPC\b", "adaptive principal-curvature"), (r"\bLoG\b", "Laplacian-of-Gaussian"),
+    (r"\bpure-IMF\b", "pure-mode"), (r"\bIMF energies\b", "mode energies"), (r"\bIMFs\b", "intrinsic mode functions"), (r"\bIMF\b", "intrinsic mode function"),
+    (r"\bBEEMD\b", "ensemble mode decomposition"), (r"\bEMD\b", "empirical mode decomposition"),
+    (r"\bAUROC\b", "area under the receiver operating characteristic curve"), (r"\bROC\b", "receiver operating characteristic"),
+    (r"\bECE\b", "expected calibration error"), (r"\bGLCM\b", "grey-level co-occurrence"), (r"\bLoRA\b", "low-rank adaptation"),
+    (r"\bMIL\b", "multiple-instance learning"), (r"\bPBS\b", "peripheral blood smear"), (r"\bCPU\b", "central processor"),
+    (r"\bGPU\b", "graphics processor"), (r"\bRGB\b", "colour"), (r"\bCI\b", "confidence interval"), (r"\bSD\b", "standard deviation"),
+    (r"\bt-SNE\b", "t-distributed stochastic neighbour embedding"), (r"\bpx\b", "pixels"), (r"\bALL\b", "acute lymphoblastic leukemia"),
+]
+
+
+def _art(m, rep):
+    pre = m.group(1) or ""
+    if pre:
+        a = "an " if rep[0].lower() in "aeiou" else "a "
+        pre = (a.capitalize() if pre[0] == "A" else a)
+    return pre + rep
+
+
+def despell(t):
+    if not isinstance(t, str):
+        return t
+    t = t.replace("[[GPU", "\x00G").replace("[[PENDING", "\x00P").replace("FT-", "\x00F")
+    t = _PAREN.sub("", t)
+    for pat, rep in _PHRASES:
+        t = re.sub(r"\b(An? )?(" + pat.replace(r"\b", "") + r")", lambda m, rep=rep: _art(m, rep), t) if False else re.sub(r"(\b[Aa]n? )?" + pat, lambda m, rep=rep: _art(m, rep), t)
+    t = re.sub(r"\b(diffusion|decomposition|curvature|learning) \1\b", r"\1", t)
+    t = t.replace("Eight graphics processor", "Eight graphics-processor")
+    return t.replace("\x00G", "[[GPU").replace("\x00P", "[[PENDING").replace("\x00F", "FT-")
+
+
 def short_cap(c):
     c = re.sub(r"\*", "", c)
     c = re.split(r"\. | \(|; ", c)[0].strip().rstrip(".")
@@ -588,6 +625,10 @@ def assemble():
             order_t.append(k) if k not in order_t else None
         for k in re.findall(r"\{F:(\w+)\}", txt):
             order_f.append(k) if k not in order_f else None
+    if META.get("gpu_placeholders", "keep") == "cut":
+        TABLES.pop("ft", None)
+        for k in [k for k in FIGS if k.startswith("ft_")]:
+            FIGS.pop(k)
     for k in TABLES:
         assert k in order_t, f"table {k} is never cited"
     for k in FIGS:
@@ -637,6 +678,14 @@ def assemble():
         for key in ("text", "caption", "foot"):
             if isinstance(b.get(key), str):
                 b[key] = sub(b[key])
+        if b["t"] in ("p", "sh", "small", "table", "fig", "toc"):
+            for key in ("text", "caption", "foot"):
+                if isinstance(b.get(key), str) and not b.get("noabbr"):
+                    b[key] = despell(b[key])
+            if b["t"] == "table" and b.get("header"):
+                b["header"] = [despell(h) for h in b["header"]]
+                if b["header"][0] == "Stage":
+                    b["rows"] = [[despell(x) for x in r] for r in b["rows"]]
         if "rows" in b:
             b["rows"] = [[sub(x) for x in r] for r in b["rows"]]
     left = [b for b in blocks if re.search(r"\{[TF]:|\{c\(|\{n\(|\{\{|\{[A-Z_]+\}", " ".join(str(v) for v in b.values()))]
