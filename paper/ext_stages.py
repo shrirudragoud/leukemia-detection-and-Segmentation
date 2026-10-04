@@ -125,3 +125,39 @@ if SA is None:
       [{"w": 4, "align": "left"}, {"w": 1.5, "align": "right"}], ["Features", "Balanced accuracy"], [["[[PENDING]]", "[[PENDING]]"]])
 
 SA_FULL = [r for r in SA["rows"] if r["variant"].startswith("... + pure-IMF")][0] if SA else {"balanced_accuracy": float("nan")}
+
+LS = json.loads((R / "stage_layer_stats.json").read_text())
+_LN = [("cell_hds_edge_mean", "Hybrid-diffusion edge indicator, mean inside the cell", 3), ("cell_hds_edge_rim_mean", "Hybrid-diffusion edge indicator, mean on the cell rim", 3),
+       ("cell_apc_mean", "Adaptive principal curvature, mean inside the cell", 3), ("cell_apc_rim_mean", "Adaptive principal curvature, mean on the rim", 3),
+       ("cell_log_mean", "Laplacian-of-Gaussian, mean inside the cell", 3), ("cell_log_rim_mean", "Laplacian-of-Gaussian, mean on the rim", 3),
+       ("cell_imf_pure_std", "Pure-mode image, standard deviation inside the cell", 3), ("cell_imf1_energy", "Mode 1 (finest) energy", 4), ("cell_imf4_energy", "Mode 4 (coarsest) energy", 4)]
+T("stage_out", "Values of the stage outputs inside the segmented cells, by class: median and interquartile range (in parentheses) over cells that do not touch the border, from the pass with hybrid diffusion and ensemble mode decomposition enabled. "
+   "The rim is the two-pixel band at the border of the cell. The values are descriptive.",
+  [{"w": 3.4, "align": "left"}] + [{"w": 2, "align": "right"}] * 4,
+  ["Output"] + [f"{k} (n = {LS['n_cells'][k]})" for k in CL],
+  [[lab] + [f"{LS['medians'][key][k]['median']:.{dec}f} ({LS['medians'][key][k]['q25']:.{dec}f} to {LS['medians'][key][k]['q75']:.{dec}f})" for k in CL] for key, lab, dec in _LN])
+
+
+@section("results_stage_outputs")
+def results_stage_outputs():
+    S("What the outputs of the processing stages tell us")
+    m = LS["medians"]
+    g = lambda key, k: m[key][k]["median"]  # noqa: E731
+    rat = {k: g("cell_hds_edge_rim_mean", k) / g("cell_hds_edge_mean", k) for k in CL}
+    P("This subsection states, stage by stage, what the output images of Figs. {F:st_denoise} to {F:st_cells} show, what can be read from them, and what they are not. Table {T:stage_out} gives the corresponding values inside the cells of each class.")
+    P(f"*Hybrid-diffusion edge detection.* The edge indicator is an image in which pixels that lie on strong intensity edges are close to 1 and flat regions are close to 0. In the output images (Fig. {{F:st_hds}}) the cell outlines, the outlines of red blood cells and "
+      f"the scale bar are bright, while the interior of cells and the background are dark. Measured inside the segmented cells (Table {{T:stage_out}}), the indicator was {rat['Benign']:.1f}, {rat['Early']:.1f}, {rat['Pre']:.1f} and {rat['Pro']:.1f} times larger on the rim than in the interior for Benign, Early, Pre and Pro cells, "
+      "so the edge detector does concentrate on the cell boundary, as intended. The statistics of this layer inside a cell therefore describe the sharpness and the contrast of its boundary and the amount of edge-like texture inside it. "
+      "What the output does not give is a segmentation: it marks every edge, whether of a leukocyte, a red cell or debris, and it depends on the focus of the image.")
+    P(f"*Adaptive principal-curvature response.* The output (Fig. {{F:st_layers}}) is large where the image intensity bends sharply, which includes the outline of a cell, thin dark folds and the narrow gaps between cells. In the cells of this dataset its median "
+      f"value inside the cell was {g('cell_apc_mean', 'Benign'):.2f} for Benign, {g('cell_apc_mean', 'Early'):.2f} for Early, {g('cell_apc_mean', 'Pre'):.2f} for Pre and {g('cell_apc_mean', 'Pro'):.2f} for Pro, with the rim only slightly higher than the interior, so the response reflects the fine texture of the cell as much as its outline. "
+      "As noted above, blood smears contain no vessels, so the layer is not a vessel segmentation; it is a measure of local curvature, used here as a texture and boundary descriptor. The class differences in its median are small, and its value for classification comes from combination with other features (Table {T:stage_abl}).")
+    P(f"*Laplacian-of-Gaussian and Canny layers.* The Laplacian-of-Gaussian output responds to blob-like structures of the chosen size; the median inside the cell was {g('cell_log_mean', 'Pre'):.2f} for Pre cells against {g('cell_log_mean', 'Early'):.2f} for Early cells, and the rim values were lower than the interior values, "
+      "which is the opposite of the edge and curvature layers and shows that the layer describes the blob-like body of the cell and not its outline. The Canny output is a binary edge map and is used for inspection and not as a feature.")
+    P(f"*Ensemble mode decomposition and pure-mode selection.* The decomposition splits the luminance image into modes of decreasing spatial frequency (Fig. {{F:st_beemd}}): the first mode contains the finest detail and noise and outlines the cell edges, the second and third show texture at the scale of chromatin and small cells, "
+      "and the fourth shows structures of about the size of a cell, with a smooth residue holding the illumination. The sum of the selected modes (the pure-mode image) is therefore a band-passed detail image of the cell. "
+      f"The share of the total energy of the modes was small inside the cells (median {g('cell_imf1_energy', 'Pre'):.4f} for the finest and {g('cell_imf4_energy', 'Pre'):.4f} for the coarsest mode in Pre cells, in the units of the normalised luminance), and the pure-mode image varied inside the cell with a median standard deviation of "
+      f"{g('cell_imf_pure_std', 'Benign'):.2f} to {g('cell_imf_pure_std', 'Early'):.2f} across the classes. The selection rule retained almost every mode in all images (Contribution of the processing stages), so in this dataset the pure-mode image is practically the sum of all modes, and the selection step does not change the output in a way that I can demonstrate. "
+      "The stage is the most expensive of the pipeline, and it adds measurable information only in combination with the other features.")
+    P(f"*Morphological features.* The output is a table with one row per cell (Fig. {{F:st_cells}}, Table {{T:stage_cells}}): size, outline measures, colour, texture and layer statistics. It is the interpretable description of a cell, in contrast to the embedding of the foundation model, and it is the input of all tabular analyses of this paper. "
+      f"The class differences are modest for the outline measures and larger for size and colour (Table {{T:feat}}), and the nucleus measurements are missing for most cells because the nucleus step fails (Table {{T:dataset}}). The features are as reliable as the segmentation on which they rest, whose boundaries were not validated against annotations.")

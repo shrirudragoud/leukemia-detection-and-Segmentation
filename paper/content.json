@@ -264,240 +264,247 @@
   {
    "t": "toc",
    "level": 2,
+   "text": "What the outputs of the processing stages tell us",
+   "key": "sh:What the outputs of the processing stages tell us",
+   "page": "31"
+  },
+  {
+   "t": "toc",
+   "level": 2,
    "text": "Cell features by class",
    "key": "sh:Cell features by class",
-   "page": "31"
+   "page": "34"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Training dynamics of the headline model",
    "key": "sh:Training dynamics of the headline model",
-   "page": "32"
+   "page": "34"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Discrimination and precision",
    "key": "sh:Discrimination and precision",
-   "page": "32"
+   "page": "35"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Calibration",
    "key": "sh:Calibration",
-   "page": "33"
+   "page": "35"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Where the model fails",
    "key": "sh:Where the model fails",
-   "page": "33"
+   "page": "35"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Fine-tuning and encoder comparison",
    "key": "sh:Fine-tuning and encoder comparison",
-   "page": "34"
+   "page": "36"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Attention, saliency and embedding structure",
    "key": "sh:Attention, saliency and embedding structure",
-   "page": "35"
+   "page": "37"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Discussion",
    "key": "h:Discussion",
-   "page": "76"
+   "page": "79"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Limitations",
    "key": "sh:Limitations",
-   "page": "77"
+   "page": "80"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Implications and future work",
    "key": "sh:Implications and future work",
-   "page": "78"
+   "page": "81"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Interpretation of the headline result",
    "key": "sh:Interpretation of the headline result",
-   "page": "78"
+   "page": "81"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Relation to other work",
    "key": "sh:Relation to other work",
-   "page": "79"
+   "page": "82"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Consequences for users of the dataset",
    "key": "sh:Consequences for users of the dataset",
-   "page": "79"
+   "page": "82"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Threats to validity",
    "key": "sh:Threats to validity",
-   "page": "80"
+   "page": "83"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Response to the review of the earlier version",
    "key": "sh:Response to the review of the earlier version",
-   "page": "81"
+   "page": "84"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Ethical and clinical considerations",
    "key": "sh:Ethical and clinical considerations",
-   "page": "81"
+   "page": "84"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Fine-tuning",
    "key": "sh:Fine-tuning",
-   "page": "81"
+   "page": "84"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Future work",
    "key": "sh:Future work",
-   "page": "82"
+   "page": "85"
   },
   {
    "t": "toc",
    "level": 2,
    "text": "Conclusion",
    "key": "sh:Conclusion",
-   "page": "82"
+   "page": "85"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Acknowledgments",
    "key": "h:Acknowledgments",
-   "page": "83"
+   "page": "86"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Literature Cited",
    "key": "h:Literature Cited",
-   "page": "83"
+   "page": "86"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix I. Per-fold results of the headline model",
    "key": "h:Appendix I. Per-fold results of the headline model",
-   "page": "87"
+   "page": "90"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix II. Superseded random-block ablation",
    "key": "h:Appendix II. Superseded random-block ablation",
-   "page": "89"
+   "page": "92"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix III. Definitions of the per-cell features",
    "key": "h:Appendix III. Definitions of the per-cell features",
-   "page": "90"
+   "page": "93"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix IV. Software and prepared experiments",
    "key": "h:Appendix IV. Software and prepared experiments",
-   "page": "91"
+   "page": "94"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix V. Reproducing the results",
    "key": "h:Appendix V. Reproducing the results",
-   "page": "95"
+   "page": "98"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix VI. Images misclassified by the headline model",
    "key": "h:Appendix VI. Images misclassified by the headline model",
-   "page": "96"
+   "page": "99"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix VII. Training logs of the five folds",
    "key": "h:Appendix VII. Training logs of the five folds",
-   "page": "99"
+   "page": "102"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix VIII. Configurations of the fine-tuning experiments",
    "key": "h:Appendix VIII. Configurations of the fine-tuning experiments",
-   "page": "102"
+   "page": "105"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix IX. Algorithms in pseudocode",
    "key": "h:Appendix IX. Algorithms in pseudocode",
-   "page": "103"
+   "page": "106"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix X. Glossary of terms and abbreviations",
    "key": "h:Appendix X. Glossary of terms and abbreviations",
-   "page": "104"
+   "page": "107"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix XI. Source listings of the core algorithms",
    "key": "h:Appendix XI. Source listings of the core algorithms",
-   "page": "105"
+   "page": "108"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix XII. Test suite",
    "key": "h:Appendix XII. Test suite",
-   "page": "119"
+   "page": "122"
   },
   {
    "t": "toc",
    "level": 1,
    "text": "Appendix XIII. Files released with the paper",
    "key": "h:Appendix XIII. Files released with the paper",
-   "page": "123"
+   "page": "126"
   },
   {
    "t": "toch",
@@ -508,203 +515,210 @@
    "level": 3,
    "text": "Table 1. Composition of the dataset and output of the segmentation stage, by class.",
    "key": "table:1",
-   "page": "37"
+   "page": "39"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 2. The processing stages, their implementation and their use in this study.",
    "key": "table:2",
-   "page": "38"
+   "page": "40"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 3. Denoising benchmark on synthetic Gaussian noise.",
    "key": "table:3",
-   "page": "39"
+   "page": "41"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 4. Stage 10: per-cell measurements of the cells of WBC-Malignant-Early-025.",
    "key": "table:4",
-   "page": "40"
+   "page": "42"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 5. Shortcut audit: balanced accuracy of a random-forest classifier that sees only the named quantity,.",
    "key": "table:5",
-   "page": "41"
+   "page": "43"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 6. Headline result: frozen DinoBloom-S with an attention-pooling head on isolated,.",
    "key": "table:6",
-   "page": "42"
+   "page": "44"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 7. Effect of the image representation on four-class balanced accuracy with a frozen DinoBloom-S.",
    "key": "table:7",
-   "page": "43"
+   "page": "45"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 8. The same classifier evaluated under different fold constructions.",
    "key": "table:8",
-   "page": "44"
+   "page": "46"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 9. Training images close in capture number to the test images are removed from random-block folds.",
    "key": "table:9",
-   "page": "45"
+   "page": "47"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 10. Contiguous folds with an increasing minimum gap between the training images and the test segment.",
    "key": "table:10",
-   "page": "46"
+   "page": "48"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table 11. Contribution of the processing stages to classification.",
    "key": "table:11",
-   "page": "47"
-  },
-  {
-   "t": "toc",
-   "level": 3,
-   "text": "Table 12. Per-cell features by class: median and interquartile range.",
-   "key": "table:12",
-   "page": "48"
-  },
-  {
-   "t": "toc",
-   "level": 3,
-   "text": "Table 13. Fine-tuning and encoder comparison under the same five contiguous session-aware folds.",
-   "key": "table:13",
    "page": "49"
+  },
+  {
+   "t": "toc",
+   "level": 3,
+   "text": "Table 12. Values of the stage outputs inside the segmented cells, by class: median and interquartile range.",
+   "key": "table:12",
+   "page": "50"
+  },
+  {
+   "t": "toc",
+   "level": 3,
+   "text": "Table 13. Per-cell features by class: median and interquartile range.",
+   "key": "table:13",
+   "page": "51"
+  },
+  {
+   "t": "toc",
+   "level": 3,
+   "text": "Table 14. Fine-tuning and encoder comparison under the same five contiguous session-aware folds.",
+   "key": "table:14",
+   "page": "52"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A1. Per-fold results of the headline model.",
    "key": "table:A1",
-   "page": "87"
+   "page": "90"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A2. Per-class recall of each fold.",
    "key": "table:A2",
-   "page": "87"
+   "page": "90"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A3. Pooled out-of-fold confusion matrix of the headline model.",
    "key": "table:A3",
-   "page": "87"
+   "page": "90"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A4. Confusion matrices of the five folds.",
    "key": "table:A4",
-   "page": "87"
+   "page": "90"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A5. Representation ablation with random 37-image blocks.",
    "key": "table:A5",
-   "page": "89"
+   "page": "92"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A6. Per-cell features computed by the preprocessing package.",
    "key": "table:A6",
-   "page": "90"
+   "page": "93"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A7. Misclassified images.",
    "key": "table:A7",
-   "page": "96"
+   "page": "99"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A8. Epoch log of fold 1.",
    "key": "table:A8",
-   "page": "99"
+   "page": "102"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A9. Epoch log of fold 2.",
    "key": "table:A9",
-   "page": "99"
+   "page": "102"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A10. Epoch log of fold 3.",
    "key": "table:A10",
-   "page": "100"
+   "page": "103"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A11. Epoch log of fold 4.",
    "key": "table:A11",
-   "page": "100"
+   "page": "103"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A12. Epoch log of fold 5.",
    "key": "table:A12",
-   "page": "101"
+   "page": "104"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A13. Settings that differ between the fine-tuning configurations.",
    "key": "table:A13",
-   "page": "102"
+   "page": "105"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A14. Settings shared by all fine-tuning configurations.",
    "key": "table:A14",
-   "page": "102"
+   "page": "105"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A15. Glossary.",
    "key": "table:A15",
-   "page": "104"
+   "page": "107"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Table A16. Result files and the scripts that produce them.",
    "key": "table:A16",
-   "page": "123"
+   "page": "126"
   },
   {
    "t": "toch",
@@ -715,182 +729,182 @@
    "level": 3,
    "text": "Figure 1. Processing pipeline.",
    "key": "fig:1",
-   "page": "50"
+   "page": "53"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 2. Cell segmentation.",
    "key": "fig:2",
-   "page": "51"
+   "page": "54"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 3. Capture-order structure of the dataset.",
    "key": "fig:3",
-   "page": "52"
+   "page": "55"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 4. Stage 1, stain normalisation.",
    "key": "fig:4",
-   "page": "53"
+   "page": "56"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 5. Stage 2, denoising of the luminance of WBC-Malignant-Early-025.",
    "key": "fig:5",
-   "page": "54"
+   "page": "57"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 6. Stage 3, hybrid-diffusion edge indicator.",
    "key": "fig:6",
-   "page": "55"
+   "page": "58"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 7. Stages 4 and 5, response layers of WBC-Malignant-Early-025.",
    "key": "fig:7",
-   "page": "56"
+   "page": "59"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 8. Stages 6 and 7, ensemble mode decomposition and pure-mode selection for the luminance of WBC-Malignant-Early-025.",
    "key": "fig:8",
-   "page": "57"
+   "page": "60"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 9. Stage 8, cell and nucleus segmentation for one image per class.",
    "key": "fig:9",
-   "page": "58"
+   "page": "61"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 10. Stage 9, shortcut neutralisation.",
    "key": "fig:10",
-   "page": "59"
+   "page": "62"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 11. Stage 9, outputs for WBC-Malignant-Early-025: the neutralised image, its grey version, and the.",
    "key": "fig:11",
-   "page": "60"
+   "page": "63"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 12. Stage 10, cells of WBC-Malignant-Early-025 numbered as in Table 4.",
    "key": "fig:12",
-   "page": "61"
+   "page": "64"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 13. Training of the attention head.",
    "key": "fig:13",
-   "page": "62"
+   "page": "65"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 14. Example images of the four classes.",
    "key": "fig:14",
-   "page": "63"
+   "page": "66"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 15. Denoising benchmark.",
    "key": "fig:15",
-   "page": "64"
+   "page": "67"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 16. (a) Pooled out-of-fold confusion matrix.",
    "key": "fig:16",
-   "page": "65"
+   "page": "68"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 17. Balanced accuracy of the five input representations.",
    "key": "fig:17",
-   "page": "66"
+   "page": "69"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 18. Dependence of accuracy on proximity in capture number.",
    "key": "fig:18",
-   "page": "67"
+   "page": "70"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 19. Discrimination of each class from the other three on the pooled out-of-fold predictions.",
    "key": "fig:19",
-   "page": "68"
+   "page": "71"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 20. Calibration of the temperature-scaled probabilities on the pooled out-of-fold predictions.",
    "key": "fig:20",
-   "page": "69"
+   "page": "72"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 21. Dependence of the accuracy of the headline model on the number of cells that the pipeline found in.",
    "key": "fig:21",
-   "page": "70"
+   "page": "73"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 22. Training curves of the low-rank adaptation of DinoBloom-S.",
    "key": "fig:22",
-   "page": "71"
+   "page": "74"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 23. Balanced accuracy of the fine-tuned configurations.",
    "key": "fig:23",
-   "page": "72"
+   "page": "75"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 24. Confusion matrix of the best fine-tuned configuration.",
    "key": "fig:24",
-   "page": "73"
+   "page": "76"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 25. Attention of the headline model for one correctly classified test image of each class.",
    "key": "fig:25",
-   "page": "74"
+   "page": "77"
   },
   {
    "t": "toc",
    "level": 3,
    "text": "Figure 26. Two-dimensional t-distributed stochastic neighbour embedding projection of the image embeddings of the frozen headline encoder.",
    "key": "fig:26",
-   "page": "75"
+   "page": "78"
   },
   {
    "t": "pb"
@@ -1345,11 +1359,39 @@
   },
   {
    "t": "sh",
+   "text": "What the outputs of the processing stages tell us"
+  },
+  {
+   "t": "p",
+   "text": "This subsection states, stage by stage, what the output images of Figs. 5 to 12 show, what can be read from them, and what they are not. Table 12 gives the corresponding values inside the cells of each class."
+  },
+  {
+   "t": "p",
+   "text": "*Hybrid-diffusion edge detection.* The edge indicator is an image in which pixels that lie on strong intensity edges are close to 1 and flat regions are close to 0. In the output images (Fig. 6) the cell outlines, the outlines of red blood cells and the scale bar are bright, while the interior of cells and the background are dark. Measured inside the segmented cells (Table 12), the indicator was 2.1, 2.8, 2.8 and 2.5 times larger on the rim than in the interior for Benign, Early, Pre and Pro cells, so the edge detector does concentrate on the cell boundary, as intended. The statistics of this layer inside a cell therefore describe the sharpness and the contrast of its boundary and the amount of edge-like texture inside it. What the output does not give is a segmentation: it marks every edge, whether of a leukocyte, a red cell or debris, and it depends on the focus of the image."
+  },
+  {
+   "t": "p",
+   "text": "*Adaptive principal-curvature response.* The output (Fig. 7) is large where the image intensity bends sharply, which includes the outline of a cell, thin dark folds and the narrow gaps between cells. In the cells of this dataset its median value inside the cell was 0.23 for Benign, 0.24 for Early, 0.22 for Pre and 0.21 for Pro, with the rim only slightly higher than the interior, so the response reflects the fine texture of the cell as much as its outline. As noted above, blood smears contain no vessels, so the layer is not a vessel segmentation; it is a measure of local curvature, used here as a texture and boundary descriptor. The class differences in its median are small, and its value for classification comes from combination with other features (Table 11)."
+  },
+  {
+   "t": "p",
+   "text": "*Laplacian-of-Gaussian and Canny layers.* The Laplacian-of-Gaussian output responds to blob-like structures of the chosen size; the median inside the cell was 0.27 for Pre cells against 0.32 for Early cells, and the rim values were lower than the interior values, which is the opposite of the edge and curvature layers and shows that the layer describes the blob-like body of the cell and not its outline. The Canny output is a binary edge map and is used for inspection and not as a feature."
+  },
+  {
+   "t": "p",
+   "text": "*Ensemble mode decomposition and pure-mode selection.* The decomposition splits the luminance image into modes of decreasing spatial frequency (Fig. 8): the first mode contains the finest detail and noise and outlines the cell edges, the second and third show texture at the scale of chromatin and small cells, and the fourth shows structures of about the size of a cell, with a smooth residue holding the illumination. The sum of the selected modes (the pure-mode image) is therefore a band-passed detail image of the cell. The share of the total energy of the modes was small inside the cells (median 0.0008 for the finest and 0.0019 for the coarsest mode in Pre cells, in the units of the normalised luminance), and the pure-mode image varied inside the cell with a median standard deviation of 0.05 to 0.06 across the classes. The selection rule retained almost every mode in all images (Contribution of the processing stages), so in this dataset the pure-mode image is practically the sum of all modes, and the selection step does not change the output in a way that I can demonstrate. The stage is the most expensive of the pipeline, and it adds measurable information only in combination with the other features."
+  },
+  {
+   "t": "p",
+   "text": "*Morphological features.* The output is a table with one row per cell (Fig. 12, Table 4): size, outline measures, colour, texture and layer statistics. It is the interpretable description of a cell, in contrast to the embedding of the foundation model, and it is the input of all tabular analyses of this paper. The class differences are modest for the outline measures and larger for size and colour (Table 13), and the nucleus measurements are missing for most cells because the nucleus step fails (Table 1). The features are as reliable as the segmentation on which they rest, whose boundaries were not validated against annotations."
+  },
+  {
+   "t": "sh",
    "text": "Cell features by class"
   },
   {
    "t": "p",
-   "text": "Table 12 summarises the per-cell measurements for the 26202 cells that do not touch the border. Cell size differed between classes: the median area was 360 pixels for Benign, 486 for Early, 447 for Pre and 401 for Pro, with the Benign cells the smallest. Measures of the outline - aspect ratio, solidity and circularity - were close to identical in the four classes (for example, the median solidity was 0.95 to 0.96 in all of them), so the medians of the outline measures were similar across classes, although a random forest on image-level shape features reached 0.685 (Table 5), so similar medians do not mean that shape carries no class information. Texture measures differed modestly."
+   "text": "Table 13 summarises the per-cell measurements for the 26202 cells that do not touch the border. Cell size differed between classes: the median area was 360 pixels for Benign, 486 for Early, 447 for Pre and 401 for Pro, with the Benign cells the smallest. Measures of the outline - aspect ratio, solidity and circularity - were close to identical in the four classes (for example, the median solidity was 0.95 to 0.96 in all of them), so the medians of the outline measures were similar across classes, although a random forest on image-level shape features reached 0.685 (Table 5), so similar medians do not mean that shape carries no class information. Texture measures differed modestly."
   },
   {
    "t": "p",
@@ -1397,7 +1439,7 @@
   },
   {
    "t": "p",
-   "text": "The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale (g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table 13 is reserved for the results of these runs."
+   "text": "The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale (g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table 14 is reserved for the results of these runs."
   },
   {
    "t": "p",
@@ -2528,6 +2570,109 @@
   },
   {
    "t": "table",
+   "caption": "Values of the stage outputs inside the segmented cells, by class: median and interquartile range (in parentheses) over cells that do not touch the border, from the pass with hybrid diffusion and ensemble mode decomposition enabled. The rim is the two-pixel band at the border of the cell. The values are descriptive.",
+   "cols": [
+    {
+     "w": 3.4,
+     "align": "left"
+    },
+    {
+     "w": 2,
+     "align": "right"
+    },
+    {
+     "w": 2,
+     "align": "right"
+    },
+    {
+     "w": 2,
+     "align": "right"
+    },
+    {
+     "w": 2,
+     "align": "right"
+    }
+   ],
+   "header": [
+    "Output",
+    "Benign (n = 2964)",
+    "Early (n = 5502)",
+    "Pre (n = 13852)",
+    "Pro (n = 3884)"
+   ],
+   "rows": [
+    [
+     "Hybrid-diffusion edge indicator, mean inside the cell",
+     "0.064 (0.036 to 0.103)",
+     "0.076 (0.063 to 0.093)",
+     "0.064 (0.041 to 0.091)",
+     "0.079 (0.061 to 0.100)"
+    ],
+    [
+     "Hybrid-diffusion edge indicator, mean on the cell rim",
+     "0.135 (0.073 to 0.229)",
+     "0.214 (0.176 to 0.256)",
+     "0.176 (0.108 to 0.244)",
+     "0.200 (0.152 to 0.255)"
+    ],
+    [
+     "Adaptive principal curvature, mean inside the cell",
+     "0.227 (0.168 to 0.344)",
+     "0.235 (0.202 to 0.275)",
+     "0.218 (0.167 to 0.276)",
+     "0.215 (0.180 to 0.261)"
+    ],
+    [
+     "Adaptive principal curvature, mean on the rim",
+     "0.243 (0.188 to 0.334)",
+     "0.263 (0.232 to 0.294)",
+     "0.259 (0.220 to 0.293)",
+     "0.219 (0.189 to 0.253)"
+    ],
+    [
+     "Laplacian-of-Gaussian, mean inside the cell",
+     "0.301 (0.209 to 0.464)",
+     "0.319 (0.264 to 0.382)",
+     "0.270 (0.194 to 0.348)",
+     "0.283 (0.227 to 0.349)"
+    ],
+    [
+     "Laplacian-of-Gaussian, mean on the rim",
+     "0.208 (0.149 to 0.305)",
+     "0.201 (0.170 to 0.233)",
+     "0.162 (0.132 to 0.196)",
+     "0.167 (0.140 to 0.198)"
+    ],
+    [
+     "Pure-mode image, standard deviation inside the cell",
+     "0.053 (0.041 to 0.069)",
+     "0.058 (0.050 to 0.065)",
+     "0.052 (0.045 to 0.059)",
+     "0.048 (0.041 to 0.056)"
+    ],
+    [
+     "Mode 1 (finest) energy",
+     "0.0007 (0.0004 to 0.0011)",
+     "0.0009 (0.0006 to 0.0012)",
+     "0.0008 (0.0005 to 0.0010)",
+     "0.0006 (0.0004 to 0.0009)"
+    ],
+    [
+     "Mode 4 (coarsest) energy",
+     "0.0019 (0.0012 to 0.0031)",
+     "0.0019 (0.0014 to 0.0025)",
+     "0.0019 (0.0013 to 0.0026)",
+     "0.0016 (0.0012 to 0.0021)"
+    ]
+   ],
+   "foot": null,
+   "num": "12"
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "table",
    "caption": "Per-cell features by class: median and interquartile range (in parentheses) over cells that do not touch the image border. The statistics are descriptive; cells of the same image are not independent, so no significance tests are given.",
    "cols": [
     {
@@ -2652,7 +2797,7 @@
     ]
    ],
    "foot": null,
-   "num": "12"
+   "num": "13"
   },
   {
    "t": "pb"
@@ -2769,7 +2914,7 @@
     ]
    ],
    "foot": null,
-   "num": "13"
+   "num": "14"
   },
   {
    "t": "pb"
@@ -2997,7 +3142,7 @@
   {
    "t": "fig",
    "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-BARS.png",
-   "caption": "**[SAMPLE IMAGE - tag FT-BARS - replace with the real plot: python scripts/make_ft_figures.py]** Balanced accuracy of the fine-tuned configurations. One marker per configuration of Table 13 with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.",
+   "caption": "**[SAMPLE IMAGE - tag FT-BARS - replace with the real plot: python scripts/make_ft_figures.py]** Balanced accuracy of the fine-tuned configurations. One marker per configuration of Table 14 with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.",
    "width_in": 5.8,
    "num": "23"
   },
@@ -3148,7 +3293,7 @@
   },
   {
    "t": "p",
-   "text": "**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table 13 and Fig. 23. Delete this paragraph if no run is performed.]]**"
+   "text": "**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table 14 and Fig. 23. Delete this paragraph if no run is performed.]]**"
   },
   {
    "t": "sh",

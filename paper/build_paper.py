@@ -414,6 +414,7 @@ def build():
         S("Fine-tuning")
         P("Fine-tuned runs completed by the author are listed in Table {T:ft}.")
     ext("results_stages")
+    ext("results_stage_outputs")
     ext("results_extra")
     PB_FIGS_MARK.append(len(BODY))
 

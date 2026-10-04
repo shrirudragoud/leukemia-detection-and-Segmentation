@@ -20,3 +20,17 @@ for c in cols:
         out["features"][c][k] = {"q25": float(q[0]), "median": float(q[1]), "q75": float(q[2])}
 json.dump(out, open("docs/results/feature_stats.json", "w"), indent=1)
 print(out["per_class_n"])
+
+# ---- per-class medians of the response-layer statistics (full run with HDS and BEEMD enabled)
+full = pd.read_csv("data/full_run_all/cells.csv")
+full = full[full["touches_border"] == 0]
+lcols = ["cell_apc_mean", "cell_apc_rim_mean", "cell_log_mean", "cell_log_rim_mean", "cell_hds_edge_mean", "cell_hds_edge_rim_mean",
+         "cell_imf_pure_mean", "cell_imf_pure_std", "cell_imf1_energy", "cell_imf2_energy", "cell_imf3_energy", "cell_imf4_energy"]
+layers = {"n_cells": {k: int(len(g)) for k, g in full.groupby("class_name")}, "medians": {}}
+for c in lcols:
+    layers["medians"][c] = {}
+    for k, g in full.groupby("class_name"):
+        q = np.quantile(g[c].dropna().to_numpy(), [0.25, 0.5, 0.75])
+        layers["medians"][c][k] = {"q25": float(q[0]), "median": float(q[1]), "q75": float(q[2])}
+json.dump(layers, open("docs/results/stage_layer_stats.json", "w"), indent=1)
+print(layers["n_cells"])
