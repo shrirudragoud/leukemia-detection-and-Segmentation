@@ -1,0 +1,4 @@
+image_id,rel_path,class_name,class_id_binary,class_id_4way,split,sha256
+WBC-Malignant-Early-012,Early/WBC-Malignant-Early-012.jpg,Early,1,1,train,6775f8e4f8a8d8f23dc80cd58f4ef6ca86ba2bf63ef9199cd063c926295f46bd
+WBC-Malignant-Pro-002,Pro/WBC-Malignant-Pro-002.jpg,Pro,1,3,train,81fe374f373278d6376d07a1614f4a060a0e79a9c6c0c9879c831a4047b28cec
+WBC-Malignant-Pro-003,Pro/WBC-Malignant-Pro-003.jpg,Pro,1,3,test,26371b1d687fc32dc471a34c4a20bf07b1927b540e17ce9080a8e62f24bf16a7

@@ -21,3 +21,8 @@ Thumbs.db
 # Temporary/runtime output
 *.log
 *.tmp
+
+# Packaging
+*.egg-info/
+build/
+dist/

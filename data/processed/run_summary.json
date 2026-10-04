@@ -1,0 +1,12 @@
+{
+  "package_version": "1.0.0",
+  "config_hash": "119b2ac635db57f4",
+  "n_images": 3,
+  "n_ok": 3,
+  "n_failed": 0,
+  "n_cells": 18,
+  "qc_flag_counts": {
+    "no_nuclei_resolved": 3
+  },
+  "seconds": 2.6
+}
