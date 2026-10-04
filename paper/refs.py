@@ -37,7 +37,7 @@ REFS = {
  "guo2017": ("Guo et al. 2017",
    "Guo C, Pleiss G, Sun Y, Weinberger KQ. 2017. On calibration of modern neural networks. Proc Mach Learn Res 70:1321-1330."),
  "haralick1973": ("Haralick et al. 1973",
-   "Haralick RM, Shanmugam K, Dinstein I. 1973. Textural features for image classification. IEEE Trans Syst Man Cybern 3(6):610-621."),
+   "Haralick RM, Shanmugam K, Dinstein I. 1973. Textural features for image classification. IEEE Trans Syst Man Cybern SMC-3(6):610-621."),
  "he2016": ("He et al. 2016",
    "He K, Zhang X, Ren S, Sun J. 2016. Deep residual learning for image recognition. In: Proc IEEE Conf Comput Vis Pattern Recognit. p 770-778."),
  "holm1979": ("Holm 1979",
@@ -51,7 +51,7 @@ REFS = {
  "kapoor2023": ("Kapoor and Narayanan 2023",
    "Kapoor S, Narayanan A. 2023. Leakage and the reproducibility crisis in machine-learning-based science. Patterns 4(9):100804."),
  "koch2024": ("Koch et al. 2024",
-   "Koch V, Wagner SJ, Kazeminia S, Sancar E, Hehr M, Schnabel JA, Peng T, Marr C. 2024. DinoBloom: a foundation model for generalizable cell embeddings in hematology. In: Medical Image Computing and Computer-Assisted Intervention. Cham: Springer. arXiv:2404.05022."),
+   "Koch V, Wagner SJ, Kazeminia S, Sancar E, Hehr M, Schnabel JA, Peng T, Marr C. 2024. DinoBloom: a foundation model for generalizable cell embeddings in hematology. In: Medical Image Computing and Computer-Assisted Intervention - MICCAI 2024. Cham: Springer. p 520-530. arXiv:2404.05022."),
  "kouzehkanan2022": ("Kouzehkanan et al. 2022",
    "Kouzehkanan ZM, Saghari S, Tavakoli E, Rostami P, Abaszadeh M, Mirzadeh F, Satlsar ES, Gheidishahran M, Gorgi F, Mohammadi S, Hosseini R. 2022. A large dataset of white blood cells containing cell locations and types, along with segmented nuclei and cytoplasm. Sci Rep 12:1123."),
  "labati2011": ("Labati et al. 2011",
@@ -87,7 +87,7 @@ REFS = {
  "tomasi1998": ("Tomasi and Manduchi 1998",
    "Tomasi C, Manduchi R. 1998. Bilateral filtering for gray and color images. In: Proc 6th Int Conf Comput Vis. p 839-846."),
  "vanderwalt2014": ("van der Walt et al. 2014",
-   "van der Walt S, Schonberger JL, Nunez-Iglesias J, Boulogne F, Warner JD, Yager N, Gouillart E, Yu T. 2014. scikit-image: image processing in Python. PeerJ 2:e453."),
+   "van der Walt S, Schonberger JL, Nunez-Iglesias J, Boulogne F, Warner JD, Yager N, Gouillart E, Yu T, and the scikit-image contributors. 2014. scikit-image: image processing in Python. PeerJ 2:e453."),
  "wightman2019": ("Wightman 2019",
    "Wightman R. 2019. PyTorch image models. GitHub repository, https://github.com/huggingface/pytorch-image-models."),
  "wu2009": ("Wu and Huang 2009",
@@ -129,7 +129,7 @@ REFS = {
  "roberts2021": ("Roberts et al. 2021",
    "Roberts M, Driggs D, Thorpe M, Gilbey J, Yeung M, Ursprung S, Aviles-Rivero AI, Etmann C, McCague C, Beer L, and others. 2021. Common pitfalls and recommendations for using machine learning to detect and prognosticate for COVID-19 using chest radiographs and CT scans. Nat Mach Intell 3:199-217."),
  "caron2021": ("Caron et al. 2021",
-   "Caron M, Touvron H, Misra I, Jegou H, Mairal J, Bojanowski P, Joulin A. 2021. Emerging properties in self-supervised vision transformers. In: Proc IEEE/CVF Int Conf Comput Vis. p 9650-9660."),
+   "Caron M, Touvron H, Misra I, Jegou H, Mairal J, Bojanowski P, Joulin A. 2021. Emerging properties in self-supervised vision transformers. In: Proc IEEE/CVF Int Conf Comput Vis. p 9630-9640."),
 }
 
 

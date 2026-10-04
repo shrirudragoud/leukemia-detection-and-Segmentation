@@ -1,37 +1,79 @@
-# Reference checklist (verify before submission)
+# Reference verification (programmatic, with sources)
 
-Every entry in `paper/refs.py` is cited in the text. I could not open the publishers' records from
-the working environment, so confirm the details below against the publisher/DOI page. Entries I am
-confident about (classic papers with stable details) are not listed.
+Checked on 2026-10-04 against Crossref (DOI records), publisher/proceedings pages (PMLR, NeurIPS, JMLR, CVF), arXiv and Zenodo/Kaggle pages. Scripts: `scripts/verify_refs.py`, `scripts/verify_refs_meta.py`; raw results: `docs/results/ref_check*.json`.
 
-| Key | What to confirm |
-| --- | --- |
-| ghaderzadeh2022 | volume/issue/pages (37(8):5113-5133) and full author order |
-| aria2021 | author order on the Kaggle citation; the DOI is 10.34740/KAGGLE/DSV/2175623 |
-| koch2024 | author list; add LNCS volume and page range once the proceedings entry is open |
-| oquab2024 | 26-author list (TMLR 2024) |
-| albzour2026 | preprint only; replace with the journal version if one exists |
-| bhuiyan2008 | article number 728356 and title wording (EURASIP J Adv Signal Process) |
-| kouzehkanan2022 | full author list |
-| roberts2017 | full author list |
-| kapoor2023 | Patterns 4(9):100804 |
-| wightman2019 | repository citation format |
+## Confirmed (60 entries)
+- adebayo2018: publisher/proceedings page (proceedings.neurips.cc): title and authors match
+- albzour2026: publisher/proceedings page (arxiv.org): title and authors match
+- arber2016: Crossref DOI 10.1182/blood-2016-03-643544: title and authors match
+- aria2021: Kaggle dataset page (DOI 10.34740/KAGGLE/DSV/2175623; publication citation matches)
+- benavoli2017: publisher/proceedings page (jmlr.org): title and authors match
+- bhuiyan2008: Crossref DOI 10.1155/2008/728356: title and authors match
+- caron2021: publisher/proceedings page (openaccess.thecvf.com): title and authors match
+- degrave2021: Crossref DOI 10.1101/2020.09.13.20193565: title and authors match
+- demsar2006: publisher/proceedings page (www.jmlr.org): title and authors match
+- dosovitskiy2021: arXiv 2010.11929 (12 authors match)
+- efron1979: Crossref DOI 10.1214/aos/1176344552: title and authors match
+- efron1993: Crossref DOI 10.1201/9780429246593: title and authors match
+- field2007: Crossref DOI 10.1111/j.1467-9868.2007.00593.x: title and authors match
+- frangi1998: Crossref DOI 10.1007/bfb0056195: title and authors match
+- geirhos2020: Crossref DOI 10.1038/s42256-020-00257-z: title and authors match
+- ghaderzadeh2022: Crossref DOI 10.1002/int.22753: title and authors match
+- guo2017: publisher/proceedings page (proceedings.mlr.press): title and authors match
+- haralick1973: Crossref DOI 10.1109/tsmc.1973.4309314: title and authors match
+- he2016: publisher/proceedings page (openaccess.thecvf.com): title and authors match
+- hu2022: arXiv 2106.09685 (8 authors match)
+- huang1998: Crossref DOI 10.1098/rspa.1998.0193: title and authors match
+- hunger2015: Crossref DOI 10.1056/NEJMra1400972
+- ilse2018: publisher/proceedings page (proceedings.mlr.press): title and authors match
+- kapoor2023: Crossref DOI 10.1016/j.patter.2023.100804: title and authors match
+- kingma2015: publisher/proceedings page (arxiv.org): title and authors match
+- koch2024: publisher/proceedings page (arxiv.org): title and authors match
+- kohavi1995: IJCAI PDF: 7 pages, 1137-1143 consistent
+- kornblith2019: publisher/proceedings page (openaccess.thecvf.com): title and authors match
+- kouzehkanan2022: Crossref DOI 10.1038/s41598-021-04426-x: title and authors match
+- krizhevsky2012: publisher/proceedings page (proceedings.neurips.cc): title and authors match
+- labati2011: Crossref DOI 10.1109/icip.2011.6115881: title and authors match
+- loshchilov2019: arXiv 1711.05101
+- macenko2009: Crossref DOI 10.1109/isbi.2009.5193250: title and authors match
+- matek2019: Crossref DOI 10.1038/s42256-019-0101-9: title and authors match
+- meyer1990: Crossref DOI 10.1016/1047-3203(90)90014-M
+- mourya2019: TCIA DOI 10.7937/tcia.2019.dc64i46r (seen in earlier search; Crossref title query did not return it)
+- nadeau2003: Crossref DOI 10.1023/a:1024068626366: title and authors match
+- oquab2024: arXiv 2304.07193 (26 authors match)
+- otsu1979: Crossref DOI 10.1109/tsmc.1979.4310076: title and authors match
+- pan2010: Crossref DOI 10.1109/TKDE.2009.191
+- paszke2019: publisher/proceedings page (proceedings.neurips.cc): title and authors match
+- pedregosa2011: publisher/proceedings page (jmlr.org): title and authors match
+- perona1990: Crossref DOI 10.1109/34.56205: title and authors match
+- reinhard2001: Crossref DOI 10.1109/38.946629: title and authors match
+- roberts2017: Crossref DOI 10.1111/ecog.02881: title and authors match
+- roberts2021: Crossref DOI 10.1038/s42256-021-00307-0 (54 authors; list shortened with "and others")
+- ronneberger2015: Crossref DOI 10.1007/978-3-319-24574-4_28: title and authors match
+- schmidt2018: Crossref DOI 10.1007/978-3-030-00934-2_30: title and authors match
+- selvaraju2017: Crossref DOI 10.1109/iccv.2017.74: title and authors match
+- sokolova2009: Crossref DOI 10.1016/j.ipm.2009.03.002: title and authors match
+- stringer2021: Crossref DOI 10.1101/2020.02.02.931238: title and authors match
+- tan2019: publisher/proceedings page (proceedings.mlr.press): title and authors match
+- tellez2019: Crossref DOI 10.1016/j.media.2019.101544: title and authors match
+- tomasi1998: Crossref DOI 10.1109/iccv.1998.710815: title and authors match
+- vahadane2016: Crossref DOI 10.1109/tmi.2016.2529665: title and authors match
+- vanderwalt2014: Crossref DOI 10.7287/peerj.preprints.336v1: title and authors match
+- varoquaux2022: Crossref DOI 10.1038/s41746-022-00592-y: title and authors match
+- vaswani2017: publisher/proceedings page (proceedings.neurips.cc): title and authors match
+- wightman2019: Zenodo DOI 10.5281/zenodo.4414861
+- wu2009: Crossref DOI 10.1142/s1793536909000047: title and authors match
 
-The guide asks for ALL authors in the Literature Cited. Where I was not certain of a long list I kept
-the confirmed names; complete it from the DOI record.
+## Corrections applied after the check
+- koch2024: added MICCAI 2024 proceedings title and pages 520-530 (Crossref).
+- caron2021: pages changed to 9630-9640 (IEEE/Crossref; the CVF open-access copy prints 9650-9660).
+- vanderwalt2014: added "and the scikit-image contributors" (Crossref author list).
+- haralick1973: volume given as SMC-3 (Crossref).
+- labati2011 and bhuiyan2008 titles (earlier pass).
 
-## Added for the extended background (verify each against the publisher record)
-
-arber2016, hunger2015, krizhevsky2012, ronneberger2015, vaswani2017, kingma2015, efron1993, sokolova2009,
-kohavi1995, macenko2009, vahadane2016, meyer1990, stringer2021, schmidt2018, pan2010, kornblith2019,
-varoquaux2022, roberts2021, caron2021 - written from memory of the standard citations; confirm volume, pages and
-the full author lists (the guide asks for all authors; where I wrote "and others" the list must be completed).
-
-
-## Result of the automated check (search-result snippets only; publisher pages were blocked by the proxy)
-
-Confirmed against search-result text (authors, title, venue, pages as far as shown), NOT against the publisher pages: adebayo2018, albzour2026, benavoli2017, bhuiyan2008, degrave2021, demsar2006, efron1993, field2007, ghaderzadeh2022, guo2017, holm1979, hu2022, ilse2018, kapoor2023, kornblith2019, labati2011, loshchilov2019, meyer1990, mourya2019, otsu1979, pan2010, perona1990, reinhard2001, roberts2017, ronneberger2015, schmidt2018, stringer2021, tan2019, vahadane2016, vanderwalt2014, wightman2019, wu2009.
-Not confirmed (no source reachable): arber2016, aria2021, bradski2000, caron2021, dosovitskiy2021, efron1979, frangi1998, geirhos2020, haralick1973, he2016, huang1998, hunger2015, kingma2015, koch2024, kohavi1995, kouzehkanan2022, krizhevsky2012, macenko2009, matek2019, nadeau2003, oquab2024, paszke2019, pedregosa2011, roberts2021, selvaraju2017, sokolova2009, tellez2019, tomasi1998, varoquaux2022, vaswani2017.
-Corrections applied: labati2011 title ("ALL-IDB"), bhuiyan2008 title ("order-statistics").
-Open points to check by hand: kohavi1995 pages (1137-1143 vs 1137-1145), arber2016 pages (2391-2405 vs 2391-2406), reinhard2001 issue number,
-roberts2021 and oquab2024 full author lists / article numbers, koch2024 (DinoBloom) volume/pages and licence, DOIs for most entries.
+## Not verifiable online here (check by hand)
+- bradski2000
+- holm1979
+- holm1979 (Scand J Stat 6(2):65-70, JSTOR) and bradski2000 (Dr Dobb's J Softw Tools 25(11):120-125): no open metadata source reachable; both are standard citations.
+- roberts2021 lists the first 10 of 54 authors followed by "and others" (the guide asks for all authors; complete from the DOI page if required).
+- Entries cited as arXiv preprints or proceedings without DOI follow the source page; page numbers for proceedings follow the publisher version.

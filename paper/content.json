@@ -3346,7 +3346,7 @@
   },
   {
    "t": "ref",
-   "text": "Caron M, Touvron H, Misra I, Jegou H, Mairal J, Bojanowski P, Joulin A. 2021. Emerging properties in self-supervised vision transformers. In: Proc IEEE/CVF Int Conf Comput Vis. p 9650-9660."
+   "text": "Caron M, Touvron H, Misra I, Jegou H, Mairal J, Bojanowski P, Joulin A. 2021. Emerging properties in self-supervised vision transformers. In: Proc IEEE/CVF Int Conf Comput Vis. p 9630-9640."
   },
   {
    "t": "ref",
@@ -3378,7 +3378,7 @@
   },
   {
    "t": "ref",
-   "text": "Haralick RM, Shanmugam K, Dinstein I. 1973. Textural features for image classification. IEEE Trans Syst Man Cybern 3(6):610-621."
+   "text": "Haralick RM, Shanmugam K, Dinstein I. 1973. Textural features for image classification. IEEE Trans Syst Man Cybern SMC-3(6):610-621."
   },
   {
    "t": "ref",
@@ -3410,7 +3410,7 @@
   },
   {
    "t": "ref",
-   "text": "Koch V, Wagner SJ, Kazeminia S, Sancar E, Hehr M, Schnabel JA, Peng T, Marr C. 2024. DinoBloom: a foundation model for generalizable cell embeddings in hematology. In: Medical Image Computing and Computer-Assisted Intervention. Cham: Springer. arXiv:2404.05022."
+   "text": "Koch V, Wagner SJ, Kazeminia S, Sancar E, Hehr M, Schnabel JA, Peng T, Marr C. 2024. DinoBloom: a foundation model for generalizable cell embeddings in hematology. In: Medical Image Computing and Computer-Assisted Intervention - MICCAI 2024. Cham: Springer. p 520-530. arXiv:2404.05022."
   },
   {
    "t": "ref",
@@ -3530,7 +3530,7 @@
   },
   {
    "t": "ref",
-   "text": "van der Walt S, Schonberger JL, Nunez-Iglesias J, Boulogne F, Warner JD, Yager N, Gouillart E, Yu T. 2014. scikit-image: image processing in Python. PeerJ 2:e453."
+   "text": "van der Walt S, Schonberger JL, Nunez-Iglesias J, Boulogne F, Warner JD, Yager N, Gouillart E, Yu T, and the scikit-image contributors. 2014. scikit-image: image processing in Python. PeerJ 2:e453."
   },
   {
    "t": "ref",
