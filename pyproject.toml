@@ -34,3 +34,7 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# fixtures re-imported across test modules; imports after pytest.importorskip are intentional
+"tests/*" = ["F811", "F401", "E402"]

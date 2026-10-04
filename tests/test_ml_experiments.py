@@ -33,7 +33,7 @@ def test_apply_overrides_do_not_mutate_base(synth):
 
 def test_probe_ablation_structure_ci_and_determinism(synth, tmp_path):
     r1 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "a", seeds=(0, 1), n_boot=200)
-    r2 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200)
+    run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200)
     assert [r["variant"] for r in r1["rows"]] == [v["name"] for v in VARIANTS]
     assert r1["reference"] == "shape (tabular)"
     for row in r1["rows"]:
