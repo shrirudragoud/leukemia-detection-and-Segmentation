@@ -6,6 +6,8 @@ members of one group that preprocessing kept together.
 """
 from __future__ import annotations
 
+import re
+
 import csv
 import json
 from dataclasses import dataclass
@@ -114,6 +116,8 @@ def load_index(run_dir: str | Path, task: str = "4way",
     cols = feature_columns(feature_groups)
     rows = sorted(_read_csv(run_dir / "cells.csv"), key=lambda r: (r["image_id"], int(r["cell_id"])))
     if cols and rows:
+        # `imf_energy` names 8 modes; a run with fewer BEEMD modes simply has fewer columns
+        cols = [c for c in cols if c in rows[0] or not re.fullmatch(r"cell_imf\d+_energy", c)]
         missing = [c for c in cols if c not in rows[0]]
         if missing:
             raise ValueError(f"cells.csv lacks columns {missing[:4]}...; re-run the pipeline "
