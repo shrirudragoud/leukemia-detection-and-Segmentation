@@ -36,8 +36,12 @@ src/leukemia_pp/            Production package (v1.0)
   segmentation.py           WBC instance + nucleus segmentation
   features.py  qc.py        Per-cell/per-image features; quality control
   pipeline.py  cli.py       Orchestration, multiprocessing, outputs; command line
+  hds.py  emd.py            Stabilised HDS denoiser/edge indicator; BEEMD + pure-IMF selection
+  representations.py        Optional HDS/BEEMD channels + per-cell stats of every response layer
+  dataset.py                Channel presets, train-only normalisation stats, cell crops, feature groups
   preview.py  metrics.py    QC panels; Dice / IoU for when ground-truth masks exist
-tests/                      63 pytest tests on synthetic fields with known geometry
+tests/                      94 pytest tests on synthetic fields with known geometry
+configs/                    Example configs (all_representations.json = HDS + BEEMD on)
 data/raw/                   Demo input (3 images)
 data/processed/             Demo output of the production pipeline
 ml_pipeline/                v1 implementation, frozen: the paper and docs/generate_figures.py use it
@@ -53,7 +57,7 @@ Python 3.10+.
 ```bash
 python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest                                                # 63 tests, ~15 s
+pytest                                                # 94 tests, ~30 s
 ```
 
 ## Run
@@ -89,6 +93,34 @@ different config requires a new directory or `--force`.
 
 Runs are deterministic: identical inputs and config give byte-identical CSVs regardless of worker count.
 All lengths and areas are in pixels (pixel size is not recorded in this dataset).
+
+## Optional representations (HDS, BEEMD / pure IMF) and how to decide if they help
+
+Both are **off by default** (`hds.enabled`, `beemd.enabled`); `configs/all_representations.json` turns them
+on (~0.9 s/image). Everything is computed on the stain-normalised, *un-denoised* luminance.
+
+| Stage | What it adds | Verified so far |
+| --- | --- | --- |
+| **HDS** (`hds.py`) | Denoised luminance (`hds`) and a fixed-scale edge indicator (`hds_edge`) | The prototype's scheme diverges (PSNR 22 -> 5 dB on additive noise); the stabilised rewrite (normalised diffusivities, additive fidelity term, max-principle) gains +12 dB and is bounded after 3000 iterations. Parameters were chosen on a *synthetic* benchmark. |
+| **APC / LoG / Canny** | Ridge, blob and edge layers (always on) | Border artefact fixed; per-cell mean/std/rim statistics are now features. Value for classification: unproven. |
+| **BEEMD** (`emd.py`) | `imfs` (K x H x W), `imf_residue`, per-cell IMF energies | Exact reconstruction; separates 4 px texture / 20 px structure / drift on synthetic data; seeded and deterministic. |
+| **Pure-IMF selection** | `imf_selected`, `imf_pure` | Rule = spatial-period band [3, 48] px + minimum energy; white noise lands at 2.4 px so it is rejected. This is *my* interpretable criterion: swap `select_pure_imfs` if your paper defines another. |
+| **Morphology** | Per-cell shape (area, circularity, solidity, aspect, ...) | Works. Nucleus morphology is unavailable on this data (see limitations). |
+
+**None of these has been shown to improve a classifier.** Pretrained ResNet/ViT/EfficientNet backbones
+already learn edge and texture filters, so hand-made channels frequently give no gain, can disturb transfer
+learning, and cost preprocessing time; they tend to help most on small datasets, as regularisation, or in a
+fusion branch. Decide with data, using `leukemia_pp.dataset` and the same patient-/slide-level splits throughout:
+
+1. `rgb` only (ImageNet-pretrained backbone) - the baseline everything must beat;
+2. `rgb+apc` / `rgb+edges` / `rgb+hds` / `rgb+imf` / `full` (`dataset.PRESETS`), one at a time;
+3. RGB + tabular late fusion, adding one `FEATURE_GROUPS` group at a time (shape, colour, texture, layer stats);
+4. Keep a representation only if it improves macro-F1 on validation across several seeds / folds.
+
+Extra input channels: keep the first three channels as RGB so pretrained weights stay valid, and initialise the
+additional first-conv / patch-embedding weights from the mean RGB filter scaled by ~0.1 (or use a separate
+light branch with late fusion). Use `compute_channel_stats` on the **train** split only, and `crop_cell` to feed
+single cells instead of whole fields.
 
 ## Known limitations (read before modelling)
 

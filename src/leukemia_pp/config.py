@@ -81,6 +81,51 @@ class ResponseConfig:
 
 
 @dataclass(frozen=True)
+class HDSConfig:
+    """Stabilised Hybrid Diffusion-Steered denoising / edge indicator (see hds.py)."""
+    enabled: bool = False
+    iterations: int = 30
+    dt: float = 0.2                    # must be <= 0.25 (diffusivity is normalised to <= 1)
+    # Defaults picked on a synthetic additive-noise benchmark (tests/test_hds.py); not yet
+    # validated on real tissue.
+    lam: float = 0.3                   # data-fidelity weight
+    h: float = 0.05                    # Perona-Malik contrast scale (intensity units, 0-1)
+    beta: float = 0.05                 # TV regularisation (Charbonnier) scale
+    hybrid_weight: float = 0.5         # w: PM share of the diffusivity (1 = pure PM, 0 = pure TV)
+    tol: float = 1e-4                  # stop when mean |update| falls below this
+
+    def __post_init__(self) -> None:
+        if not 0 < self.dt <= 0.25:
+            raise ValueError("HDS dt must be in (0, 0.25] for stability")
+        if not 0 <= self.hybrid_weight <= 1:
+            raise ValueError("hybrid_weight must be in [0, 1]")
+        if min(self.h, self.beta) <= 0:
+            raise ValueError("h and beta must be > 0")
+
+
+@dataclass(frozen=True)
+class BEEMDConfig:
+    """Bidimensional ensemble EMD + pure-IMF selection (see emd.py)."""
+    enabled: bool = False
+    n_imfs: int = 4                    # modes extracted (finest first); residue is separate
+    ensemble: int = 8                  # noise realisations (even: antithetic +/- pairs)
+    noise_std: float = 0.2             # noise amplitude as a fraction of the image std
+    max_sifts: int = 8
+    sd_tol: float = 0.2                # sifting stops when the normalised change falls below
+    seed: int = 0
+    # --- pure-IMF selection: keep modes in a plausible cell-scale band, reject noise / drift
+    min_scale_px: float = 3.0          # characteristic spatial period below this = noise
+    max_scale_px: float = 48.0         # above this = illumination drift / background
+    min_energy_frac: float = 0.01      # of the total detail energy
+
+    def __post_init__(self) -> None:
+        if self.ensemble < 1 or self.n_imfs < 1:
+            raise ValueError("ensemble and n_imfs must be >= 1")
+        if self.min_scale_px >= self.max_scale_px:
+            raise ValueError("min_scale_px must be < max_scale_px")
+
+
+@dataclass(frozen=True)
 class SegmentationConfig:
     # --- whole-cell (WBC) instance segmentation, on the Lab a* channel -------------------
     smooth_sigma: float = 1.0
@@ -126,6 +171,8 @@ _SECTIONS: dict[str, type] = {
     "stain": StainConfig,
     "denoise": DenoiseConfig,
     "response": ResponseConfig,
+    "hds": HDSConfig,
+    "beemd": BEEMDConfig,
     "segmentation": SegmentationConfig,
     "features": FeatureConfig,
     "qc": QCConfig,
@@ -139,6 +186,8 @@ class PipelineConfig:
     stain: StainConfig = field(default_factory=StainConfig)
     denoise: DenoiseConfig = field(default_factory=DenoiseConfig)
     response: ResponseConfig = field(default_factory=ResponseConfig)
+    hds: HDSConfig = field(default_factory=HDSConfig)
+    beemd: BEEMDConfig = field(default_factory=BEEMDConfig)
     segmentation: SegmentationConfig = field(default_factory=SegmentationConfig)
     features: FeatureConfig = field(default_factory=FeatureConfig)
     qc: QCConfig = field(default_factory=QCConfig)

@@ -156,7 +156,17 @@ AGG_KEYS = (
 )
 
 
-def aggregate_image(cell_rows: list[dict[str, float]]) -> dict[str, float]:
+def aggregate_keys(extra: list[str] | tuple[str, ...] = ()) -> list[str]:
+    return list(AGG_KEYS) + [k for k in extra if k not in AGG_KEYS]
+
+
+def aggregate_columns(extra: list[str] | tuple[str, ...] = ()) -> list[str]:
+    return ["n_cells", "n_cells_interior", "n_cells_with_nucleus", "agg_uses_border_cells"] + [
+        f"{k}_{s}" for k in aggregate_keys(extra) for s in ("mean", "std", "max")]
+
+
+def aggregate_image(cell_rows: list[dict[str, float]],
+                    extra: list[str] | tuple[str, ...] = ()) -> dict[str, float]:
     """Image-level descriptors for classical ML on whole-image labels.
 
     Cells cut by the image border have biased shape/size, so aggregation uses interior cells
@@ -169,7 +179,7 @@ def aggregate_image(cell_rows: list[dict[str, float]]) -> dict[str, float]:
         "n_cells_with_nucleus": sum(bool(r["nucleus_found"]) for r in cell_rows),
         "agg_uses_border_cells": bool(cell_rows and not interior),
     }
-    for key in AGG_KEYS:
+    for key in aggregate_keys(extra):
         vals = np.array([r[key] for r in pool], dtype=np.float64)
         vals = vals[np.isfinite(vals)]
         out[f"{key}_mean"] = float(vals.mean()) if vals.size else NAN
@@ -178,5 +188,4 @@ def aggregate_image(cell_rows: list[dict[str, float]]) -> dict[str, float]:
     return out
 
 
-AGG_COLUMNS = ["n_cells", "n_cells_interior", "n_cells_with_nucleus", "agg_uses_border_cells"] + [
-    f"{k}_{s}" for k in AGG_KEYS for s in ("mean", "std", "max")]
+AGG_COLUMNS = aggregate_columns()

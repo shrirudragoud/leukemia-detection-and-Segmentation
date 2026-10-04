@@ -27,7 +27,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from . import __version__, denoise, features, qc, responses, stain
+from . import __version__, denoise, features, qc, representations, responses, stain
 from .config import PipelineConfig
 from .io import ImageReadError, Sample, discover, read_image
 from .segmentation import Segmentation, segment
@@ -35,17 +35,42 @@ from .splits import assign_splits
 
 log = logging.getLogger(__name__)
 
-ARRAY_KEYS = ("rgb_norm", "rgb", "apc", "log", "canny", "a_score",
-              "cell_labels", "nucleus_labels", "cell_mask", "nucleus_mask")
+BASE_ARRAY_KEYS = ("rgb_norm", "rgb", "apc", "log", "canny", "a_score",
+                   "cell_labels", "nucleus_labels", "cell_mask", "nucleus_mask")
+ARRAY_KEYS = BASE_ARRAY_KEYS      # backwards-compatible alias; see array_keys(cfg)
+
+
+def array_keys(cfg: PipelineConfig) -> tuple[str, ...]:
+    extra: list[str] = []
+    if cfg.hds.enabled:
+        extra += ["hds", "hds_edge"]
+    if cfg.beemd.enabled:
+        extra += ["imfs", "imf_selected", "imf_pure", "imf_residue"]
+    return BASE_ARRAY_KEYS + tuple(extra)
+
+
+def cell_table_columns(cfg: PipelineConfig) -> list[str]:
+    return (["image_id", "class_name", "class_id_binary", "class_id_4way", "split"]
+            + features.CELL_COLUMNS + representations.channel_columns(cfg))
+
+
+def image_columns(cfg: PipelineConfig) -> list[str]:
+    return IMAGE_META_COLUMNS + QC_COLUMNS + features.aggregate_columns(_agg_extra(cfg))
+
+
+def _agg_extra(cfg: PipelineConfig) -> list[str]:
+    """Image-level aggregation of the per-cell channel statistics (means and IMF energies)."""
+    return [c for c in representations.channel_columns(cfg)
+            if c.endswith("_mean") and not c.endswith("rim_mean") or c.endswith("_energy")]
 MANIFEST_COLUMNS = ["image_id", "rel_path", "class_name", "class_id_binary", "class_id_4way",
                     "split", "sha256"]
 IMAGE_META_COLUMNS = ["image_id", "class_name", "class_id_binary", "class_id_4way", "split",
                       "height", "width"]
 QC_COLUMNS = ["sharpness", "brightness", "clipped_frac", "wbc_area_frac", "a_threshold",
               "qc_flags"]
-IMAGE_COLUMNS = IMAGE_META_COLUMNS + QC_COLUMNS + features.AGG_COLUMNS
+IMAGE_COLUMNS = IMAGE_META_COLUMNS + QC_COLUMNS + features.AGG_COLUMNS      # default config
 CELL_TABLE_COLUMNS = ["image_id", "class_name", "class_id_binary", "class_id_4way", "split"
-                      ] + features.CELL_COLUMNS
+                      ] + features.CELL_COLUMNS                              # default config
 
 
 @dataclass
@@ -87,7 +112,11 @@ def process_array(raw_bgr: np.ndarray, cfg: PipelineConfig,
         "cell_mask": seg.cell_mask,
         "nucleus_mask": seg.nucleus_mask,
     }
+    arrays.update(representations.compute(norm_bgr, cfg))
     cell_rows = features.extract_cell_features(rgb_norm, seg, cfg.features)
+    chan = representations.channel_features(arrays, seg, cfg)
+    for row in cell_rows:
+        row.update(chan[row["cell_id"]])
     n_border = sum(r["touches_border"] for r in cell_rows)
     measures = qc.measure(raw_bgr, seg)
     flags = qc.flags(measures, seg, n_border, cfg.qc)
@@ -96,7 +125,7 @@ def process_array(raw_bgr: np.ndarray, cfg: PipelineConfig,
     image_row = {
         "height": raw_bgr.shape[0], "width": raw_bgr.shape[1],
         **measures, "a_threshold": seg.a_threshold, "qc_flags": ";".join(flags),
-        **features.aggregate_image(cell_rows),
+        **features.aggregate_image(cell_rows, _agg_extra(cfg)),
     }
     return ImageResult(arrays, seg, cell_rows, image_row, flags)
 
@@ -243,8 +272,8 @@ def run(input_dir: Path, output_dir: Path, cfg: PipelineConfig | None = None,
     image_rows = sorted((r["image"] for r in ok), key=lambda r: r["image_id"])
     cell_rows = sorted((c for r in ok for c in r["cells"]),
                        key=lambda c: (c["image_id"], c["cell_id"]))
-    _write_csv(output_dir / "images.csv", IMAGE_COLUMNS, image_rows)
-    _write_csv(output_dir / "cells.csv", CELL_TABLE_COLUMNS, cell_rows)
+    _write_csv(output_dir / "images.csv", image_columns(cfg), image_rows)
+    _write_csv(output_dir / "cells.csv", cell_table_columns(cfg), cell_rows)
     failures_path = output_dir / "failures.csv"
     if failures:
         _write_csv(failures_path, ["image_id", "rel_path", "error_type", "error"], failures)
