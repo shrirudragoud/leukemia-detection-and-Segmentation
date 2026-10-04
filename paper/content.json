@@ -1101,11 +1101,11 @@
   },
   {
    "t": "p",
-   "text": "*Stage 1, stain normalisation* (Fig. 4). The stage maps the colour statistics of the foreground of each image to the reference (Methods, Formal description). The example shows that images of different classes have different background tints before normalisation and that normalisation reduces but does not remove them. It takes 6.0 ms per image."
+   "text": "*Stage 1, stain normalisation* (Fig. 4). The stage maps the colour statistics of the foreground of each image to the reference (Methods, Formal description). The example shows that images of different classes have different background tints before normalisation and that normalisation reduces but does not remove them. It takes 5.7 ms per image."
   },
   {
    "t": "p",
-   "text": "*Stage 2, denoising* (Fig. 5). The default denoiser is the bilateral filter (diameter 9, colour and space sigma 75), which preserves boundaries by weighting neighbours by both distance and similarity of intensity (Tomasi and Manduchi 1998). The stabilised diffusion is shown next to it. Both remove fine noise and keep the cell outlines; the difference image shows that the diffusion changes mostly the interior of cells and the boundaries, in places where the unfiltered image has fine texture. The bilateral filter takes 6.3 ms and the diffusion 58 ms per image; the diffusion stopped after 30 iterations in the example."
+   "text": "*Stage 2, denoising* (Fig. 5). The default denoiser is the bilateral filter (diameter 9, colour and space sigma 75), which preserves boundaries by weighting neighbours by both distance and similarity of intensity (Tomasi and Manduchi 1998). The stabilised diffusion is shown next to it. Both remove fine noise and keep the cell outlines; the difference image shows that the diffusion changes mostly the interior of cells and the boundaries, in places where the unfiltered image has fine texture. The bilateral filter takes 6.4 ms and the diffusion 58 ms per image; the diffusion stopped after 30 iterations in the example."
   },
   {
    "t": "p",
@@ -1117,7 +1117,7 @@
   },
   {
    "t": "p",
-   "text": "*Stages 6 and 7, ensemble mode decomposition and pure-mode selection* (Fig. 8). The decomposition separates the luminance into 4 modes with characteristic periods of 3.8, 7.5, 11.7, 19.9 pixels, from fine to coarse, and a smooth residue; the reconstruction error was 1.2e-07 (rounding). The decomposition takes 0.74 s per image on a central processor, which makes it the most expensive stage by an order of magnitude. The selection rule keeps a mode if its characteristic period lies between 3 and 48 pixels, which rejects pixel noise and illumination drift, and if it carries at least 1% of the detail energy. This rule is my own interpretable choice, because the project description did not define the criterion precisely. In the example, all 4 of 4 modes were kept, so the pure-mode image equals the sum of the modes; the share of images in which a mode is rejected is reported in the Results."
+   "text": "*Stages 6 and 7, ensemble mode decomposition and pure-mode selection* (Fig. 8). The decomposition separates the luminance into 4 modes with characteristic periods of 3.8, 7.5, 11.7, 19.9 pixels, from fine to coarse, and a smooth residue; the reconstruction error was 1.2e-07 (rounding). The decomposition takes 0.75 s per image on a central processor, which makes it the most expensive stage by an order of magnitude. The selection rule keeps a mode if its characteristic period lies between 3 and 48 pixels, which rejects pixel noise and illumination drift, and if it carries at least 1% of the detail energy. This rule is my own interpretable choice, because the project description did not define the criterion precisely. In the example, all 4 of 4 modes were kept, so the pure-mode image equals the sum of the modes; the share of images in which a mode is rejected is reported in the Results."
   },
   {
    "t": "p",

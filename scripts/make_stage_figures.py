@@ -66,8 +66,8 @@ z = (slice(60, 140), slice(60, 140))
 for row, sl, name in [(0, (slice(None), slice(None)), "full image"), (1, z, "zoom")]:
     show(ax[row, 0], lum[sl], f"luminance ({name})", "gray", 0, 1)
     show(ax[row, 1], lum_bil[sl], "bilateral", "gray", 0, 1)
-    show(ax[row, 2], hds_u[sl], f"stabilised HDS ({n_it} it.)", "gray", 0, 1)
-    show(ax[row, 3], np.abs(lum - hds_u)[sl], "|input - HDS| (x4)", "gray", 0, 0.25)
+    show(ax[row, 2], hds_u[sl], f"hybrid diffusion ({n_it} it.)", "gray", 0, 1)
+    show(ax[row, 3], np.abs(lum - hds_u)[sl], "|input - diffusion output| (x4)", "gray", 0, 0.25)
 fig.tight_layout(); fig.savefig(F / "stage_2_denoise.png", bbox_inches="tight"); plt.close(fig)
 out["hds_iterations_example"] = int(n_it)
 
@@ -76,14 +76,14 @@ fig, ax = plt.subplots(2, 4, figsize=(7.2, 3.9))
 for j, c in enumerate(CL):
     a = res[c].arrays
     show(ax[0, j], representations.luminance01(np.ascontiguousarray(a["rgb_norm"][..., ::-1])), f"{c}: luminance", "gray", 0, 1)
-    show(ax[1, j], a["hds_edge"], "HDS edge indicator", "gray", 0, 1)
+    show(ax[1, j], a["hds_edge"], "hybrid-diffusion edge indicator", "gray", 0, 1)
 fig.tight_layout(); fig.savefig(F / "stage_3_hds_edge.png", bbox_inches="tight"); plt.close(fig)
 
 # ---- stage 4: APC, LoG, Canny (one image)
 a = r0.arrays
 g = cv2.cvtColor(a["rgb"], cv2.COLOR_RGB2GRAY)
 fig, ax = plt.subplots(1, 4, figsize=(7.2, 2.1))
-show(ax[0], g, "grey (denoised)", "gray"); show(ax[1], a["apc"], "APC (principal curvature)", "gray", 0, 1)
+show(ax[0], g, "grey (denoised)", "gray"); show(ax[1], a["apc"], "adaptive principal curvature", "gray", 0, 1)
 show(ax[2], a["log"], "LoG", "gray", 0, 1); show(ax[3], a["canny"], "Canny edges", "gray", 0, 1)
 fig.tight_layout(); fig.savefig(F / "stage_4_layers.png", bbox_inches="tight"); plt.close(fig)
 
@@ -94,14 +94,14 @@ fig, ax = plt.subplots(2, 4, figsize=(7.2, 3.9))
 show(ax[0, 0], lum, "input luminance", "gray", 0, 1)
 for k in range(min(K, 3)):
     s = "selected" if d.selected[k] else "rejected"
-    show(ax[0, k + 1], d.imfs[k], f"IMF {k + 1}: {s}\n{d.scales[k]:.1f} px, {100 * d.energy_frac[k]:.0f}% energy", "gray", -0.15, 0.15)
+    show(ax[0, k + 1], d.imfs[k], f"Mode {k + 1}: {s}\n{d.scales[k]:.1f} px, {100 * d.energy_frac[k]:.0f}% energy", "gray", -0.15, 0.15)
 for k in range(3, min(K, 4)):
     s = "selected" if d.selected[k] else "rejected"
-    show(ax[1, 0], d.imfs[k], f"IMF {k + 1}: {s}\n{d.scales[k]:.1f} px, {100 * d.energy_frac[k]:.0f}% energy", "gray", -0.15, 0.15)
+    show(ax[1, 0], d.imfs[k], f"Mode {k + 1}: {s}\n{d.scales[k]:.1f} px, {100 * d.energy_frac[k]:.0f}% energy", "gray", -0.15, 0.15)
 if K < 4:
     ax[1, 0].axis("off")
 show(ax[1, 1], d.residue, "residue", "gray", 0, 1)
-show(ax[1, 2], d.pure, "pure-IMF reconstruction", "gray", -0.15, 0.15)
+show(ax[1, 2], d.pure, "pure-mode reconstruction", "gray", -0.15, 0.15)
 show(ax[1, 3], lum - d.imfs.sum(0) - d.residue, "input - sum of modes (0)", "gray", -1e-5, 1e-5)
 fig.tight_layout(); fig.savefig(F / "stage_5_beemd.png", bbox_inches="tight"); plt.close(fig)
 out["beemd_example"] = {"n_imfs": int(K), "selected": d.selected.tolist(), "period_px": [float(x) for x in d.scales], "energy_frac": [float(x) for x in d.energy_frac],
