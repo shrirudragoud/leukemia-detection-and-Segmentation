@@ -30,19 +30,17 @@ SLOT = "[[GPU]]"
 N_SLOTS = sum(v is None for v in GPU_RES.values())
 
 
-def PH(key, fname, title, desc, width=6.0):
-    """Placeholder figure: a grey panel naming what must replace it. If `fname` exists the real figure is used instead."""
-    real = ROOT / fname
-    path = ROOT / "paper" / "figures" / f"ph_{key}.png"
-    if real.exists():
-        Fg(key, fname, title + " " + desc, width)
+def PH(key, tag, title, desc, width=6.0):
+    """Figure that depends on GPU runs. If results_for_paper/figs/<tag>.png exists it is used as is. Otherwise the SAMPLE image (drawn by the same
+    script from synthetic data, watermarked) stands in, and the caption says which tag to replace and how."""
+    real = f"results_for_paper/figs/{tag}.png"
+    if (ROOT / real).exists():
+        Fg(key, real, title + " " + desc, width)
         return
-    fig, ax = _plt.subplots(figsize=(6.0, 3.2))
-    ax.set_facecolor("0.9"); ax.set_xticks([]); ax.set_yticks([])
-    ax.text(0.5, 0.62, "PLACEHOLDER", ha="center", va="center", fontsize=20, color="0.35", transform=ax.transAxes)
-    ax.text(0.5, 0.40, "replace with:\n" + fname, ha="center", va="center", fontsize=8, color="0.25", transform=ax.transAxes)
-    fig.savefig(path, bbox_inches="tight"); _plt.close(fig)
-    Fg(key, f"paper/figures/ph_{key}.png", "**[PLACEHOLDER - replace before submission]** " + title + " " + desc, width)
+    sample = f"paper/figures/sample_{tag}.png"
+    if not (ROOT / sample).exists():
+        raise SystemExit(f"missing {sample}: run  python scripts/make_ft_figures.py --sample")
+    Fg(key, sample, f"**[SAMPLE IMAGE - tag {tag} - replace with the real plot: python scripts/make_ft_figures.py]** " + title + " " + desc, width)
 
 
 # ------------------------------------------------------------------ real figures from the CPU run
@@ -65,25 +63,19 @@ for nm, short, desc in GPU_NAMES:
     else:
         _rows.append([short, desc, f3(r["pooled"]["balanced_accuracy"]), ci(r["pooled_ci"]["balanced_accuracy"]), f3(r["pooled"]["macro_f1"]), f3(r["pooled"]["auroc_ovr"])])
 _rows.insert(0, ["ref.", "DinoBloom-S, frozen encoder, attention head (headline model)", f3(ba), ci(bal), f3(mf), f3(pool["auroc_ovr"])])
-T("ft", "Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). Entries marked [[GPU]] are produced by the graphics-processor "
-        "experiments and are inserted from the result files by the build script; the headline model is shown for reference.",
+T("ft", "Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). The headline model is shown for reference."
+        + (" Entries marked [[GPU]] come from graphics-processor runs that have not been completed; the build script inserts them from the result files." if N_SLOTS else ""),
   [{"w": 0.9, "align": "left"}, {"w": 5, "align": "left"}, {"w": 1.2, "align": "right"}, {"w": 1.7, "align": "right"}, {"w": 1.1, "align": "right"}, {"w": 1.1, "align": "right"}],
   ["Run", "Configuration", "Balanced accuracy", "95% CI", "Macro-F1", "AUROC"], _rows)
 
-PH("ft_curves", "results_for_paper/g01_lora_dinobloom_s/fig_training_curves.png", "Training curves of the low-rank adaptation of DinoBloom-S (run g01).",
-   "Expected content: for each fold, training loss and validation macro-F1 against epoch, with the epoch of the best validation score marked and the learning-rate schedule. "
-   "Purpose: to show whether adaptation converges, overfits or stops early.", 6.2)
-PH("ft_bars", "results_for_paper/fig_encoder_comparison.png", "Balanced accuracy of the fine-tuned configurations.",
-   "Expected content: one marker per configuration of Table {T:ft} with its 95% cluster-bootstrap interval, sorted by accuracy, with the frozen headline model as a reference line. "
-   "Purpose: to show which differences exceed the sampling uncertainty.", 5.8)
-PH("ft_cm", "results_for_paper/g01_lora_dinobloom_s/fig_confusion.png", "Confusion matrix of the best fine-tuned configuration.",
-   "Expected content: pooled out-of-fold confusion matrix, as in Fig. {F:cm}a. Purpose: to show whether adaptation changes which classes are confused.", 4.6)
-PH("ft_attn", "results_for_paper/g01_lora_dinobloom_s/fig_attention_examples.png", "Attention weights and saliency maps for correctly and incorrectly classified images.",
-   "Expected content: for each class, example images with the attention weight of each cell and a Grad-CAM map, for one correct and one incorrect prediction, with a sanity check "
-   "in which the model weights are randomised. Purpose: to show where the model looks and whether it looks at cells or at the periphery.", 6.2)
-PH("ft_embed", "results_for_paper/fig_embedding_projection.png", "Projection of the image embeddings.",
-   "Expected content: a two-dimensional projection of the pooled embeddings of the test images, coloured by class in one panel and by capture-number segment in the other. "
-   "Purpose: to show whether the embedding separates capture sessions as strongly as it separates classes.", 6.0)
+PH("ft_curves", "FT-CURVES", "Training curves of the low-rank adaptation of DinoBloom-S (run g01).",
+   "For each fold: training loss, validation macro-F1 (star: best epoch) and learning rate against epoch.", 6.2)
+PH("ft_bars", "FT-BARS", "Balanced accuracy of the fine-tuned configurations.",
+   "One marker per configuration of Table {T:ft} with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.", 5.8)
+PH("ft_cm", "FT-CM", "Confusion matrix of the best fine-tuned configuration.",
+   "Pooled out-of-fold confusion matrix, as in Fig. {F:cm}a.", 4.6)
+Fg("embed", "paper/figures/fig_embedding.png", "Two-dimensional t-SNE projection of the image embeddings of the frozen headline encoder (mean over the cells of an image, after reduction to 50 principal components), "
+   "(a) coloured by class and (b) coloured by the capture-order segment (the fold in which the image is tested).", 6.2)
 
 
 FS = _json.loads((R / "feature_stats.json").read_text())
@@ -167,13 +159,33 @@ def results_extra():
     P(f"Figure {{F:ft_curves}} shows the training curves of the adapted model and Fig. {{F:ft_bars}} compares the configurations with their intervals. The confusion matrix of the best configuration "
       "is shown in Fig. {F:ft_cm}.")
     S("Attention, saliency and embedding structure")
-    P("Two further analyses address what the adapted models use. Attention weights over the cells of an image (Methods) indicate which cells drive the bag representation, and gradient-weighted class "
-      f"activation maps {c('selvaraju2017')} indicate which regions of a cell drive the score. Because saliency maps can look plausible for untrained networks, a model-randomisation check "
-      f"{c('adebayo2018')} is part of the protocol. Fig. {{F:ft_attn}} is reserved for the examples. A two-dimensional projection of the embeddings coloured by class and by capture segment "
-      "(Fig. {F:ft_embed}) addresses the question of whether the embedding encodes the session as strongly as the class.")
-    if N_SLOTS:
-        P("**[[GPU: after running scripts/analysis_xai.py on a checkpoint, describe in two to three paragraphs what the attention and saliency maps show, including at least one failure case; "
-          "report the model-randomisation result. Delete this paragraph and the two figures above if the analysis is not performed.]]**")
+    XP = R / "xai_summary.json"
+    EM = _json.loads((R / "embedding_summary.json").read_text())
+    if XP.exists():
+        X = _json.loads(XP.read_text())
+        at = X["attention"]
+        sp = X["sanity_spearman_mean"]
+        dl = X["deletion"]
+        P(f"Attention weights over the cells of an image indicate which cells drive the bag representation. For the {at['n_images']} test images of fold 1 with at least three cells, the normalised entropy of the "
+          f"attention distribution was {f2(at['normalised_entropy_mean'])} on average (1 would be uniform attention), and the largest weight was {f2(at['top_attention_over_uniform_mean'])} times the uniform weight. The attention "
+          f"correlated weakly and inconsistently with cell area (mean Spearman correlation {f2(at['attention_area_spearman_mean'])}, standard deviation {f2(at['attention_area_spearman_sd'])} between images), so the head "
+          "does not simply favour large cells. The attention is therefore broad and mildly selective.")
+        P(f"Fig. {{F:xai}} shows, for one correctly classified image of each class, the most-attended cell and the attention weights of all cells of the image. The most-attended cell of the Benign example is two touching cells that the "
+          "segmentation did not separate, which illustrates a limit of the segmentation step.")
+        P(f"I also attempted gradient-weighted class activation maps {c('selvaraju2017')} with the checks recommended by {n('adebayo2018')}, and they did not give usable results. The maps computed for the frozen encoder were "
+          f"nearly uniform over the cell (the overlay in the raw output file is a uniform wash), and the rank correlation with the maps of the randomised models was zero at every stage of the randomisation, which is the value that the "
+          f"code returns for a constant map; it is therefore not evidence about the faithfulness of the method. In the deletion test, removing the pixels ranked most salient lowered the probability of the true class "
+          f"to {f2(dl['cam_mean'][-1])} at the largest deleted fraction, whereas removing random pixels lowered it to {f2(dl['random_mean'][-1])}; a faithful map should produce the opposite order. I conclude that these saliency maps do not explain "
+          "the model and I do not use them. Only the attention weights, which are part of the model itself, are reported as an indication of which cells matter.")
+    P(f"A two-dimensional projection of the embeddings (Fig. {{F:embed}}a) shows the Benign images as compact groups that lie apart from the others, while Early, Pre and Pro occupy neighbouring regions that overlap in places; "
+      f"the silhouette coefficient of the class labels in the 50-component principal-component space was {f2(EM['silhouette_class_pca50'])}, which is low, so the classes are not well-separated clusters in the full space. "
+      "The panel coloured by capture-order segment (Fig. {F:embed}b) shows images of all segments in most regions, so the projection does not place the segments in separate regions; "
+      "I did not quantify this beyond the visual impression, and a two-dimensional projection cannot rule out session information in other directions of the embedding space.")
+
+
+if (R / "xai_summary.json").exists():
+  Fg("xai", "paper/figures/fig_attention.png", "Attention of the headline model for one correctly classified test image of each class (fold 1). Left: the most-attended cell of the image. Right: attention weight of each cell of the image, "
+     "sorted in descending order, with the uniform weight as a dashed line.", 4.4)
 
 
 # misclassified images, read from the prediction files of the CPU run

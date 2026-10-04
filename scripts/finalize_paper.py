@@ -13,11 +13,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAT = re.compile(r"\[\[GPU|PLACEHOLDER|FILL IN")
+PAT = re.compile(r"\[\[GPU|PLACEHOLDER|SAMPLE IMAGE|FILL IN")
 
 
 def build():
     subprocess.run([sys.executable, "scripts/make_figures.py"], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "scripts/make_ft_figures.py", "--sample"], cwd=ROOT, check=True)          # SAMPLE placeholders (synthetic)
+    if any((ROOT / "results_for_paper").glob("g0*/cv_summary.json")):
+        subprocess.run([sys.executable, "scripts/make_ft_figures.py"], cwd=ROOT, check=True)                 # REAL figures replace the samples
     subprocess.run([sys.executable, "paper/build_paper.py"], cwd=ROOT, check=True)
     subprocess.run(["node", "paper/render_docx.js", "paper/content.json", "paper/paper.docx"], cwd=ROOT, check=True)
     subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", "paper", "paper/paper.docx"], cwd=ROOT, check=False,

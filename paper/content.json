@@ -475,11 +475,19 @@
   },
   {
    "t": "p",
-   "text": "Two further analyses address what the adapted models use. Attention weights over the cells of an image (Methods) indicate which cells drive the bag representation, and gradient-weighted class activation maps (Selvaraju et al. 2017) indicate which regions of a cell drive the score. Because saliency maps can look plausible for untrained networks, a model-randomisation check (Adebayo et al. 2018) is part of the protocol. Fig. 16 is reserved for the examples. A two-dimensional projection of the embeddings coloured by class and by capture segment (Fig. 17) addresses the question of whether the embedding encodes the session as strongly as the class."
+   "text": "Attention weights over the cells of an image indicate which cells drive the bag representation. For the 584 test images of fold 1 with at least three cells, the normalised entropy of the attention distribution was 0.88 on average (1 would be uniform attention), and the largest weight was 2.25 times the uniform weight. The attention correlated weakly and inconsistently with cell area (mean Spearman correlation 0.28, standard deviation 0.44 between images), so the head does not simply favour large cells. The attention is therefore broad and mildly selective."
   },
   {
    "t": "p",
-   "text": "**[[GPU: after running scripts/analysis_xai.py on a checkpoint, describe in two to three paragraphs what the attention and saliency maps show, including at least one failure case; report the model-randomisation result. Delete this paragraph and the two figures above if the analysis is not performed.]]**"
+   "text": "Fig. 16 shows, for one correctly classified image of each class, the most-attended cell and the attention weights of all cells of the image. The most-attended cell of the Benign example is two touching cells that the segmentation did not separate, which illustrates a limit of the segmentation step."
+  },
+  {
+   "t": "p",
+   "text": "I also attempted gradient-weighted class activation maps (Selvaraju et al. 2017) with the checks recommended by Adebayo et al. (2018), and they did not give usable results. The maps computed for the frozen encoder were nearly uniform over the cell (the overlay in the raw output file is a uniform wash), and the rank correlation with the maps of the randomised models was zero at every stage of the randomisation, which is the value that the code returns for a constant map; it is therefore not evidence about the faithfulness of the method. In the deletion test, removing the pixels ranked most salient lowered the probability of the true class to 0.68 at the largest deleted fraction, whereas removing random pixels lowered it to 0.22; a faithful map should produce the opposite order. I conclude that these saliency maps do not explain the model and I do not use them. Only the attention weights, which are part of the model itself, are reported as an indication of which cells matter."
+  },
+  {
+   "t": "p",
+   "text": "A two-dimensional projection of the embeddings (Fig. 17a) shows the Benign images as compact groups that lie apart from the others, while Early, Pre and Pro occupy neighbouring regions that overlap in places; the silhouette coefficient of the class labels in the 50-component principal-component space was 0.08, which is low, so the classes are not well-separated clusters in the full space. The panel coloured by capture-order segment (Fig. 17b) shows images of all segments in most regions, so the projection does not place the segments in separate regions; I did not quantify this beyond the visual impression, and a two-dimensional projection cannot rule out session information in other directions of the embedding space."
   },
   {
    "t": "pb"
@@ -1330,7 +1338,7 @@
   },
   {
    "t": "table",
-   "caption": "Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). Entries marked [[GPU]] are produced by the graphics-processor experiments and are inserted from the result files by the build script; the headline model is shown for reference.",
+   "caption": "Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). The headline model is shown for reference. Entries marked [[GPU]] come from graphics-processor runs that have not been completed; the build script inserts them from the result files.",
    "cols": [
     {
      "w": 0.9,
@@ -1567,8 +1575,8 @@
   },
   {
    "t": "fig",
-   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/ph_ft_curves.png",
-   "caption": "**[PLACEHOLDER - replace before submission]** Training curves of the low-rank adaptation of DinoBloom-S (run g01). Expected content: for each fold, training loss and validation macro-F1 against epoch, with the epoch of the best validation score marked and the learning-rate schedule. Purpose: to show whether adaptation converges, overfits or stops early.",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-CURVES.png",
+   "caption": "**[SAMPLE IMAGE - tag FT-CURVES - replace with the real plot: python scripts/make_ft_figures.py]** Training curves of the low-rank adaptation of DinoBloom-S (run g01). For each fold: training loss, validation macro-F1 (star: best epoch) and learning rate against epoch.",
    "width_in": 6.2,
    "num": "13"
   },
@@ -1577,8 +1585,8 @@
   },
   {
    "t": "fig",
-   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/ph_ft_bars.png",
-   "caption": "**[PLACEHOLDER - replace before submission]** Balanced accuracy of the fine-tuned configurations. Expected content: one marker per configuration of Table 10 with its 95% cluster-bootstrap interval, sorted by accuracy, with the frozen headline model as a reference line. Purpose: to show which differences exceed the sampling uncertainty.",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-BARS.png",
+   "caption": "**[SAMPLE IMAGE - tag FT-BARS - replace with the real plot: python scripts/make_ft_figures.py]** Balanced accuracy of the fine-tuned configurations. One marker per configuration of Table 10 with its 95% cluster-bootstrap interval, sorted by accuracy; the dashed line is the frozen headline model.",
    "width_in": 5.8,
    "num": "14"
   },
@@ -1587,8 +1595,8 @@
   },
   {
    "t": "fig",
-   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/ph_ft_cm.png",
-   "caption": "**[PLACEHOLDER - replace before submission]** Confusion matrix of the best fine-tuned configuration. Expected content: pooled out-of-fold confusion matrix, as in Fig. 7a. Purpose: to show whether adaptation changes which classes are confused.",
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/sample_FT-CM.png",
+   "caption": "**[SAMPLE IMAGE - tag FT-CM - replace with the real plot: python scripts/make_ft_figures.py]** Confusion matrix of the best fine-tuned configuration. Pooled out-of-fold confusion matrix, as in Fig. 7a.",
    "width_in": 4.6,
    "num": "15"
   },
@@ -1597,9 +1605,9 @@
   },
   {
    "t": "fig",
-   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/ph_ft_attn.png",
-   "caption": "**[PLACEHOLDER - replace before submission]** Attention weights and saliency maps for correctly and incorrectly classified images. Expected content: for each class, example images with the attention weight of each cell and a Grad-CAM map, for one correct and one incorrect prediction, with a sanity check in which the model weights are randomised. Purpose: to show where the model looks and whether it looks at cells or at the periphery.",
-   "width_in": 6.2,
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_attention.png",
+   "caption": "Attention of the headline model for one correctly classified test image of each class (fold 1). Left: the most-attended cell of the image. Right: attention weight of each cell of the image, sorted in descending order, with the uniform weight as a dashed line.",
+   "width_in": 4.4,
    "num": "16"
   },
   {
@@ -1607,9 +1615,9 @@
   },
   {
    "t": "fig",
-   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/ph_ft_embed.png",
-   "caption": "**[PLACEHOLDER - replace before submission]** Projection of the image embeddings. Expected content: a two-dimensional projection of the pooled embeddings of the test images, coloured by class in one panel and by capture-number segment in the other. Purpose: to show whether the embedding separates capture sessions as strongly as it separates classes.",
-   "width_in": 6.0,
+   "path": "/home/user/leukemia-detection-and-Segmentation/paper/figures/fig_embedding.png",
+   "caption": "Two-dimensional t-SNE projection of the image embeddings of the frozen headline encoder (mean over the cells of an image, after reduction to 50 principal components), (a) coloured by class and (b) coloured by the capture-order segment (the fold in which the image is tested).",
+   "width_in": 6.2,
    "num": "17"
   },
   {
