@@ -31,3 +31,6 @@ dist/
 data/dataset/
 data/full_run/
 data/full_run_v2/
+
+# Pretrained weights (large, third-party)
+data/weights/
