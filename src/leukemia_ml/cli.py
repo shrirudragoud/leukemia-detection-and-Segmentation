@@ -74,7 +74,8 @@ def _cmd_ablate(args) -> int:
     from .experiments import load_variants, run_probe_ablation
     base, variants = load_variants(args.spec)
     rep = run_probe_ablation(base, variants, args.out, seeds=tuple(range(args.seeds)),
-                             n_boot=args.boot, device=args.device)
+                             n_boot=args.boot, device=args.device, scheme=args.scheme,
+                             embargo=args.embargo)
     print((Path(args.out) / "ablation.md").read_text(encoding="utf-8"))
     return 0 if rep["rows"] else 3
 
@@ -145,6 +146,8 @@ def main(argv: list[str] | None = None) -> int:
     ab.add_argument("--seeds", type=int, default=3)
     ab.add_argument("--boot", type=int, default=1000)
     ab.add_argument("--device", default="auto")
+    ab.add_argument("--scheme", choices=("contiguous", "grouped"), default="contiguous")
+    ab.add_argument("--embargo", type=int, default=37)
     ab.set_defaults(func=_cmd_ablate)
 
     args = ap.parse_args(argv)

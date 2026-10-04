@@ -32,8 +32,8 @@ def test_apply_overrides_do_not_mutate_base(synth):
 
 
 def test_probe_ablation_structure_ci_and_determinism(synth, tmp_path):
-    r1 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "a", seeds=(0, 1), n_boot=200)
-    run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200)
+    r1 = run_probe_ablation(base(synth), VARIANTS, tmp_path / "a", seeds=(0, 1), n_boot=200, scheme="grouped")
+    run_probe_ablation(base(synth), VARIANTS, tmp_path / "b", seeds=(0, 1), n_boot=200, scheme="grouped")
     assert [r["variant"] for r in r1["rows"]] == [v["name"] for v in VARIANTS]
     assert r1["reference"] == "shape (tabular)"
     for row in r1["rows"]:
@@ -51,7 +51,7 @@ def test_probe_ablation_structure_ci_and_determinism(synth, tmp_path):
 
 
 def test_markdown_mentions_reference_and_ci(synth, tmp_path):
-    rep = run_probe_ablation(base(synth), VARIANTS[:2], tmp_path, seeds=(0,), n_boot=100)
+    rep = run_probe_ablation(base(synth), VARIANTS[:2], tmp_path, seeds=(0,), n_boot=100, scheme="grouped")
     md = render_markdown(rep)
     assert "reference: shape (tabular)" in md and "Holm" in md and "texture (tabular)" in md
 
@@ -62,5 +62,5 @@ def test_cli_ablate(synth, tmp_path, capsys):
     p = tmp_path / "spec.json"
     p.write_text(json.dumps(spec))
     assert main(["ablate", "--spec", str(p), "--out", str(tmp_path / "o"), "--seeds", "1",
-                 "--boot", "50"]) == 0
+                 "--boot", "50", "--scheme", "grouped"]) == 0
     assert "Balanced acc." in capsys.readouterr().out

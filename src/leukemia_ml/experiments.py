@@ -51,7 +51,8 @@ def _variant_features(variant: dict, cfg: ExperimentConfig, device: str):
 
 
 def run_probe_ablation(base: ExperimentConfig, variants: list[dict], out_dir: str | Path,
-                       seeds=(0, 1, 2), n_boot: int = 1000, device: str = "auto") -> dict:
+                       seeds=(0, 1, 2), n_boot: int = 1000, device: str = "auto",
+                       scheme: str = "contiguous", embargo: int = 37) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     runs = []
@@ -59,7 +60,7 @@ def run_probe_ablation(base: ExperimentConfig, variants: list[dict], out_dir: st
         cfg = _apply(base, v)
         log.info("variant %s", v["name"])
         idx, X, img = _variant_features(v, cfg, device)
-        res = run_probe(idx, X, img, seeds=seeds)
+        res = run_probe(idx, X, img, seeds=seeds, scheme=scheme, embargo=embargo)
         runs.append({"name": v["name"], "idx": idx, "res": res, "cfg_hash": cfg.hash()})
 
     # align every variant on the images they all contain
@@ -101,9 +102,10 @@ def run_probe_ablation(base: ExperimentConfig, variants: list[dict], out_dir: st
         row["vs_reference"]["p_holm"] = p
 
     report = {"reference": rows[0]["variant"], "seeds": list(seeds), "n_boot": n_boot,
+              "scheme": scheme, "embargo": embargo,
               "n_groups": int(len(set(runs[0]["res"]["groups"]))), "rows": rows,
-              "protocol": ("image-level, group-disjoint stratified repeated 5-fold CV; logistic "
-                           "head on frozen embeddings; cluster bootstrap over groups")}
+              "protocol": (f"image-level, {scheme} 5-fold CV (embargo {embargo}); logistic head on "
+                           "frozen embeddings; cluster bootstrap over groups")}
     (out / "ablation.json").write_text(json.dumps(report, indent=2, default=float), encoding="utf-8")
     (out / "ablation.md").write_text(render_markdown(report), encoding="utf-8")
     return report
@@ -111,7 +113,8 @@ def run_probe_ablation(base: ExperimentConfig, variants: list[dict], out_dir: st
 
 def render_markdown(report: dict) -> str:
     lines = [f"# Ablation (reference: {report['reference']})", "",
-             f"{report['n_groups']} groups; seeds {report['seeds']}; {report['n_boot']} bootstrap "
+             f"{report['n_groups']} groups; {report.get('scheme', 'grouped')} folds, embargo "
+             f"{report.get('embargo', 0)}; seeds {report['seeds']}; {report['n_boot']} bootstrap "
              "resamples of groups. Balanced accuracy, 95% cluster-bootstrap CI.", "",
              "| Variant | Balanced acc. | 95% CI | Macro-F1 | AUROC | Diff. vs ref. (95% CI) | p (Holm) |",
              "| --- | --- | --- | --- | --- | --- | --- |"]
