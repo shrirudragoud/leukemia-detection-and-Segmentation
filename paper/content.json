@@ -2837,7 +2837,7 @@
     "Balanced accuracy",
     "95% confidence interval",
     "Macro-F1",
-    "area under the receiver operating characteristic curve"
+    "Area under curve"
    ],
    "rows": [
     [
@@ -3609,7 +3609,7 @@
     "Test",
     "Bal. acc.",
     "Macro-F1",
-    "area under the receiver operating characteristic curve",
+    "Area under curve",
     "Epochs",
     "Temp.",
     "Time (s)"
@@ -4055,7 +4055,7 @@
     "Variant",
     "Balanced accuracy",
     "Macro-F1",
-    "area under the receiver operating characteristic curve"
+    "Area under curve"
    ],
    "rows": [
     [

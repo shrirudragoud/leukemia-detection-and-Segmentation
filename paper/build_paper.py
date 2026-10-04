@@ -684,7 +684,7 @@ def assemble():
                 if isinstance(b.get(key), str) and not b.get("noabbr"):
                     b[key] = despell(b[key])
             if b["t"] == "table" and b.get("header"):
-                b["header"] = [despell(h) for h in b["header"]]
+                b["header"] = [despell(h.replace("AUROC", "Area under curve")) for h in b["header"]]
                 if b["header"][0] == "Stage":
                     b["rows"] = [[despell(x) for x in r] for r in b["rows"]]
         if "rows" in b:
