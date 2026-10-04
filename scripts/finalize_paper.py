@@ -27,9 +27,10 @@ def build():
         subprocess.run(["node", "paper/render_docx.js", "paper/content.json", "paper/paper.docx"], cwd=ROOT, check=True)
         subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", "paper", "paper/paper.docx"], cwd=ROOT, check=False,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        before = (ROOT / "paper" / "toc_pages.json").read_text() if (ROOT / "paper" / "toc_pages.json").exists() else ""
+        rd = lambda n: (ROOT / "paper" / n).read_text() if (ROOT / "paper" / n).exists() else ""  # noqa: E731
+        before = rd("toc_pages.json") + rd("cite_pages.json")
         subprocess.run([sys.executable, "paper/paginate.py"], cwd=ROOT, check=True)
-        if before == (ROOT / "paper" / "toc_pages.json").read_text():
+        if before == rd("toc_pages.json") + rd("cite_pages.json"):
             break
 
 

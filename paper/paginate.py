@@ -2,6 +2,7 @@
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -37,3 +38,26 @@ for b in blocks:
 missing = [k for k, v in out.items() if v is None]
 (ROOT / "paper" / "toc_pages.json").write_text(json.dumps({k: v for k, v in out.items() if v}, indent=0))
 print("pages", n, "entries", len(out), "missing", missing[:6])
+
+
+# ---- pages on which each reference is cited (main text only, before Literature Cited)
+sys.path.insert(0, str(ROOT / "paper"))
+from refs import REFS  # noqa: E402
+
+lit = next((i for i in range(start - 1, n) if any(norm(x) == "LITERATURE CITED" for x in pages[i])), n - 1) + 1
+def _body(i):
+    ls = [norm(x) for x in pages[i] if norm(x)]
+    return " ".join(ls[:-1] if ls and ls[-1].isdigit() else ls)
+
+
+_t = {i + 1: _body(i) for i in range(start - 1, lit + 1)}
+flat = {pg: t + " " + " ".join(_t.get(pg + 1, "").split()[:8]) for pg, t in _t.items() if pg <= lit}
+cp = {}
+for k, (label, _c) in REFS.items():
+    m = re.match(r"(.*) (\d{4})$", label)
+    forms = [label, f"{m.group(1)} ({m.group(2)})"]
+    hit = [pg for pg, t in flat.items() if any(f in t for f in forms)]
+    # citations inside a multi-citation parenthesis: "(A 2001; B 2002)" -> the label still appears verbatim
+    cp[k] = hit
+(ROOT / "paper" / "cite_pages.json").write_text(json.dumps(cp))
+print("citation pages found for", sum(1 for v in cp.values() if v), "references")

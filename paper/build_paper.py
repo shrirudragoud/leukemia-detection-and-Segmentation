@@ -562,6 +562,7 @@ def appendices():
     ]})
     P("The weights of DinoBloom-S are available from Zenodo (record 10908163) under a Creative Commons Attribution licence.", noindent=True)
     ext("appendix_extra")
+    ext("appendix_refs")
 
 
 # ================================================================== assemble

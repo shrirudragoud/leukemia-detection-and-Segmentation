@@ -507,6 +507,20 @@
    "page": "126"
   },
   {
+   "t": "toc",
+   "level": 1,
+   "text": "Appendix XIV. Citation index",
+   "key": "h:Appendix XIV. Citation index",
+   "page": "127"
+  },
+  {
+   "t": "toc",
+   "level": 1,
+   "text": "Appendix XV. Reference verification record",
+   "key": "h:Appendix XV. Reference verification record",
+   "page": "129"
+  },
+  {
    "t": "toch",
    "text": "List of Tables"
   },
@@ -719,6 +733,20 @@
    "text": "Table A16. Result files and the scripts that produce them.",
    "key": "table:A16",
    "page": "126"
+  },
+  {
+   "t": "toc",
+   "level": 3,
+   "text": "Table A17. Citation index: reference, use in this paper and pages on which it is cited.",
+   "key": "table:A17",
+   "page": "127"
+  },
+  {
+   "t": "toc",
+   "level": 3,
+   "text": "Table A18. Reference verification record.",
+   "key": "table:A18",
+   "page": "129"
   },
   {
    "t": "toch",
@@ -7566,6 +7594,634 @@
     [
      "paper/build_paper.py",
      "Script that assembles this manuscript from the result files."
+    ]
+   ],
+   "foot": null
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "h",
+   "text": "Appendix XIV. Citation index"
+  },
+  {
+   "t": "p",
+   "text": "The citations follow the name-year style of the guide: one or two authors are named, three or more are given as the first author and \"et al.\", several citations in one parenthesis are separated by semicolons, and the full reference is in Literature Cited, in alphabetical order with a hanging indent. Table A17 lists every reference that is cited, what it is cited for in this paper, and the pages of the paper on which it is cited. The 7 sources that were consulted but are not cited are not listed in Literature Cited.",
+   "noindent": true
+  },
+  {
+   "t": "table",
+   "num": "A17",
+   "caption": "Citation index: reference, use in this paper and pages on which it is cited.",
+   "cols": [
+    {
+     "w": 2.6,
+     "align": "left"
+    },
+    {
+     "w": 4.8,
+     "align": "left"
+    },
+    {
+     "w": 1.6,
+     "align": "left"
+    }
+   ],
+   "header": [
+    "Reference",
+    "Cited for",
+    "Pages"
+   ],
+   "rows": [
+    [
+     "Adebayo et al. 2018",
+     "Sanity checks for saliency maps; basis of the model-randomisation test",
+     "12, 37"
+    ],
+    [
+     "Albzour 2026",
+     "Leakage-aware benchmark for leukemia classification (related concern)",
+     "82"
+    ],
+    [
+     "Arber et al. 2016",
+     "Classification of acute leukemia (clinical background)",
+     "8"
+    ],
+    [
+     "Aria et al. 2021",
+     "The public dataset analysed in this study",
+     "7, 9, 13"
+    ],
+    [
+     "Bradski 2000",
+     "OpenCV library used in the pipeline",
+     "18"
+    ],
+    [
+     "Caron et al. 2021",
+     "Self-supervised vision transformers (background to DINOv2)",
+     "10"
+    ],
+    [
+     "DeGrave et al. 2021",
+     "Shortcut learning in radiographic COVID-19 classifiers",
+     "7, 12, 79"
+    ],
+    [
+     "Dosovitskiy et al. 2021",
+     "Vision transformer architecture",
+     "8, 10"
+    ],
+    [
+     "Efron 1979",
+     "Bootstrap resampling",
+     "17"
+    ],
+    [
+     "Frangi et al. 1998",
+     "Multiscale vesselness filter (basis of the curvature layer)",
+     "15"
+    ],
+    [
+     "Geirhos et al. 2020",
+     "Concept of shortcut learning",
+     "7, 12, 79"
+    ],
+    [
+     "Ghaderzadeh et al. 2022",
+     "Description of the dataset and its classes",
+     "7, 9, 13"
+    ],
+    [
+     "Guo et al. 2017",
+     "Temperature scaling for calibration",
+     "18"
+    ],
+    [
+     "Haralick et al. 1973",
+     "Grey-level co-occurrence texture features",
+     "10, 21"
+    ],
+    [
+     "He et al. 2016",
+     "Residual convolutional network (ResNet)",
+     "10, 18"
+    ],
+    [
+     "Holm 1979",
+     "Holm adjustment for multiple comparisons",
+     "17"
+    ],
+    [
+     "Hu et al. 2022",
+     "Low-rank adaptation of network weights",
+     "18, 26"
+    ],
+    [
+     "Hunger and Mullighan 2015",
+     "Clinical background of childhood acute lymphoblastic leukemia",
+     "8"
+    ],
+    [
+     "Ilse et al. 2018",
+     "Gated attention pooling over instances",
+     "17, 24"
+    ],
+    [
+     "Kapoor and Narayanan 2023",
+     "Data leakage and reproducibility in machine-learning-based science",
+     "7, 11, 82"
+    ],
+    [
+     "Kingma and Ba 2015",
+     "Adam optimiser (basis of AdamW)",
+     "24"
+    ],
+    [
+     "Koch et al. 2024",
+     "DinoBloom hematology foundation model (the encoder used)",
+     "8, 10, 17"
+    ],
+    [
+     "Kohavi 1995",
+     "Estimating accuracy by cross-validation and bootstrap",
+     "12"
+    ],
+    [
+     "Kornblith et al. 2019",
+     "Transferability of pretrained image models",
+     "10"
+    ],
+    [
+     "Kouzehkanan et al. 2022",
+     "Raabin-WBC dataset (proposed external data)",
+     "81"
+    ],
+    [
+     "Krizhevsky et al. 2012",
+     "Deep convolutional networks for image classification",
+     "10"
+    ],
+    [
+     "Labati et al. 2011",
+     "Classical image analysis of leukemia smears (ALL-IDB)",
+     "7, 10"
+    ],
+    [
+     "Loshchilov and Hutter 2019",
+     "AdamW optimiser",
+     "17, 24"
+    ],
+    [
+     "Macenko et al. 2009",
+     "Stain-separation colour normalisation",
+     "11"
+    ],
+    [
+     "Matek et al. 2019",
+     "Single-cell blast recognition (myeloid) with convolutional networks",
+     "10"
+    ],
+    [
+     "Meyer and Beucher 1990",
+     "Watershed segmentation of touching cells",
+     "10"
+    ],
+    [
+     "Mourya et al. 2019",
+     "C-NMC challenge dataset (proposed external data)",
+     "81"
+    ],
+    [
+     "Nadeau and Bengio 2003",
+     "Corrected resampled t test for cross-validation comparisons",
+     "12, 17"
+    ],
+    [
+     "Oquab et al. 2024",
+     "DINOv2 self-supervised vision transformer",
+     "8, 10, 17"
+    ],
+    [
+     "Otsu 1979",
+     "Otsu threshold selection",
+     "15"
+    ],
+    [
+     "Pan and Yang 2010",
+     "Survey of transfer learning",
+     "10"
+    ],
+    [
+     "Paszke et al. 2019",
+     "PyTorch deep-learning library",
+     "18"
+    ],
+    [
+     "Pedregosa et al. 2011",
+     "scikit-learn library (random forest, logistic regression)",
+     "16"
+    ],
+    [
+     "Perona and Malik 1990",
+     "Anisotropic diffusion (basis of the hybrid diffusion)",
+     "14"
+    ],
+    [
+     "Reinhard et al. 2001",
+     "Colour normalisation by matching channel statistics",
+     "11, 14"
+    ],
+    [
+     "Roberts et al. 2017",
+     "Blocked cross-validation for dependent data",
+     "12"
+    ],
+    [
+     "Roberts et al. 2021",
+     "Methodological flaws in COVID-19 imaging machine learning",
+     "11"
+    ],
+    [
+     "Ronneberger et al. 2015",
+     "U-Net segmentation network (background)",
+     "10"
+    ],
+    [
+     "Schmidt et al. 2018",
+     "StarDist cell detection (background)",
+     "10"
+    ],
+    [
+     "Selvaraju et al. 2017",
+     "Grad-CAM saliency maps",
+     "37"
+    ],
+    [
+     "Sokolova and Lapalme 2009",
+     "Classification performance measures (balanced accuracy)",
+     "26"
+    ],
+    [
+     "Stringer et al. 2021",
+     "Cellpose segmentation (background)",
+     "10"
+    ],
+    [
+     "Tan and Le 2019",
+     "EfficientNet architecture",
+     "10, 18"
+    ],
+    [
+     "Tellez et al. 2019",
+     "Effect of stain normalisation and augmentation on classifiers",
+     "11, 14"
+    ],
+    [
+     "Tomasi and Manduchi 1998",
+     "Bilateral filtering",
+     "14, 19"
+    ],
+    [
+     "Vahadane et al. 2016",
+     "Structure-preserving stain normalisation",
+     "11"
+    ],
+    [
+     "van der Walt et al. 2014",
+     "scikit-image library",
+     "15"
+    ],
+    [
+     "Varoquaux and Cheplygina 2022",
+     "Methodological failures in medical-imaging machine learning",
+     "11, 82"
+    ],
+    [
+     "Vaswani et al. 2017",
+     "Transformer architecture and attention",
+     "10"
+    ],
+    [
+     "Wightman 2019",
+     "timm library of image models",
+     "18"
+    ]
+   ],
+   "foot": null
+  },
+  {
+   "t": "pb"
+  },
+  {
+   "t": "h",
+   "text": "Appendix XV. Reference verification record"
+  },
+  {
+   "t": "p",
+   "text": "Every reference was compared with an external record on 4 October 2026: author list, year, title, venue, volume and pages. Table A18 gives the identifier of the record and the source that was used. \"Crossref\" means the DOI registration agency's record; \"proceedings page\" means the publisher page of the conference; \"arXiv\" means the preprint page. Entries marked \"not verified online\" are standard citations whose metadata could not be reached from the computing environment and should be checked against the original source.",
+   "noindent": true
+  },
+  {
+   "t": "table",
+   "num": "A18",
+   "caption": "Reference verification record.",
+   "cols": [
+    {
+     "w": 2.6,
+     "align": "left"
+    },
+    {
+     "w": 3.8,
+     "align": "left"
+    },
+    {
+     "w": 2.6,
+     "align": "left"
+    }
+   ],
+   "header": [
+    "Reference",
+    "Identifier",
+    "Verified against"
+   ],
+   "rows": [
+    [
+     "Adebayo et al. 2018",
+     "doi:10.1007/978-3-031-16564-1_17",
+     "Crossref"
+    ],
+    [
+     "Albzour 2026",
+     "arXiv:2606.24944",
+     "arXiv"
+    ],
+    [
+     "Arber et al. 2016",
+     "doi:10.1182/blood-2016-03-643544",
+     "Crossref"
+    ],
+    [
+     "Aria et al. 2021",
+     "doi:10.34740/KAGGLE/DSV/2175623",
+     "Kaggle dataset page"
+    ],
+    [
+     "Bradski 2000",
+     "Dr. Dobb's Journal 25(11)",
+     "not verified online"
+    ],
+    [
+     "Caron et al. 2021",
+     "doi:10.1109/iccv48922.2021.00951",
+     "Crossref"
+    ],
+    [
+     "DeGrave et al. 2021",
+     "doi:10.1101/2020.09.13.20193565",
+     "Crossref"
+    ],
+    [
+     "Dosovitskiy et al. 2021",
+     "arXiv:2010.11929",
+     "arXiv"
+    ],
+    [
+     "Efron 1979",
+     "doi:10.1214/aos/1176344552",
+     "Crossref"
+    ],
+    [
+     "Frangi et al. 1998",
+     "doi:10.1007/bfb0056195",
+     "Crossref"
+    ],
+    [
+     "Geirhos et al. 2020",
+     "doi:10.1038/s42256-020-00257-z",
+     "Crossref"
+    ],
+    [
+     "Ghaderzadeh et al. 2022",
+     "doi:10.1002/int.22753",
+     "Crossref"
+    ],
+    [
+     "Guo et al. 2017",
+     "-",
+     "proceedings page (proceedings.mlr.press)"
+    ],
+    [
+     "Haralick et al. 1973",
+     "doi:10.1109/tsmc.1973.4309314",
+     "Crossref"
+    ],
+    [
+     "He et al. 2016",
+     "doi:10.1109/cvpr.2016.90",
+     "Crossref"
+    ],
+    [
+     "Holm 1979",
+     "JSTOR 4615733",
+     "not verified online"
+    ],
+    [
+     "Hu et al. 2022",
+     "arXiv:2106.09685",
+     "arXiv"
+    ],
+    [
+     "Hunger and Mullighan 2015",
+     "doi:10.1056/NEJMra1400972",
+     "Crossref"
+    ],
+    [
+     "Ilse et al. 2018",
+     "-",
+     "proceedings page (proceedings.mlr.press)"
+    ],
+    [
+     "Kapoor and Narayanan 2023",
+     "doi:10.1016/j.patter.2023.100804",
+     "Crossref"
+    ],
+    [
+     "Kingma and Ba 2015",
+     "arXiv:1412.6980",
+     "arXiv"
+    ],
+    [
+     "Koch et al. 2024",
+     "doi:10.1007/978-3-031-72390-2_49",
+     "Crossref"
+    ],
+    [
+     "Kohavi 1995",
+     "IJCAI 1995 proceedings",
+     "IJCAI PDF (7 pages)"
+    ],
+    [
+     "Kornblith et al. 2019",
+     "-",
+     "proceedings page (openaccess.thecvf.com)"
+    ],
+    [
+     "Kouzehkanan et al. 2022",
+     "doi:10.1038/s41598-021-04426-x",
+     "Crossref"
+    ],
+    [
+     "Krizhevsky et al. 2012",
+     "doi:10.1145/3065386",
+     "Crossref"
+    ],
+    [
+     "Labati et al. 2011",
+     "doi:10.1109/icip.2011.6115881",
+     "Crossref"
+    ],
+    [
+     "Loshchilov and Hutter 2019",
+     "arXiv:1711.05101",
+     "arXiv"
+    ],
+    [
+     "Macenko et al. 2009",
+     "doi:10.1109/isbi.2009.5193250",
+     "Crossref"
+    ],
+    [
+     "Matek et al. 2019",
+     "doi:10.1038/s42256-019-0101-9",
+     "Crossref"
+    ],
+    [
+     "Meyer and Beucher 1990",
+     "doi:10.1016/1047-3203(90)90014-M",
+     "Crossref"
+    ],
+    [
+     "Mourya et al. 2019",
+     "doi:10.7937/TCIA.2019.DC64I46R",
+     "TCIA DOI (search result)"
+    ],
+    [
+     "Nadeau and Bengio 2003",
+     "doi:10.1023/a:1024068626366",
+     "Crossref"
+    ],
+    [
+     "Oquab et al. 2024",
+     "arXiv:2304.07193",
+     "arXiv"
+    ],
+    [
+     "Otsu 1979",
+     "doi:10.1109/tsmc.1979.4310076",
+     "Crossref"
+    ],
+    [
+     "Pan and Yang 2010",
+     "doi:10.1109/TKDE.2009.191",
+     "Crossref"
+    ],
+    [
+     "Paszke et al. 2019",
+     "-",
+     "proceedings page (proceedings.neurips.cc)"
+    ],
+    [
+     "Pedregosa et al. 2011",
+     "-",
+     "proceedings page (jmlr.org)"
+    ],
+    [
+     "Perona and Malik 1990",
+     "doi:10.1109/34.56205",
+     "Crossref"
+    ],
+    [
+     "Reinhard et al. 2001",
+     "doi:10.1109/38.946629",
+     "Crossref"
+    ],
+    [
+     "Roberts et al. 2017",
+     "doi:10.1111/ecog.02881",
+     "Crossref"
+    ],
+    [
+     "Roberts et al. 2021",
+     "doi:10.1038/s42256-021-00307-0",
+     "Crossref (authors shortened)"
+    ],
+    [
+     "Ronneberger et al. 2015",
+     "doi:10.1007/978-3-319-24574-4_28",
+     "Crossref"
+    ],
+    [
+     "Schmidt et al. 2018",
+     "doi:10.1007/978-3-030-00934-2_30",
+     "Crossref"
+    ],
+    [
+     "Selvaraju et al. 2017",
+     "doi:10.1109/iccv.2017.74",
+     "Crossref"
+    ],
+    [
+     "Sokolova and Lapalme 2009",
+     "doi:10.1016/j.ipm.2009.03.002",
+     "Crossref"
+    ],
+    [
+     "Stringer et al. 2021",
+     "doi:10.1101/2020.02.02.931238",
+     "Crossref"
+    ],
+    [
+     "Tan and Le 2019",
+     "doi:10.1007/978-981-96-1747-0_1",
+     "Crossref"
+    ],
+    [
+     "Tellez et al. 2019",
+     "doi:10.1016/j.media.2019.101544",
+     "Crossref"
+    ],
+    [
+     "Tomasi and Manduchi 1998",
+     "doi:10.1109/iccv.1998.710815",
+     "Crossref"
+    ],
+    [
+     "Vahadane et al. 2016",
+     "doi:10.1109/tmi.2016.2529665",
+     "Crossref"
+    ],
+    [
+     "van der Walt et al. 2014",
+     "doi:10.7287/peerj.preprints.336v1",
+     "Crossref"
+    ],
+    [
+     "Varoquaux and Cheplygina 2022",
+     "doi:10.1038/s41746-022-00592-y",
+     "Crossref"
+    ],
+    [
+     "Vaswani et al. 2017",
+     "doi:10.65215/r5bs2d54",
+     "Crossref"
+    ],
+    [
+     "Wightman 2019",
+     "doi:10.5281/zenodo.4414861",
+     "Zenodo DOI"
     ]
    ],
    "foot": null
