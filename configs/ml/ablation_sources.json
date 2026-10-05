@@ -1,0 +1,15 @@
+{
+  "base": {
+    "data": {"task": "4way", "feature_groups": ["cell_shape", "cell_texture", "apc", "log"]},
+    "model": {"encoder": "dinobloom_s", "weights_path": "data/weights/DinoBloom-S.pth",
+              "input_size": 112, "freeze": "frozen"}
+  },
+  "variants": [
+    {"name": "A. clean RGB, isolated cell (reference)", "data": {"source": "clean_rgb", "isolate": true}},
+    {"name": "B. clean grayscale, isolated cell (no stain colour)", "data": {"source": "clean_gray", "isolate": true}},
+    {"name": "C. normalised RGB, background visible", "data": {"source": "norm", "isolate": false}},
+    {"name": "D. raw RGB, background visible", "data": {"source": "raw", "isolate": false}},
+    {"name": "E. tabular shape+texture+curvature (no pixels)", "tabular": true,
+     "data": {"feature_groups": ["cell_shape", "cell_texture", "apc", "log"]}}
+  ]
+}

@@ -1,0 +1,249 @@
+{
+ "rows": [
+  {
+   "variant": "shape (morphological)",
+   "groups": [
+    "cell_shape"
+   ],
+   "n_features": 10,
+   "balanced_accuracy": 0.5284403891636288,
+   "sd_rotations": 0.001956004472438718,
+   "ci": {
+    "point": 0.5264943862991063,
+    "lo": 0.497882888149699,
+    "hi": 0.5539449424853614,
+    "se": 0.014576935825436347,
+    "n_groups": 90
+   },
+   "macro_f1": 0.5116300975976484,
+   "auroc": 0.750558258948569
+  },
+  {
+   "variant": "texture (GLCM, entropy)",
+   "groups": [
+    "cell_texture"
+   ],
+   "n_features": 5,
+   "balanced_accuracy": 0.6622911528464589,
+   "sd_rotations": 0.002081646418253906,
+   "ci": {
+    "point": 0.6596351060701588,
+    "lo": 0.6263055819228327,
+    "hi": 0.6929076589397263,
+    "se": 0.01746131212031226,
+    "n_groups": 90
+   },
+   "macro_f1": 0.6528757801137322,
+   "auroc": 0.842334886484842
+  },
+  {
+   "variant": "APC response layer",
+   "groups": [
+    "apc"
+   ],
+   "n_features": 3,
+   "balanced_accuracy": 0.571400076476816,
+   "sd_rotations": 0.0010286966963695987,
+   "ci": {
+    "point": 0.5715858227359382,
+    "lo": 0.5368886236346874,
+    "hi": 0.6076296226485679,
+    "se": 0.01875926656207924,
+    "n_groups": 90
+   },
+   "macro_f1": 0.5680865966001721,
+   "auroc": 0.802937448829085
+  },
+  {
+   "variant": "LoG response layer",
+   "groups": [
+    "log"
+   ],
+   "n_features": 3,
+   "balanced_accuracy": 0.5071968118588578,
+   "sd_rotations": 0.0007625276672850005,
+   "ci": {
+    "point": 0.5062599490630226,
+    "lo": 0.4726830110898634,
+    "hi": 0.5426768305021312,
+    "se": 0.01767731512715806,
+    "n_groups": 90
+   },
+   "macro_f1": 0.4984022839291314,
+   "auroc": 0.7400029748486022
+  },
+  {
+   "variant": "HDS edge indicator",
+   "groups": [
+    "hds_edge"
+   ],
+   "n_features": 3,
+   "balanced_accuracy": 0.551212172187339,
+   "sd_rotations": 0.001888956780134663,
+   "ci": {
+    "point": 0.5507332630283259,
+    "lo": 0.5104330628580427,
+    "hi": 0.5884587692717188,
+    "se": 0.019932995074721304,
+    "n_groups": 90
+   },
+   "macro_f1": 0.5318175801434387,
+   "auroc": 0.776774310326374
+  },
+  {
+   "variant": "pure-IMF layer (BEEMD)",
+   "groups": [
+    "imf_pure"
+   ],
+   "n_features": 3,
+   "balanced_accuracy": 0.5147950966795615,
+   "sd_rotations": 0.0022204203153607417,
+   "ci": {
+    "point": 0.5175214241819667,
+    "lo": 0.4803409238791464,
+    "hi": 0.5498730068751786,
+    "se": 0.01759649629077379,
+    "n_groups": 90
+   },
+   "macro_f1": 0.5060473197146638,
+   "auroc": 0.7055854626817958
+  },
+  {
+   "variant": "IMF energies (BEEMD)",
+   "groups": [
+    "imf_energy"
+   ],
+   "n_features": 4,
+   "balanced_accuracy": 0.4463051193573427,
+   "sd_rotations": 0.0030066203537465266,
+   "ci": {
+    "point": 0.44292151694903814,
+    "lo": 0.3954409873274359,
+    "hi": 0.4827632136842309,
+    "se": 0.02243919728330081,
+    "n_groups": 90
+   },
+   "macro_f1": 0.43570881747585516,
+   "auroc": 0.6868456861532127
+  },
+  {
+   "variant": "shape + texture",
+   "groups": [
+    "cell_shape",
+    "cell_texture"
+   ],
+   "n_features": 15,
+   "balanced_accuracy": 0.7187480290692186,
+   "sd_rotations": 0.004276142142852692,
+   "ci": {
+    "point": 0.7207095120550269,
+    "lo": 0.6904825018441869,
+    "hi": 0.752456895483248,
+    "se": 0.0156745405922575,
+    "n_groups": 90
+   },
+   "macro_f1": 0.7111852786507797,
+   "auroc": 0.8768558503711206
+  },
+  {
+   "variant": "shape + texture + APC + LoG",
+   "groups": [
+    "cell_shape",
+    "cell_texture",
+    "apc",
+    "log"
+   ],
+   "n_features": 21,
+   "balanced_accuracy": 0.824551432460335,
+   "sd_rotations": 0.0016493967675722816,
+   "ci": {
+    "point": 0.8243784726889996,
+    "lo": 0.7965585661661932,
+    "hi": 0.8518043777599541,
+    "se": 0.014340586196945792,
+    "n_groups": 90
+   },
+   "macro_f1": 0.8182517272270055,
+   "auroc": 0.9435923704109398,
+   "vs_shape_texture": {
+    "diff": 0.10366896063397268,
+    "lo": 0.08120614206158427,
+    "hi": 0.12672985086603036,
+    "p": 0.001,
+    "p_holm": 0.003
+   }
+  },
+  {
+   "variant": "shape + texture + APC + LoG + HDS edge",
+   "groups": [
+    "cell_shape",
+    "cell_texture",
+    "apc",
+    "log",
+    "hds_edge"
+   ],
+   "n_features": 24,
+   "balanced_accuracy": 0.8496287541349367,
+   "sd_rotations": 0.003150207200466465,
+   "ci": {
+    "point": 0.8535165068410251,
+    "lo": 0.8273807488651659,
+    "hi": 0.8773751652777037,
+    "se": 0.012742204827333464,
+    "n_groups": 90
+   },
+   "macro_f1": 0.8439570693062434,
+   "auroc": 0.954757907619718,
+   "vs_shape_texture": {
+    "diff": 0.13280699478599822,
+    "lo": 0.10795380036908131,
+    "hi": 0.15877580333473698,
+    "p": 0.001,
+    "p_holm": 0.003
+   }
+  },
+  {
+   "variant": "... + pure-IMF layer and IMF energies",
+   "groups": [
+    "cell_shape",
+    "cell_texture",
+    "apc",
+    "log",
+    "hds_edge",
+    "imf_pure",
+    "imf_energy"
+   ],
+   "n_features": 31,
+   "balanced_accuracy": 0.8753573061437029,
+   "sd_rotations": 0.0012304625832636746,
+   "ci": {
+    "point": 0.8769822848824514,
+    "lo": 0.853621595770186,
+    "hi": 0.8989292567085025,
+    "se": 0.012154201375730837,
+    "n_groups": 90
+   },
+   "macro_f1": 0.8722685439521967,
+   "auroc": 0.9652858938189223,
+   "vs_shape_texture": {
+    "diff": 0.15627277282742458,
+    "lo": 0.12898635758852453,
+    "hi": 0.18308386645162117,
+    "p": 0.001,
+    "p_holm": 0.003
+   }
+  }
+ ],
+ "imf_selection": {
+  "n_images": 3256,
+  "selected_fraction_per_mode": [
+   0.9996928746928747,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "all_selected_fraction": 0.9996928746928747,
+  "none_selected_fraction": 0.0
+ },
+ "protocol": "contiguous folds, embargo 37, 3 rotations, logistic head on image-mean features"
+}

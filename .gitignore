@@ -21,3 +21,20 @@ Thumbs.db
 # Temporary/runtime output
 *.log
 *.tmp
+
+# Packaging
+*.egg-info/
+build/
+dist/
+
+# Downloaded dataset and full-run outputs (large, third-party content: cite, do not redistribute)
+data/dataset/
+data/full_run/
+data/full_run_v2/
+
+# Pretrained weights (large, third-party)
+data/weights/
+
+# Training outputs (checkpoints, logs); summaries are copied to docs/results/
+runs/
+data/full_run_all/
