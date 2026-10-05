@@ -28,10 +28,10 @@ for v in S B; do
 done
 ls -la data/weights
 
-echo "== 4. preprocessing (deterministic; ~10-15 min on 4 cores) =="
+echo "== 4. preprocessing (deterministic; single process on purpose: the 4-worker pool never finished on Kaggle; ~6-12 min) =="
 if [ ! -f data/full_run_v2/cells.csv ]; then
   leukemia-pp run --input data/dataset/Original --output data/full_run_v2 \
-                  --config configs/full_dataset.json --workers "$(nproc)"
+                  --config configs/full_dataset.json --workers 1
 fi
 python - <<'PY'
 import json
@@ -43,7 +43,7 @@ PY
 
 echo "== 5. crop caches =="
 for cfg in g01_lora_dinobloom_s g02_lora_dinobloom_s_gray g08_lora_dinobloom_s_raw_background; do
-  leukemia-ml crops --config "configs/ml/gpu/$cfg.json" --workers "$(nproc)"
+  leukemia-ml crops --config "configs/ml/gpu/$cfg.json" --workers 1
 done
 
 echo "== 6. quick tests + preflight =="
