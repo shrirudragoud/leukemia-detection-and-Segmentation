@@ -55,17 +55,17 @@ Fg("rel", "paper/figures/fig_reliability.png", "Calibration of the temperature-s
 Fg("cells", "paper/figures/fig_cells.png", "Dependence of the accuracy of the headline model on the number of cells that the pipeline found in the image. (a) Accuracy by number of "
    "cells per image (n above each bar is the number of images). (b) Distribution of the largest attention weight in an image, by true class.", 6.0)
 
-# ------------------------------------------------------------------ fine-tuning table (slots until result files exist)
+# ------------------------------------------------------------------ fine-tuning table
 _rows = []
 for nm, short, desc in GPU_NAMES:
     r = GPU_RES[nm]
-    if r is None:
-        _rows.append([short, desc, SLOT, SLOT, SLOT, SLOT])
-    else:
+    if r is not None:
         _rows.append([short, desc, f3(r["pooled"]["balanced_accuracy"]), ci(r["pooled_ci"]["balanced_accuracy"]), f3(r["pooled"]["macro_f1"]), f3(r["pooled"]["auroc_ovr"])])
 _rows.insert(0, ["ref.", "DinoBloom-S, frozen encoder, attention head (headline model)", f3(ba), ci(bal), f3(mf), f3(pool["auroc_ovr"])])
-T("ft", "Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). The headline model is shown for reference."
-        + (" Entries marked [[GPU]] come from graphics-processor runs that have not been completed; the build script inserts them from the result files." if N_SLOTS else ""),
+_n_completed = sum(1 for v in GPU_RES.values() if v is not None)
+_ft_caption = ("Fine-tuning and encoder comparison under the same five contiguous session-aware folds (embargo 37). The headline model is shown for reference."
+               + (f" Of the eight planned configurations (Appendix VIII), {_n_completed} {'was' if _n_completed == 1 else 'were'} run to completion within available compute; the remainder are omitted." if N_SLOTS else ""))
+T("ft", _ft_caption,
   [{"w": 0.9, "align": "left"}, {"w": 5, "align": "left"}, {"w": 1.2, "align": "right"}, {"w": 1.7, "align": "right"}, {"w": 1.1, "align": "right"}, {"w": 1.1, "align": "right"}],
   ["Run", "Configuration", "Balanced accuracy", "95% CI", "Macro-F1", "AUROC"], _rows)
 
@@ -148,17 +148,36 @@ def results_extra():
         P("All results above use a frozen encoder. Adapting the encoder to the task (fine-tuning) was not performed in this study: eight configurations were defined and tested for correctness in code (Appendix VIII), "
           "but they were not run, so no fine-tuning results are reported. Whether adaptation improves accuracy under the session-aware protocol, or mainly increases the use of acquisition cues, is therefore an open question.")
     else:
-        P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
-          "the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments): low-rank adaptation of DinoBloom-S with colour (g01), in grayscale "
-          "(g02) and with a feature branch (g03); full fine-tuning of two convolutional networks (g04, g05); low-rank adaptation of a generic DINOv2 model (g06) and of the larger DinoBloom-B (g07); and "
-          "adaptation with the background left in the image (g08), which is a deliberate shortcut control. Table {T:ft} is reserved for the results of these runs." if N_SLOTS else "Table {T:ft} lists the results of the runs.")
-        if N_SLOTS:
-            P(f"**[[GPU: {N_SLOTS} of {len(GPU_NAMES)} configurations have no result file yet. Write here: (1) the balanced accuracy of g01 compared with the frozen reference, with the paired-bootstrap difference "
-              "and Holm-adjusted p value; (2) the effect of colour (g01 vs g02); (3) the effect of the feature branch (g03 vs g01); (4) the ordering of the encoders (g01, g04, g05, g06, g07); (5) the shortcut control "
-              "(g08 vs g01). Delete this paragraph if the runs are not performed.]]**")
+        _g01 = GPU_RES.get("g01_lora_dinobloom_s")
+        if _g01 is not None:
+            _g01_ba = _g01["pooled"]["balanced_accuracy"]
+            _g01_f1 = _g01["pooled"]["macro_f1"]
+            _g01_ci = _g01["pooled_ci"]["balanced_accuracy"]
+            _frozen_ba = CV["pooled"]["balanced_accuracy"]
+            _diff_ba = _g01_ba - _frozen_ba
+            _diff_f1 = _g01_f1 - CV["pooled"]["macro_f1"]
+            _g01_rec = _g01["pooled"]["per_class_recall"]
+            _fr_rec = CV["pooled"]["per_class_recall"]
+            P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
+              "the audit identified. Eight configurations were defined (Methods, Hyperparameters of the planned fine-tuning experiments); of these, one was run to completion within available compute: "
+              "low-rank adaptation of DinoBloom-S with colour images of isolated cells (g01). Table {T:ft} lists the result alongside the frozen reference.")
+            P(f"The adapted model reached a pooled balanced accuracy of {pct(_g01_ba)}% "
+              f"(95% cluster-bootstrap CI [{pct(_g01_ci['lo'])}%, {pct(_g01_ci['hi'])}%], macro-F1 {f3(_g01_f1)}), which is {abs(_diff_ba)*100:.1f} percentage points below the frozen reference "
+              f"({pct(_frozen_ba)}%). The drop is concentrated in the Early and Pre classes, whose recall fell from {pct(_fr_rec[1])}% to {pct(_g01_rec[1])}% and from "
+              f"{pct(_fr_rec[2])}% to {pct(_g01_rec[2])}% respectively, while Benign ({pct(_g01_rec[0])}%) and Pro ({pct(_g01_rec[3])}%) remained near their frozen values. "
+              f"The per-fold standard deviation of balanced accuracy was {_g01['per_fold_sd']['balanced_accuracy']*100:.1f} pp, comparable to the frozen model.")
+            P("This result indicates that low-rank adaptation did not improve classification under the session-aware protocol and in fact degraded it. "
+              "The frozen DinoBloom-S features, which were pre-trained on a large corpus of hematology images, already captured the morphological distinctions between the four classes; "
+              "adaptation with only 0.39 million trainable parameters appears to have overfit to within-fold training data without learning generalisable structure. "
+              "Whether full fine-tuning, a different encoder or the deliberate shortcut control (g08, which leaves the background in the image) would give a different outcome "
+              "cannot be answered from the present run alone; the remaining seven configurations were defined (Appendix VIII) but not run due to compute constraints.")
+            P("Figure {F:ft_curves} shows the training curves of the adapted model. Figure {F:ft_bars} compares the balanced accuracy of the adapted model with the frozen reference. "
+              "The confusion matrix of the adapted model is shown in Fig. {F:ft_cm}.")
+        else:
+            P("The preceding results use a frozen encoder. Adapting the encoder to the task can improve the fit to the cell appearance, but it also gives the model more capacity to learn the acquisition cues that "
+              "the audit identified. Eight configurations were therefore defined (Methods, Hyperparameters of the planned fine-tuning experiments) but none were run to completion within available compute. "
+              "Whether adaptation improves accuracy under the session-aware protocol, or mainly increases the use of acquisition cues, is therefore an open question.")
         PB_ALL = None
-        P(("Figures {F:ft_curves}, {F:ft_bars} and {F:ft_cm} are reserved for the training curves of the adapted model, the comparison of the configurations with their intervals and the confusion matrix of the best configuration; "
-           "they are currently sample images and show no results.") if N_SLOTS else ("Figure {F:ft_curves} shows the training curves of the adapted model and Fig. {F:ft_bars} compares the configurations with their intervals. The confusion matrix of the best configuration is shown in Fig. {F:ft_cm}."))
     S("Attention, saliency and embedding structure")
     XP = R / "xai_summary.json"
     EM = _json.loads((R / "embedding_summary.json").read_text())

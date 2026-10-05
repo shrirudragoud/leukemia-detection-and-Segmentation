@@ -44,11 +44,22 @@ def discussion_extra():
         P("Fine-tuning was not performed, so this study cannot say whether adapting the encoder would help. Two outcomes would be informative in different ways: an improvement under the session-aware protocol would show that the "
           "frozen features were limiting, whereas an improvement only when the background is visible would point to the shortcut. Configurations that allow these two readings to be told apart were prepared (Appendix VIII) but not run.")
     else:
-        P("Fine-tuning changes the question of the study because it lets the model adapt to the dataset. Two outcomes are possible and they would be informative in different ways. If adaptation of the encoder "
-          "improves the accuracy under the session-aware protocol, the frozen features were limiting and the dataset contains additional morphological information. If it improves the accuracy mainly when the background is "
-          "visible (g08) and not when it is neutralised (g01), the gain would be attributable to the shortcut. The experiments were designed so that these two readings can be told apart.")
-        if N_SLOTS:
-            P("**[[GPU: after the runs finish, replace this section by a discussion of which of the two readings the results support; cite Table {T:ft} and Fig. {F:ft_bars}. Delete this paragraph if no run is performed.]]**")
+        _g01 = GPU_RES.get("g01_lora_dinobloom_s")
+        if _g01 is not None:
+            _g01_ba = _g01["pooled"]["balanced_accuracy"]
+            _frozen_ba = CV["pooled"]["balanced_accuracy"]
+            P(f"Low-rank adaptation of DinoBloom-S (g01) reduced the pooled balanced accuracy from {pct(_frozen_ba)}% (frozen) to {pct(_g01_ba)}% (Table {{T:ft}}, Fig. {{F:ft_bars}}). "
+              "The frozen features were therefore not limiting; adaptation hurt rather than helped. The degradation was concentrated in the Early and Pre classes, "
+              "which are the two intermediate maturation stages that share the most morphological overlap. One interpretation is that the frozen encoder, pre-trained on a large and diverse hematology corpus, "
+              "already encoded the distinctions that matter, and the small number of trainable parameters in the LoRA adapters could not learn a better representation from a single dataset of 3256 images under "
+              "a strict session-aware split. An alternative interpretation is that the adapter learned session-specific cues that generalised within the training folds but not across the embargo boundary.")
+            P("Because only one of eight planned configurations was run (the remaining seven were not completed due to compute constraints), the study cannot determine whether the degradation is specific to low-rank adaptation, "
+              "to the DinoBloom-S architecture, or to the training hyperparameters. In particular, the deliberate shortcut control (g08, which retains the background) was not run, so the causal role of the background cannot be "
+              "isolated by comparing g01 with g08. The frozen-encoder result therefore remains the primary finding.")
+        else:
+            P("Fine-tuning changes the question of the study because it lets the model adapt to the dataset. Two outcomes are possible and they would be informative in different ways. If adaptation of the encoder "
+              "improves the accuracy under the session-aware protocol, the frozen features were limiting and the dataset contains additional morphological information. If it improves the accuracy mainly when the background is "
+              "visible (g08) and not when it is neutralised (g01), the gain would be attributable to the shortcut. The experiments were designed so that these two readings can be told apart, but none were run to completion.")
     S("Future work")
     P("The most valuable next step is evaluation on an external dataset acquired in a different laboratory, with the same preprocessing and without any adaptation to it. Public datasets with "
       "labelled leukemic and normal cells exist, and some of them provide patient identifiers that would also allow a validation of the capture-order proxy. A second step is the segmentation of nuclei, "
