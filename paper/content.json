@@ -1201,9 +1201,9 @@
    "text": "*Reinhard normalisation.* For each image, the set of tissue pixels V contains those with L >= 8 (excluding near-black annotation overlays such as the scale bar). The foreground F is the subset of V whose lightness is below the Otsu threshold of L computed over V. If V covers less than half of the image, the lightness has a standard deviation below 1, or F covers less than the minimum fraction (0.02) of the image, the image is left unchanged and flagged. Otherwise the per-channel mean m(I) and standard deviation s(I) over F are computed. With reference statistics m* and s* (the mean of the per-image statistics over a sample of 20 images), each channel ch is mapped by"
   },
   {
-   "t": "code",
+   "t": "eq",
    "lines": [
-    "ch' = (ch - m_ch(I)) * g_ch + m*_ch,    g_ch = clip( s*_ch / max(s_ch(I), 1e-3), 0.25, 4.0 )"
+    "ch\u2032 = (ch \u2212 m_ch(I)) \u00d7 g_ch + m*_ch,    g_ch = clip( s*_ch / max(s_ch(I), 10\u207b\u00b3), 0.25, 4.0 )"
    ]
   },
   {
@@ -1215,10 +1215,10 @@
    "text": "*Stabilised diffusion.* Let f be the observed single-channel image and u the iterate, with u_0 = f. For the four neighbours k (north, south, west and east) let d_k be the difference between the neighbour and the central pixel. The diffusivity is a convex combination of a Perona-Malik term and a Charbonnier total-variation term,"
   },
   {
-   "t": "code",
+   "t": "eq",
    "lines": [
-    "c(s) = w / (1 + (s/h)^2) + (1 - w) * beta / sqrt(s^2 + beta^2),     0 < c(s) <= 1",
-    "u_(t+1) = u_t + dt * ( sum_k c(|d_k|) * d_k  -  lambda * (u_t - f) )"
+    "c(s) = w / (1 + (s/h)\u00b2) + (1 \u2212 w) \u00b7 \u03b2 / \u221a(s\u00b2 + \u03b2\u00b2),     0 < c(s) \u2264 1",
+    "u_{t+1} = u_t + \u0394t \u00b7 ( \u03a3_k c(|d_k|) \u00b7 d_k  \u2212  \u03bb \u00b7 (u_t \u2212 f) )"
    ]
   },
   {
@@ -1246,10 +1246,10 @@
    "text": "Each image is a *bag* of cells. During training, at most 24 cells per image (16 in the graphics processor configurations) are drawn at random; at evaluation, up to 64 cells are taken in order of their label number. For the cells h_1, ..., h_K of a bag, with embeddings of dimension D (384 for DinoBloom-S), the head computes z_k = GELU(W h_k + b) with 256 hidden units and dropout 0.2, and the attention weights"
   },
   {
-   "t": "code",
+   "t": "eq",
    "lines": [
-    "a_k = exp( w^T [ tanh(V z_k) * sigmoid(U z_k) ] ) / sum_j exp( w^T [ tanh(V z_j) * sigmoid(U z_j) ] )",
-    "bag = sum_k a_k z_k ;   logits = C bag"
+    "a_k = exp( w\u1d40 [ tanh(V z_k) \u2299 \u03c3(U z_k) ] ) / \u03a3_j exp( w\u1d40 [ tanh(V z_j) \u2299 \u03c3(U z_j) ] )",
+    "bag = \u03a3_k a_k z_k ;   logits = C \u00b7 bag"
    ]
   },
   {
@@ -7680,7 +7680,7 @@
     [
      "Hu et al. 2022",
      "Low-rank adaptation of network weights",
-     "18, 26"
+     "18, 26-27"
     ],
     [
      "Hunger and Mullighan 2015",

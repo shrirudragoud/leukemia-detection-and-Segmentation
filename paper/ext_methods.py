@@ -8,12 +8,12 @@ def methods_extra():
       "standard deviation below 1, or F covers less than the minimum fraction (0.02) of the image, the image is left unchanged and flagged. Otherwise the per-channel mean "
       "m(I) and standard deviation s(I) over F are computed. With reference statistics m* and s* (the mean of the per-image statistics over a sample of 20 images), each channel "
       "ch is mapped by")
-    BODY.append({"t": "code", "lines": ["ch' = (ch - m_ch(I)) * g_ch + m*_ch,    g_ch = clip( s*_ch / max(s_ch(I), 1e-3), 0.25, 4.0 )"]})
+    BODY.append({"t": "eq", "lines": ["ch′ = (ch − m_ch(I)) × g_ch + m*_ch,    g_ch = clip( s*_ch / max(s_ch(I), 10⁻³), 0.25, 4.0 )"]})
     P("and L' is clipped to [0, 100]. The gain g is clipped to the interval [0.25, 4] so that an unusual image cannot be stretched without bound.")
     P("*Stabilised diffusion.* Let f be the observed single-channel image and u the iterate, with u_0 = f. For the four neighbours k (north, south, west and east) let d_k be the difference "
       "between the neighbour and the central pixel. The diffusivity is a convex combination of a Perona-Malik term and a Charbonnier total-variation term,")
-    BODY.append({"t": "code", "lines": ["c(s) = w / (1 + (s/h)^2) + (1 - w) * beta / sqrt(s^2 + beta^2),     0 < c(s) <= 1",
-                                        "u_(t+1) = u_t + dt * ( sum_k c(|d_k|) * d_k  -  lambda * (u_t - f) )"]})
+    BODY.append({"t": "eq", "lines": ["c(s) = w / (1 + (s/h)²) + (1 − w) · β / √(s² + β²),     0 < c(s) ≤ 1",
+                                      "u_{t+1} = u_t + Δt · ( Σ_k c(|d_k|) · d_k  −  λ · (u_t − f) )"]})
     P(f"with w = {HDS['hds_config']['hybrid_weight']}, h = {HDS['hds_config']['h']}, beta = {HDS['hds_config']['beta']}, lambda = {HDS['hds_config']['lam']}, "
       f"dt = {HDS['hds_config']['dt']} and at most {HDS['hds_config']['iterations']} iterations; iteration stops when the mean absolute update falls below "
       f"{HDS['hds_config']['tol']}. Because c is at most 1 and dt is below 1/(4 + lambda) = 0.23, each update is a convex combination of the neighbouring values and the observed value, so "
@@ -36,8 +36,8 @@ def methods_extra():
     P("Each image is a *bag* of cells. During training, at most 24 cells per image (16 in the GPU configurations) are drawn at random; at evaluation, up to 64 cells are taken in order of their label "
       "number. For the cells h_1, ..., h_K of a bag, with embeddings of dimension D (384 for DinoBloom-S), the head computes z_k = GELU(W h_k + b) with 256 hidden units and dropout 0.2, and the "
       "attention weights")
-    BODY.append({"t": "code", "lines": ["a_k = exp( w^T [ tanh(V z_k) * sigmoid(U z_k) ] ) / sum_j exp( w^T [ tanh(V z_j) * sigmoid(U z_j) ] )",
-                                        "bag = sum_k a_k z_k ;   logits = C bag"]})
+    BODY.append({"t": "eq", "lines": ["a_k = exp( wᵀ [ tanh(V z_k) ⊙ σ(U z_k) ] ) / Σ_j exp( wᵀ [ tanh(V z_j) ⊙ σ(U z_j) ] )",
+                                      "bag = Σ_k a_k z_k ;   logits = C · bag"]})
     P(f"where the softmax runs over the valid cells of the bag only and the attention dimension is 128 {c('ilse2018')}. Because the weights sum to 1, the bag representation does not grow with the "
       "number of cells, which matters because the number of cells per image differs strongly between classes (Table {T:dataset}). The head has a small number of trainable parameters compared with the encoder, which is frozen.")
     S("Training objective and optimisation")

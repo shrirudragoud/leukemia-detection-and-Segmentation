@@ -7,6 +7,8 @@ const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell, WidthType,
   AlignmentType, BorderStyle, Footer, PageNumber, LineRuleType, ShadingType, PageBreak, TabStopType, LeaderType,
+  Math: DocMath, MathRun, MathFraction, MathNumerator, MathDenominator, MathSuperScript, MathSubScript,
+  MathRoundBrackets, MathSquareBrackets, MathSum, MathSubSuperScript,
 } = require("docx");
 
 const [, , inFile, outFile] = process.argv;
@@ -116,6 +118,12 @@ for (const b of content.blocks) {
       for (const line of b.lines)
         children.push(new Paragraph({ spacing: SINGLE, indent: { left: 360 },
           children: [new TextRun({ text: line, font: "Courier New", size: 18 })] }));
+      children.push(new Paragraph({ spacing: SINGLE, children: [] }));
+      break;
+    case "eq":
+      for (const line of b.lines)
+        children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { ...SINGLE, before: 60, after: 60 }, indent: { left: 360 },
+          children: [new TextRun({ text: line, font: "Cambria Math", size: 22, italics: true })] }));
       children.push(new Paragraph({ spacing: SINGLE, children: [] }));
       break;
     case "small":
