@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code → Blocks</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#C9D6F2;--card:#fff;--ink:#25324D;--muted:#7A879C;--line:#E4EAF5;--green:#1FB58F;--dark:#25324D;--yellow:#FFBF00}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:linear-gradient(135deg,#CFE0FF 0%,#E8DDFF 100%);font:700 14px/1.4 Nunito,ui-rounded,'Segoe UI',system-ui,sans-serif;color:var(--ink);padding:22px;display:grid;grid-template-columns:minmax(300px,430px) 1fr;gap:18px}
+  .panel{background:var(--card);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;min-height:0;min-width:0;box-shadow:0 10px 30px rgba(37,50,77,.12)}
+  .side header{padding:18px 18px 14px;border-bottom:2px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;margin-bottom:12px}
+  .brand .logo{width:38px;height:38px;border-radius:12px;background:var(--yellow);display:grid;place-items:center;font-size:22px;box-shadow:0 3px 0 #D99E00}
+  .row{display:flex;gap:8px}
+  select,button.btn{font:inherit;border:0;background:#EEF2FB;border-radius:12px;padding:9px 12px;color:var(--ink);cursor:pointer;min-width:0}
+  select{flex:1;font-weight:800}
+  button.btn:hover,select:hover{background:#E1E8F8}
+  .editor{position:relative;flex:1;min-height:0;display:flex;font:13px/21px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .gutter{width:46px;flex:none;padding:12px 8px 12px 0;text-align:right;color:#A9B4C8;overflow:hidden;white-space:pre;user-select:none;background:#F8FAFE}
+  .code{position:relative;flex:1;min-width:0}
+  textarea{position:absolute;inset:0;width:100%;height:100%;border:0;outline:0;resize:none;padding:12px;font:inherit;font-weight:600;color:var(--ink);background:transparent;white-space:pre;overflow:auto;tab-size:2}
+  .hl{position:absolute;left:0;right:0;background:rgba(255,191,0,.28);border-left:4px solid var(--yellow);pointer-events:none;display:none}
+  .diag{max-height:120px;overflow:auto;border-top:2px solid var(--line);padding:6px 0;font-size:13px}
+  .diag:empty{display:none}
+  .diag div{padding:5px 18px;cursor:pointer;color:#C0352B}
+  .diag div::before{content:"🙈 "}
+  .diag div:hover{background:#FFF0EF}
+  .canvas{position:relative}
+  #viewer{position:absolute;inset:0}
+  .chips{position:absolute;top:22px;left:18px;display:flex;gap:8px;align-items:center;z-index:2;pointer-events:none}
+  .chip{pointer-events:auto;background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:800;display:flex;gap:8px;align-items:center;box-shadow:0 2px 8px rgba(37,50,77,.1)}
+  .chip.ok::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green)}
+  .chip.bad::before{content:"";width:9px;height:9px;border-radius:50%;background:#E5483D}
+  .explain{position:absolute;left:18px;bottom:18px;width:min(360px,calc(100% - 36px));background:#fff;border-radius:22px;padding:14px 16px;box-shadow:0 8px 26px rgba(37,50,77,.2);z-index:2;display:flex;gap:12px;align-items:flex-start}
+  .explain .em{width:46px;height:46px;border-radius:50%;background:#FFF4CC;display:grid;place-items:center;font-size:26px;flex:none}
+  .explain h3{margin:0 0 2px;font-size:16px;font-weight:900}
+  .explain p{margin:0;font-weight:700;color:#4B5A73;font-size:13.5px}
+  .explain code{display:block;margin-top:8px;background:#F1F4FB;border-radius:9px;padding:5px 9px;font:600 12px ui-monospace,Menlo,Consolas,monospace;color:#25324D;overflow:auto;white-space:pre}
+  .explain .warn{margin-top:8px;color:#C0352B;background:#FFECEA;border-radius:9px;padding:6px 9px;font-size:12.5px}
+  .toolbar{position:absolute;right:16px;top:12px;background:var(--dark);border-radius:22px;padding:7px;display:flex;gap:6px;z-index:3;align-items:center;max-width:calc(100% - 32px);flex-wrap:wrap;justify-content:flex-end;box-shadow:0 8px 22px rgba(37,50,77,.25)}
+  .toolbar button{border:0;border-radius:14px;padding:10px 14px;font:800 13.5px Nunito,sans-serif;cursor:pointer;background:transparent;color:#D6DEF0;white-space:nowrap}
+  .toolbar button:hover{background:#34425F}
+  .toolbar .primary{background:var(--green);color:#04382B;box-shadow:0 3px 0 #118765}
+  .toolbar .primary:hover{background:#2DD3A9}
+  .toolbar .primary.stop{background:#FF6B6B;color:#fff;box-shadow:0 3px 0 #C94848}
+  .seg{display:flex;background:#34425F;border-radius:14px;padding:3px}
+  .seg button{padding:7px 12px}
+  .seg button.on{background:#fff;color:var(--ink)}
+  .tog{display:flex;align-items:center;gap:6px;color:#D6DEF0;font-size:13px;padding:0 8px;cursor:pointer;user-select:none}
+  .tog input{accent-color:var(--green);width:16px;height:16px}
+  @media (max-width:900px){body{grid-template-columns:1fr;grid-template-rows:38vh 1fr}.explain{display:none}}
+</style>
+</head>
+<body>
+<section class="panel side">
+  <header>
+    <div class="brand"><div class="logo">🧩</div>Code → Blocks</div>
+    <div class="row">
+      <select id="sample" title="Pick an example"></select>
+      <button class="btn" id="open" title="Open your own .ino file">📂 Open</button>
+      <input type="file" id="file" accept=".ino,.pde,.cpp,.c,.h" hidden>
+    </div>
+  </header>
+  <div class="editor" id="editor">
+    <div class="gutter" id="gutter"></div>
+    <div class="code"><div class="hl" id="hl"></div><textarea id="src" spellcheck="false" wrap="off" autocapitalize="off"></textarea></div>
+  </div>
+  <div class="diag" id="diag"></div>
+</section>
+<section class="panel canvas">
+  <div class="chips"><span class="chip ok" id="status">starting…</span></div>
+  <div id="viewer"></div>
+  <div class="explain" id="explain"></div>
+  <div class="toolbar">
+    <button class="primary" id="play">▶ Watch it run</button>
+    <div class="seg" id="mode"><button data-m="kids" class="on">😀 Kid view</button><button data-m="code">⌨️ Code view</button></div>
+    <label class="tog"><input type="checkbox" id="showcode" checked> real code</label>
+    <button id="fit">🔍 Fit</button>
+    <button id="svg">⬇ SVG</button>
+  </div>
+</section>
+<script src="/vendor/tree-sitter.js"></script>
+<script type="module" src="/demo/app.js"></script>
+</body>
+</html>

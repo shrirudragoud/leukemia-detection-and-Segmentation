@@ -1,0 +1,21 @@
+{
+  "name": "code-visualizer",
+  "version": "0.1.0",
+  "description": "Turns embedded source code (Arduino .ino first; C and MicroPython next) into an auto-laid-out node flowchart.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./viewer": "./src/render/viewer.js",
+    "./node": "./src/node.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "demo": "node demo/server.mjs",
+    "scene": "node scripts/dump-scene.mjs"
+  },
+  "dependencies": {
+    "tree-sitter-wasms": "0.1.13",
+    "web-tree-sitter": "0.22.6"
+  }
+}
