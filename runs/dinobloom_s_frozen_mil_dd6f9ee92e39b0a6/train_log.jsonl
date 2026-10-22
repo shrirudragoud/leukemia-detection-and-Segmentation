@@ -1,0 +1,12 @@
+{"epoch": 0, "train_loss": 0.892967085052033, "val_macro_f1": 0.94798361780271, "val_bal_acc": 0.9447498868731745, "lr": [0.0003355855855855856], "train_seconds": 1.29, "cells_per_s": 19126.0}
+{"epoch": 1, "train_loss": 0.48599625933286844, "val_macro_f1": 0.9738912491886469, "val_bal_acc": 0.9697923951348609, "lr": [0.0006689189189189189], "train_seconds": 1.37, "cells_per_s": 17898.8}
+{"epoch": 2, "train_loss": 0.4487427339445415, "val_macro_f1": 0.9425851760249879, "val_bal_acc": 0.9408422120750888, "lr": [0.001], "train_seconds": 1.38, "cells_per_s": 17862.5}
+{"epoch": 3, "train_loss": 0.42842117243252864, "val_macro_f1": 0.9881798715548489, "val_bal_acc": 0.9860223236935566, "lr": [0.0009966191788709714], "train_seconds": 1.29, "cells_per_s": 19076.0}
+{"epoch": 4, "train_loss": 0.408833037043854, "val_macro_f1": 0.969326666198391, "val_bal_acc": 0.9677828513444952, "lr": [0.0009865224352899118], "train_seconds": 1.36, "cells_per_s": 18055.5}
+{"epoch": 5, "train_loss": 0.3956724146402394, "val_macro_f1": 0.9818779591158108, "val_bal_acc": 0.9771998025422683, "lr": [0.0009698463103929542], "train_seconds": 1.38, "cells_per_s": 17761.6}
+{"epoch": 6, "train_loss": 0.38978806103841324, "val_macro_f1": 0.9783033356720463, "val_bal_acc": 0.9738964992389649, "lr": [0.0009468163201617061], "train_seconds": 1.35, "cells_per_s": 18200.3}
+{"epoch": 7, "train_loss": 0.38354685018531726, "val_macro_f1": 0.9811335384919995, "val_bal_acc": 0.976027397260274, "lr": [0.0009177439057064682], "train_seconds": 1.4, "cells_per_s": 17533.1}
+{"epoch": 8, "train_loss": 0.37887193940823705, "val_macro_f1": 0.9846163246663873, "val_bal_acc": 0.9806244600765149, "lr": [0.000883022221559489], "train_seconds": 1.39, "cells_per_s": 17688.5}
+{"epoch": 9, "train_loss": 0.3756302555241688, "val_macro_f1": 0.982080327080327, "val_bal_acc": 0.9776002029426687, "lr": [0.0008431208189343669], "train_seconds": 1.4, "cells_per_s": 17619.6}
+{"epoch": 10, "train_loss": 0.37411929490309903, "val_macro_f1": 0.9872810702139617, "val_bal_acc": 0.9840491176107614, "lr": [0.0007985792958513931], "train_seconds": 1.36, "cells_per_s": 18138.8}
+{"epoch": 11, "train_loss": 0.37231497633117744, "val_macro_f1": 0.9872810702139617, "val_bal_acc": 0.9840491176107614, "lr": [0.00075], "train_seconds": 1.5, "cells_per_s": 16356.3}

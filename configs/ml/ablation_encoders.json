@@ -1,0 +1,17 @@
+{
+  "base": {
+    "data": {"task": "4way", "source": "clean_rgb", "isolate": true,
+             "feature_groups": ["cell_shape", "cell_texture", "apc", "log"]},
+    "model": {"encoder": "dinobloom_s", "weights_path": "data/weights/DinoBloom-S.pth",
+              "input_size": 112, "freeze": "frozen"}
+  },
+  "variants": [
+    {"name": "DinoBloom-S (reference)", "model": {}},
+    {"name": "DinoBloom-S + curvature/morphology features (hybrid)", "features": true},
+    {"name": "DinoBloom-B", "model": {"encoder": "dinobloom_b", "weights_path": "data/weights/DinoBloom-B.pth"}},
+    {"name": "DINOv2-S (generic self-supervised)", "model": {"encoder": "dinov2_s", "weights_path": null}},
+    {"name": "ResNet-50 (ImageNet supervised)", "model": {"encoder": "timm:resnet50.a1_in1k", "weights_path": null}},
+    {"name": "EfficientNet-B0 (ImageNet supervised)", "model": {"encoder": "timm:efficientnet_b0.ra_in1k", "weights_path": null}},
+    {"name": "Hand-made curvature/morphology/texture features only", "tabular": true}
+  ]
+}

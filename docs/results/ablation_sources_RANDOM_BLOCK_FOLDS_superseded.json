@@ -1,0 +1,156 @@
+{
+  "reference": "A. clean RGB, isolated cell (reference)",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "n_boot": 1000,
+  "n_groups": 90,
+  "rows": [
+    {
+      "variant": "A. clean RGB, isolated cell (reference)",
+      "cfg_hash": "da47c05d5ba7381e",
+      "n_images": 3256,
+      "balanced_accuracy": 0.9694490542645502,
+      "balanced_accuracy_sd_seeds": 0.003716673465132505,
+      "balanced_accuracy_ci": {
+        "point": 0.9708521135121485,
+        "lo": 0.9606468275843657,
+        "hi": 0.9801722354182709,
+        "se": 0.005081455345285666,
+        "n_groups": 90
+      },
+      "macro_f1": 0.9687007836567525,
+      "macro_f1_ci": {
+        "point": 0.9699559524090798,
+        "lo": 0.9565551274327762,
+        "hi": 0.979640310823589,
+        "se": 0.006015039724020345,
+        "n_groups": 90
+      },
+      "auroc_ovr": 0.9978610057094802
+    },
+    {
+      "variant": "B. clean grayscale, isolated cell (no stain colour)",
+      "cfg_hash": "aaba4516c0d698cb",
+      "n_images": 3256,
+      "balanced_accuracy": 0.9585970005261099,
+      "balanced_accuracy_sd_seeds": 0.003281931074314736,
+      "balanced_accuracy_ci": {
+        "point": 0.9565018170692108,
+        "lo": 0.9450161849078226,
+        "hi": 0.96927179460225,
+        "se": 0.006532165343020925,
+        "n_groups": 90
+      },
+      "macro_f1": 0.957973853530496,
+      "macro_f1_ci": {
+        "point": 0.9558274040217831,
+        "lo": 0.9410206380582379,
+        "hi": 0.968358421314503,
+        "se": 0.007013979622182555,
+        "n_groups": 90
+      },
+      "auroc_ovr": 0.9951117341597193,
+      "vs_reference": {
+        "diff": -0.014350296442937727,
+        "lo": -0.022429482499845894,
+        "hi": -0.0062502048274117195,
+        "p": 0.002,
+        "p_holm": 0.006
+      }
+    },
+    {
+      "variant": "C. normalised RGB, background visible",
+      "cfg_hash": "cda5e09f0458e95a",
+      "n_images": 3256,
+      "balanced_accuracy": 0.9876353521623175,
+      "balanced_accuracy_sd_seeds": 0.0018288681923335666,
+      "balanced_accuracy_ci": {
+        "point": 0.9850496491920226,
+        "lo": 0.9757098927807821,
+        "hi": 0.992240842799377,
+        "se": 0.004371875301606699,
+        "n_groups": 90
+      },
+      "macro_f1": 0.9877349573871624,
+      "macro_f1_ci": {
+        "point": 0.9844819034967951,
+        "lo": 0.9735045650574236,
+        "hi": 0.9922107960501015,
+        "se": 0.00514499229299618,
+        "n_groups": 90
+      },
+      "auroc_ovr": 0.9993724102841312,
+      "vs_reference": {
+        "diff": 0.01419753567987414,
+        "lo": 0.005737726402910823,
+        "hi": 0.023302552903085416,
+        "p": 0.002,
+        "p_holm": 0.006
+      }
+    },
+    {
+      "variant": "D. raw RGB, background visible",
+      "cfg_hash": "2bcd43255d159566",
+      "n_images": 3256,
+      "balanced_accuracy": 0.9915416016325539,
+      "balanced_accuracy_sd_seeds": 0.0017187557004176566,
+      "balanced_accuracy_ci": {
+        "point": 0.989133798428041,
+        "lo": 0.9822488633978417,
+        "hi": 0.9946800321850995,
+        "se": 0.0033037370261365926,
+        "n_groups": 90
+      },
+      "macro_f1": 0.991650746152488,
+      "macro_f1_ci": {
+        "point": 0.9888025695039198,
+        "lo": 0.9801613174356268,
+        "hi": 0.9946044206086616,
+        "se": 0.003999878142254472,
+        "n_groups": 90
+      },
+      "auroc_ovr": 0.9998607141350117,
+      "vs_reference": {
+        "diff": 0.018281684915892438,
+        "lo": 0.01063275293801733,
+        "hi": 0.027011436318446682,
+        "p": 0.002,
+        "p_holm": 0.006
+      }
+    },
+    {
+      "variant": "E. tabular shape+texture+curvature (no pixels)",
+      "cfg_hash": "da47c05d5ba7381e",
+      "n_images": 3256,
+      "balanced_accuracy": 0.854451062912148,
+      "balanced_accuracy_sd_seeds": 0.002774437182906142,
+      "balanced_accuracy_ci": {
+        "point": 0.8521033040223375,
+        "lo": 0.8302407031858838,
+        "hi": 0.8735986996471157,
+        "se": 0.011576638626608649,
+        "n_groups": 90
+      },
+      "macro_f1": 0.8482791405911785,
+      "macro_f1_ci": {
+        "point": 0.8456195236473425,
+        "lo": 0.8115588538899651,
+        "hi": 0.8672197962057376,
+        "se": 0.01441149494567102,
+        "n_groups": 90
+      },
+      "auroc_ovr": 0.9588250667596808,
+      "vs_reference": {
+        "diff": -0.11874880948981104,
+        "lo": -0.14015846313761254,
+        "hi": -0.0981029258779412,
+        "p": 0.001,
+        "p_holm": 0.004
+      }
+    }
+  ],
+  "protocol": "image-level, group-disjoint stratified repeated 5-fold CV; logistic head on frozen embeddings; cluster bootstrap over groups"
+}

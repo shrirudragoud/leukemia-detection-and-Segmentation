@@ -1,0 +1,64 @@
+{
+  "data": {
+    "run_dir": "data/full_run_v2",
+    "input_dir": "data/dataset/Original",
+    "task": "4way",
+    "source": "clean_rgb",
+    "isolate": true,
+    "cache_size": 128,
+    "margin": 0.25,
+    "max_cells": 16,
+    "max_cells_eval": 64,
+    "feature_groups": [
+      "cell_shape",
+      "cell_texture",
+      "apc",
+      "log"
+    ],
+    "split_scheme": "contiguous",
+    "n_folds": 5,
+    "val_offset": 2,
+    "embargo": 37
+  },
+  "model": {
+    "encoder": "dinobloom_s",
+    "pretrained": true,
+    "weights_path": "data/weights/DinoBloom-S.pth",
+    "input_size": 112,
+    "freeze": "lora",
+    "lora_rank": 8,
+    "lora_alpha": 16.0,
+    "head": "mil",
+    "hidden": 256,
+    "dropout": 0.2,
+    "use_features": false
+  },
+  "aug": {
+    "flips": true,
+    "rot90": true,
+    "scale_jitter": 0.1,
+    "colour": "hed",
+    "colour_strength": 0.05,
+    "grayscale_p": 0.2,
+    "blur_p": 0.1
+  },
+  "train": {
+    "epochs": 12,
+    "batch_size": 16,
+    "lr_head": 0.001,
+    "lr_encoder": 1e-05,
+    "lr_lora": 0.0002,
+    "weight_decay": 0.05,
+    "warmup_frac": 0.1,
+    "label_smoothing": 0.1,
+    "class_weighting": "inv_sqrt",
+    "grad_clip": 1.0,
+    "patience": 4,
+    "seed": 0,
+    "num_workers": 4,
+    "device": "auto",
+    "amp": true,
+    "amp_dtype": "auto"
+  },
+  "name": "g01_lora_dinobloom_s"
+}

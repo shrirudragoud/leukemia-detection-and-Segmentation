@@ -1,0 +1,325 @@
+{
+ "name": "g05_full_efficientnet_b0",
+ "config_hash": "SAMPLE",
+ "folds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "n_images": 3245,
+ "n_groups": 90,
+ "pooled": {
+  "n": 3245,
+  "balanced_accuracy": 0.9949837669204737,
+  "macro_f1": 0.9949837669204737,
+  "auroc_ovr": 0.99,
+  "ece": 0.01,
+  "per_class_recall": [
+   0.996,
+   0.9928934010152284,
+   0.9947916666666666,
+   0.99625
+  ],
+  "confusion": [
+   [
+    498,
+    1,
+    0,
+    1
+   ],
+   [
+    0,
+    978,
+    3,
+    4
+   ],
+   [
+    2,
+    1,
+    955,
+    2
+   ],
+   [
+    2,
+    0,
+    1,
+    797
+   ]
+  ],
+  "sensitivity": 0.99,
+  "specificity": 0.996,
+  "accuracy": 0.9949837669204737
+ },
+ "pooled_ci": {
+  "balanced_accuracy": {
+   "point": 0.9949837669204737,
+   "lo": 0.9849837669204737,
+   "hi": 1.0049837669204738
+  },
+  "macro_f1": {
+   "point": 0.9949837669204737,
+   "lo": 0.9849837669204737,
+   "hi": 1.0049837669204738
+  }
+ },
+ "per_fold": [
+  {
+   "fold": 0,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.9948908100676819,
+    "macro_f1": 0.9948908100676819,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     0.9847715736040609,
+     0.9947916666666666,
+     1.0
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      194,
+      1,
+      2
+     ],
+     [
+      0,
+      0,
+      191,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      160
+     ]
+    ],
+    "accuracy": 0.9948908100676819
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 1,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.9945642978003384,
+    "macro_f1": 0.9945642978003384,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     0.9949238578680203,
+     0.9895833333333334,
+     0.99375
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      196,
+      0,
+      1
+     ],
+     [
+      1,
+      0,
+      190,
+      1
+     ],
+     [
+      1,
+      0,
+      0,
+      159
+     ]
+    ],
+    "accuracy": 0.9945642978003384
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 2,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.9923577622673435,
+    "macro_f1": 0.9923577622673435,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     0.99,
+     0.9898477157360406,
+     0.9895833333333334,
+     1.0
+    ],
+    "confusion": [
+     [
+      99,
+      1,
+      0,
+      0
+     ],
+     [
+      0,
+      195,
+      2,
+      0
+     ],
+     [
+      1,
+      1,
+      190,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      160
+     ]
+    ],
+    "accuracy": 0.9923577622673435
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 3,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      197,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      160
+     ]
+    ],
+    "accuracy": 1.0
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 4,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.993105964467005,
+    "macro_f1": 0.993105964467005,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     0.99,
+     0.9949238578680203,
+     1.0,
+     0.9875
+    ],
+    "confusion": [
+     [
+      99,
+      0,
+      0,
+      1
+     ],
+     [
+      0,
+      196,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      1,
+      0,
+      1,
+      158
+     ]
+    ],
+    "accuracy": 0.993105964467005
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  }
+ ],
+ "SYNTHETIC": true
+}

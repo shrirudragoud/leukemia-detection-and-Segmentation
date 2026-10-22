@@ -1,0 +1,5 @@
+{
+  "hds":   {"enabled": true},
+  "beemd": {"enabled": true},
+  "save_previews": true
+}

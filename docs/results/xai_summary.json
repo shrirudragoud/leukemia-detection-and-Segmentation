@@ -1,0 +1,132 @@
+{
+  "attention": {
+    "n_images": 584,
+    "normalised_entropy_mean": 0.8796607508938664,
+    "normalised_entropy_sd": 0.0855968170569365,
+    "top_attention_over_uniform_mean": 2.252577614906716,
+    "attention_area_spearman_mean": 0.2819213504616014,
+    "attention_area_spearman_sd": 0.43741084987905,
+    "mean_cells": 8.902397260273972
+  },
+  "gradcam_examples": [
+    "WBC-Benign-087",
+    "WBC-Malignant-Early-125",
+    "WBC-Malignant-Pre-109",
+    "WBC-Malignant-Pro-057"
+  ],
+  "sanity_stages": [
+    "head",
+    "encoder_block_-1",
+    "encoder_block_-2",
+    "encoder_block_-3",
+    "encoder_block_-4",
+    "encoder_block_-5",
+    "encoder_block_-6",
+    "encoder_block_-7",
+    "encoder_block_-8",
+    "encoder_block_-9",
+    "encoder_block_-10",
+    "encoder_block_-11",
+    "encoder_block_-12"
+  ],
+  "sanity_spearman_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "sanity_spearman_all": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "deletion": {
+    "fractions": [
+      0.0,
+      0.1,
+      0.2,
+      0.4,
+      0.6
+    ],
+    "cam_mean": [
+      0.8883781284093857,
+      0.8852075487375259,
+      0.8693458288908005,
+      0.7507814466953278,
+      0.6820816248655319
+    ],
+    "random_mean": [
+      0.8883781284093857,
+      0.2800254765897989,
+      0.2407484850846231,
+      0.2404000776587054,
+      0.22495117830112576
+    ]
+  }
+}

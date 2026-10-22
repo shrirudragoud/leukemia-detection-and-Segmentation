@@ -1,0 +1,57 @@
+{
+  "rows": [
+    {
+      "sigma": 0.05,
+      "noisy": 26.11436653137207,
+      "legacy_hds": 4.976177922397552,
+      "stabilised_hds": 37.50411605834961,
+      "bilateral": 38.19099807739258,
+      "gaussian": 26.409399032592773,
+      "stabilised_iterations": 23
+    },
+    {
+      "sigma": 0.08,
+      "noisy": 21.949567794799805,
+      "legacy_hds": 4.9872299326331975,
+      "stabilised_hds": 34.61812210083008,
+      "bilateral": 33.98796081542969,
+      "gaussian": 26.282020568847656,
+      "stabilised_iterations": 27
+    },
+    {
+      "sigma": 0.12,
+      "noisy": 18.39022445678711,
+      "legacy_hds": 4.95137965775097,
+      "stabilised_hds": 31.350248336791992,
+      "bilateral": 27.742643356323242,
+      "gaussian": 25.999553680419922,
+      "stabilised_iterations": 30
+    }
+  ],
+  "boundedness": {
+    "iterations": 3000,
+    "finite": true,
+    "within_input_range": true
+  },
+  "texture_correlation": {
+    "noisy": 0.501575278721985,
+    "stabilised_hds": 0.3655796049094244,
+    "bilateral": 0.29354646218836616
+  },
+  "mean_gain_db": {
+    "legacy_hds": -17.179790423392422,
+    "stabilised_hds": 12.339442571004232,
+    "bilateral": 11.155814488728842,
+    "gaussian": 4.078938166300456
+  },
+  "hds_config": {
+    "enabled": false,
+    "iterations": 30,
+    "dt": 0.2,
+    "lam": 0.3,
+    "h": 0.05,
+    "beta": 0.05,
+    "hybrid_weight": 0.5,
+    "tol": 0.0001
+  }
+}
