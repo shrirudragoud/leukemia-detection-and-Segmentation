@@ -1,0 +1,235 @@
+{
+ "guo2017": {
+  "url": "https://proceedings.mlr.press/v70/guo17a.html",
+  "title": "On Calibration of Modern Neural Networks",
+  "authors": "Chuan Guo; Geoff Pleiss; Yu Sun; Kilian Q. Weinberger",
+  "date": "2017/07/17",
+  "venue": "International Conference on Machine Learning",
+  "volume": "",
+  "pages": "1321-1330",
+  "license": []
+ },
+ "ilse2018": {
+  "url": "https://proceedings.mlr.press/v80/ilse18a.html",
+  "title": "Attention-based Deep Multiple Instance Learning",
+  "authors": "Maximilian Ilse; Jakub Tomczak; Max Welling",
+  "date": "2018/07/03",
+  "venue": "International Conference on Machine Learning",
+  "volume": "",
+  "pages": "2127-2136",
+  "license": []
+ },
+ "tan2019": {
+  "url": "https://proceedings.mlr.press/v97/tan19a.html",
+  "title": "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks",
+  "authors": "Mingxing Tan; Quoc Le",
+  "date": "2019/05/24",
+  "venue": "International Conference on Machine Learning",
+  "volume": "",
+  "pages": "6105-6114",
+  "license": []
+ },
+ "vaswani2017": {
+  "url": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html",
+  "title": "Attention is All you Need",
+  "authors": "Vaswani, Ashish; Shazeer, Noam; Parmar, Niki; Uszkoreit, Jakob; Jones, Llion; Gomez, Aidan N.; Kaiser, \u0141ukasz; Polosukhin, Illia",
+  "date": "2017",
+  "venue": "Advances in Neural Information Processing Systems",
+  "volume": "30",
+  "pages": "-",
+  "license": []
+ },
+ "krizhevsky2012": {
+  "url": "https://proceedings.neurips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html",
+  "title": "ImageNet Classification with Deep Convolutional Neural Networks",
+  "authors": "Krizhevsky, Alex; Sutskever, Ilya; Hinton, Geoffrey E.",
+  "date": "2012",
+  "venue": "Advances in Neural Information Processing Systems",
+  "volume": "25",
+  "pages": "-",
+  "license": []
+ },
+ "paszke2019": {
+  "url": "https://proceedings.neurips.cc/paper/2019/hash/bdbca288fee7f92f2bfa9f7012727740-Abstract.html",
+  "title": "PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+  "authors": "Paszke, Adam; Gross, Sam; Massa, Francisco; Lerer, Adam; Bradbury, James; Chanan, Gregory; Killeen, Trevor; Lin, Zeming; Gimelshein, Natalia; Antiga, Luca; Desmaison, Alban; Kopf, Andreas; Yang, Edward; DeVito, Zachary; Raison, Martin; Tejani, Alykhan; Chilamk",
+  "date": "2019",
+  "venue": "Advances in Neural Information Processing Systems",
+  "volume": "32",
+  "pages": "-",
+  "license": []
+ },
+ "adebayo2018": {
+  "url": "https://proceedings.neurips.cc/paper/2018/hash/294a8ed24b1ad22ec2e7efea049b8737-Abstract.html",
+  "title": "Sanity Checks for Saliency Maps",
+  "authors": "Adebayo, Julius; Gilmer, Justin; Muelly, Michael; Goodfellow, Ian; Hardt, Moritz; Kim, Been",
+  "date": "2018",
+  "venue": "Advances in Neural Information Processing Systems",
+  "volume": "31",
+  "pages": "-",
+  "license": []
+ },
+ "demsar2006": {
+  "url": "https://www.jmlr.org/papers/v7/demsar06a.html",
+  "title": "Statistical Comparisons of Classifiers over Multiple Data Sets",
+  "authors": "Janez Dem\u0161ar",
+  "date": "2006",
+  "venue": "Journal of Machine Learning Research",
+  "volume": "7",
+  "pages": "1-30",
+  "license": []
+ },
+ "benavoli2017": {
+  "url": "https://jmlr.org/papers/v18/16-305.html",
+  "title": "Time for a Change: a Tutorial for Comparing Multiple Classifiers Through Bayesian Analysis",
+  "authors": "Alessio Benavoli; Giorgio Corani; Janez Dem\u0161ar; Marco Zaffalon",
+  "date": "2017",
+  "venue": "Journal of Machine Learning Research",
+  "volume": "18",
+  "pages": "1-36",
+  "license": []
+ },
+ "pedregosa2011": {
+  "url": "https://jmlr.org/papers/v12/pedregosa11a.html",
+  "title": "Scikit-learn: Machine Learning in Python",
+  "authors": "Fabian Pedregosa; Ga\u00ebl Varoquaux; Alexandre Gramfort; Vincent Michel; Bertrand Thirion; Olivier Grisel; Mathieu Blondel; Peter Prettenhofer; Ron Weiss; Vincent Dubourg; Jake Vanderplas; Alexandre Passos; David Cournapeau; Matthieu Brucher; Matthieu Perrot; \u00c9do",
+  "date": "2011",
+  "venue": "Journal of Machine Learning Research",
+  "volume": "12",
+  "pages": "2825-2830",
+  "license": []
+ },
+ "dosovitskiy2021": {
+  "url": "https://openreview.net/forum?id=YicbFdNTTy",
+  "title": "",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "hu2022": {
+  "url": "https://openreview.net/forum?id=nZeVKeeFYf9",
+  "title": "",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "loshchilov2019": {
+  "url": "https://openreview.net/forum?id=Bkg6RiCqY7",
+  "title": "",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "oquab2024": {
+  "url": "https://openreview.net/forum?id=a68SUt6zFt",
+  "title": "",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "kornblith2019": {
+  "url": "https://openaccess.thecvf.com/content_CVPR_2019/html/Kornblith_Do_Better_ImageNet_Models_Transfer_Better_CVPR_2019_paper.html",
+  "title": "Do Better ImageNet Models Transfer Better?",
+  "authors": "Kornblith, Simon; Shlens, Jonathon; Le, Quoc V.",
+  "date": "2019",
+  "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+  "volume": "",
+  "pages": "2661-2671",
+  "license": []
+ },
+ "kingma2015": {
+  "url": "https://arxiv.org/abs/1412.6980",
+  "title": "Adam: A Method for Stochastic Optimization",
+  "authors": "Kingma, Diederik P.; Ba, Jimmy",
+  "date": "2014/12/22",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "albzour2026": {
+  "url": "https://arxiv.org/abs/2606.24944",
+  "title": "A Leakage-Aware Comparative Benchmark of Machine Learning, Deep Learning, and Transformer Models for Reliable ",
+  "authors": "Albzour, Nisreen",
+  "date": "2026/06/23",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "koch2024": {
+  "url": "https://arxiv.org/abs/2404.05022",
+  "title": "DinoBloom: A Foundation Model for Generalizable Cell Embeddings in Hematology",
+  "authors": "Koch, Valentin; Wagner, Sophia J.; Kazeminia, Salome; Sancar, Ece; Hehr, Matthias; Schnabel, Julia; Peng, Tingying; Marr, Carsten",
+  "date": "2024/04/07",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "kohavi1995": {
+  "url": "https://www.ijcai.org/Proceedings/95-2/Papers/016.pdf",
+  "title": "",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ },
+ "he2016": {
+  "url": "https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html",
+  "title": "Deep Residual Learning for Image Recognition",
+  "authors": "He, Kaiming; Zhang, Xiangyu; Ren, Shaoqing; Sun, Jian",
+  "date": "2016",
+  "venue": "Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition",
+  "volume": "",
+  "pages": "770-778",
+  "license": []
+ },
+ "caron2021": {
+  "url": "https://openaccess.thecvf.com/content/ICCV2021/html/Caron_Emerging_Properties_in_Self-Supervised_Vision_Transformers_ICCV_2021_paper.html",
+  "title": "Emerging Properties in Self-Supervised Vision Transformers",
+  "authors": "Caron, Mathilde; Touvron, Hugo; Misra, Ishan; J\u00e9gou, Herv\u00e9; Mairal, Julien; Bojanowski, Piotr; Joulin, Armand",
+  "date": "2021",
+  "venue": "Proceedings of the IEEE/CVF International Conference on Computer Vision",
+  "volume": "",
+  "pages": "9650-9660",
+  "license": []
+ },
+ "zenodo_dinobloom": {
+  "url": "https://zenodo.org/records/10908163",
+  "title": "DinoBloom Model Farm",
+  "authors": "Koch, Valentin",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": [
+   "Creative Commons Attribution license allows re-distribution and re-use of a ",
+   "Creative Commons Attribution 4.0 International\"}}], \"title\": \"DinoBloom Mode"
+  ]
+ },
+ "aria2021": {
+  "url": "https://www.kaggle.com/datasets/mehradaria/leukemia",
+  "title": "Acute Lymphoblastic Leukemia (ALL) image dataset",
+  "authors": "",
+  "date": "",
+  "venue": "",
+  "volume": "",
+  "pages": "-",
+  "license": []
+ }
+}

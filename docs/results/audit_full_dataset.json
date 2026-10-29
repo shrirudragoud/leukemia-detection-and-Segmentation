@@ -1,0 +1,116 @@
+{
+  "n_images": 3256,
+  "n_groups": 90,
+  "n_splits": 5,
+  "classes": {
+    "Benign": 504,
+    "Early": 985,
+    "Pre": 963,
+    "Pro": 804
+  },
+  "chance_balanced": 0.25,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "results": [
+    {
+      "group": "acquisition",
+      "probe": "background colour, raw image (3 numbers)",
+      "balanced_accuracy": 0.8227,
+      "std": 0.0002,
+      "verdict": "VERY STRONG"
+    },
+    {
+      "group": "acquisition",
+      "probe": "background colour, after stain normalisation (3 numbers)",
+      "balanced_accuracy": 0.784,
+      "std": 0.0007,
+      "verdict": "VERY STRONG"
+    },
+    {
+      "group": "acquisition",
+      "probe": "scale-bar corner patch, raw image",
+      "balanced_accuracy": 0.7159,
+      "std": 0.0019,
+      "verdict": "VERY STRONG"
+    },
+    {
+      "group": "after shortcut removal",
+      "probe": "background colour of rgb_clean (sanity: constant)",
+      "balanced_accuracy": 0.25,
+      "std": 0.0,
+      "verdict": "none (near chance)"
+    },
+    {
+      "group": "after shortcut removal",
+      "probe": "corner patch of rgb_clean (sanity: constant)",
+      "balanced_accuracy": 0.4355,
+      "std": 0.0019,
+      "verdict": "weak"
+    },
+    {
+      "group": "residual",
+      "probe": "mean cell colour, stain-normalised (3 numbers)",
+      "balanced_accuracy": 0.7659,
+      "std": 0.0015,
+      "verdict": "VERY STRONG"
+    },
+    {
+      "group": "residual",
+      "probe": "mean cell colour, white-balanced rgb_clean (3 numbers)",
+      "balanced_accuracy": 0.798,
+      "std": 0.0023,
+      "verdict": "VERY STRONG"
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "density (n_cells, wbc_area_frac)",
+      "balanced_accuracy": 0.5884,
+      "std": 0.0005,
+      "verdict": ""
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "cell shape",
+      "balanced_accuracy": 0.6847,
+      "std": 0.0014,
+      "verdict": ""
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "cell texture (GLCM, entropy)",
+      "balanced_accuracy": 0.6469,
+      "std": 0.0025,
+      "verdict": ""
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "cell colour",
+      "balanced_accuracy": 0.8345,
+      "std": 0.0021,
+      "verdict": ""
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "shape + texture (no colour, no density)",
+      "balanced_accuracy": 0.7762,
+      "std": 0.0009,
+      "verdict": ""
+    },
+    {
+      "group": "tabular baseline",
+      "probe": "ALL aggregated features",
+      "balanced_accuracy": 0.9093,
+      "std": 0.0011,
+      "verdict": ""
+    }
+  ],
+  "config_hash": "9136b9beac982264",
+  "caveats": [
+    "Groups are a patient PROXY (consecutive-number blocks + duplicate files); true patient ids are unavailable, so residual leakage is possible.",
+    "RandomForest baseline, 3 seeds; fold assignment is fixed by the groups.",
+    "Near-chance acquisition probes after cleaning only show that the cleaned image no longer carries them; cell colour can still encode stain/session."
+  ]
+}

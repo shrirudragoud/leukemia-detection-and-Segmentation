@@ -1,0 +1,325 @@
+{
+ "name": "g07_lora_dinobloom_b",
+ "config_hash": "SAMPLE",
+ "folds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "n_images": 3245,
+ "n_groups": 90,
+ "pooled": {
+  "n": 3245,
+  "balanced_accuracy": 0.9984961928934011,
+  "macro_f1": 0.9984961928934011,
+  "auroc_ovr": 0.99,
+  "ece": 0.01,
+  "per_class_recall": [
+   1.0,
+   0.9989847715736041,
+   1.0,
+   0.995
+  ],
+  "confusion": [
+   [
+    500,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    984,
+    0,
+    1
+   ],
+   [
+    0,
+    0,
+    960,
+    0
+   ],
+   [
+    0,
+    0,
+    4,
+    796
+   ]
+  ],
+  "sensitivity": 0.99,
+  "specificity": 1.0,
+  "accuracy": 0.9984961928934011
+ },
+ "pooled_ci": {
+  "balanced_accuracy": {
+   "point": 0.9984961928934011,
+   "lo": 0.9884961928934011,
+   "hi": 1.008496192893401
+  },
+  "macro_f1": {
+   "point": 0.9984961928934011,
+   "lo": 0.9884961928934011,
+   "hi": 1.008496192893401
+  }
+ },
+ "per_fold": [
+  {
+   "fold": 0,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.997168464467005,
+    "macro_f1": 0.997168464467005,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     0.9949238578680203,
+     1.0,
+     0.99375
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      196,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      159
+     ]
+    ],
+    "accuracy": 0.997168464467005
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 1,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.9984375,
+    "macro_f1": 0.9984375,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     1.0,
+     1.0,
+     0.99375
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      197,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      159
+     ]
+    ],
+    "accuracy": 0.9984375
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 2,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      197,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      160
+     ]
+    ],
+    "accuracy": 1.0
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 3,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      197,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      160
+     ]
+    ],
+    "accuracy": 1.0
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  },
+  {
+   "fold": 4,
+   "test": {
+    "n": 649,
+    "balanced_accuracy": 0.996875,
+    "macro_f1": 0.996875,
+    "auroc_ovr": 0.99,
+    "ece": 0.1,
+    "per_class_recall": [
+     1.0,
+     1.0,
+     1.0,
+     0.9875
+    ],
+    "confusion": [
+     [
+      100,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      197,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      192,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      158
+     ]
+    ],
+    "accuracy": 0.996875
+   },
+   "epochs": 12,
+   "seconds": 100.0,
+   "temperature": 0.5,
+   "split": {
+    "n_train_images": 1500,
+    "n_val_images": 650,
+    "n_test_images": 649
+   }
+  }
+ ],
+ "SYNTHETIC": true
+}
